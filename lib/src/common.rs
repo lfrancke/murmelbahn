@@ -1,6 +1,6 @@
-use derive_more::{Deref, Display};
 use crate::bom::{BillOfMaterial, LayerKind, RailKind, WallKind};
 use crate::course::common::layer::TileKind;
+use derive_more::{Deref, Display};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -12,7 +12,6 @@ impl CourseCode {
         CourseCode(code.to_uppercase())
     }
 }
-
 
 #[derive(Debug, Deserialize, Serialize, JsonSchema)]
 pub struct Count<T> {
@@ -58,7 +57,7 @@ pub struct GraviSheetOutput {
     pub rail_bernoulli: i32,
     pub rail_drop_hill: i32,
     pub rail_drop_valley: i32,
-    pub catcher: i32, // TODO
+    pub catcher: i32,
 
     pub tile_starter: i32,
     pub tile_curve: i32,
@@ -94,7 +93,7 @@ pub struct GraviSheetOutput {
     pub rail_uturn: i32,
 
     pub tile_bridge: i32,
-    pub tile_lift: i32, // TODO: GraviSheet only has a single lift
+    pub tile_lift: i32,
     pub tile_catapult: i32,
     pub tile_color_swap: i32,
     pub tile_dipper: i32,
@@ -114,7 +113,7 @@ pub struct GraviSheetOutput {
     pub tile_trampoline: i32,
     pub tile_transfer: i32,
     pub tile_volcano: i32,
-    pub tile_zipline: i32, // App noch mit ziplinestart und ziplineende
+    pub tile_zipline: i32,
 
     pub tile_carousel: i32,
     pub tile_helix: i32,
@@ -130,11 +129,7 @@ pub struct GraviSheetOutput {
     pub tile_finish_trigger: i32,
     pub tile_finish_arena: i32,
     pub tile_trigger: i32,
-    pub tile_queue: i32, /*
-                         ScrewSmall = 38, = 0 cursves
-                         ScrewMedium = 39, = 5 curves (see 5BRTMS8P45, 3466F3RN9K)
-                         ScrewLarge = 40, = 12 curves (see 3PAZF4YOO9)
-                          */
+    pub tile_queue: i32,
 }
 
 impl From<BillOfMaterial> for GraviSheetOutput {
@@ -158,7 +153,7 @@ impl From<BillOfMaterial> for GraviSheetOutput {
             layer_base_mini_half: 0,
             layer_large: bom.layer_kind(LayerKind::LargeClear),
             layer_small: bom.layer_kind(LayerKind::SmallClear),
-            marbles: 0,
+            marbles: bom.marbles().1,
             stacker_small: bom.small_stacker,
             stacker_large: bom.large_stacker,
             stacker_angled: trampolin_1 + (2 * trampolin_2),
@@ -181,7 +176,7 @@ impl From<BillOfMaterial> for GraviSheetOutput {
             rail_bernoulli: bom.rail_kind(RailKind::Bernoulli),
             rail_drop_hill: bom.rail_kind(RailKind::DropHill),
             rail_drop_valley: bom.rail_kind(RailKind::DropValley),
-            catcher: 0,
+            catcher: 0, // Not available in the app
 
             tile_starter: bom.tile_kind(TileKind::Starter),
             tile_curve: bom.tile_kind(TileKind::Curve),
@@ -196,7 +191,7 @@ impl From<BillOfMaterial> for GraviSheetOutput {
             tile_flexible_two_in_one_b: bom.tile_kind(TileKind::FlexibleTwoInOneB),
             tile_curve_small_two_in_one_a: bom.tile_kind(TileKind::TwoInOneSmallCurveA),
             tile_curve_small_two_in_one_b: bom.tile_kind(TileKind::TwoInOneSmallCurveB),
-            tile_basic_closed: 0, // TODO
+            tile_basic_closed: bom.tile_kind(TileKind::GoalBasin),
             tile_goal_basin: bom.tile_kind(TileKind::GoalBasin),
             tile_cross: bom.tile_kind(TileKind::Cross),
             tile_three_way: bom.tile_kind(TileKind::Threeway),
@@ -207,7 +202,11 @@ impl From<BillOfMaterial> for GraviSheetOutput {
                 + bom.tile_kind(TileKind::SwitchRight),
             tile_two_entrance_funnel: bom.tile_kind(TileKind::Spiral),
             tile_three_entrance_funnel: bom.tile_kind(TileKind::ThreeEntranceFunnel),
-            tile_basic: 0, // TODO or leave empty
+            tile_basic: bom.tile_kind(TileKind::Drop)
+                + bom.tile_kind(TileKind::Catch)
+                + bom.tile_kind(TileKind::Splash)
+                + bom.tile_kind(TileKind::CurveTunnel)
+                + bom.tile_kind(TileKind::SwitchTunnel),
             tile_drop: bom.tile_kind(TileKind::Drop),
             tile_catch: bom.tile_kind(TileKind::Catch),
             tile_splash: bom.tile_kind(TileKind::Splash),
@@ -250,7 +249,7 @@ impl From<BillOfMaterial> for GraviSheetOutput {
                 + bom.tile_kind(TileKind::MixerOffsetExits),
             tile_splitter: bom.tile_kind(TileKind::Splitter),
             tile_turntable: bom.tile_kind(TileKind::Turntable),
-            tile_controller: 0,
+            tile_controller: 0, // Leaving out for now, hard to give a good number
             tile_dome_starter: bom.tile_kind(TileKind::DomeStarter),
             tile_elevator: bom.tile_kind(TileKind::Elevator),
             tile_lever: bom.tile_kind(TileKind::Lever),

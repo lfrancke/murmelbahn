@@ -49,10 +49,10 @@ pub(crate) async fn course_bom(
                     wtr.serialize(output).unwrap();
                     String::from_utf8(wtr.into_inner().unwrap()).unwrap().into_response()
                 }
-                Some(BomFormat::Json) => {
+                None | Some(BomFormat::Json) => {
                     Json(bom).into_response()
                 }
-                None | Some(BomFormat::Rust) => {
+                Some(BomFormat::Rust) => {
                     format!("{:#?}", bom).into_response()
                 }
             })
