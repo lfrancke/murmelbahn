@@ -1,0 +1,6 @@
+/target
+/Cargo.lock
+
+data/
+
+lib/tests/test-data
