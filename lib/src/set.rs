@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::io::BufReader;
@@ -5,7 +6,6 @@ use std::path::Path;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use snafu::prelude::*;
-use crate::bom::BillOfMaterial;
 use crate::error::{IoSnafu, MurmelbahnError, MurmelbahnResult, ReadSnafu, SerdeJsonSnafu};
 
 #[derive(Serialize, Deserialize, JsonSchema)]
@@ -14,7 +14,7 @@ pub struct Name {
     pub name: String
 }
 
-#[derive(Serialize, Deserialize, JsonSchema)]
+#[derive(Serialize, Default, Deserialize, JsonSchema)]
 pub struct Set {
     pub id: String,
 
@@ -22,8 +22,132 @@ pub struct Set {
     pub names: Vec<Name>,
 
     #[serde(default)]
-    pub bill_of_materials: BillOfMaterial
+    pub content: HashMap<SetContentElement, i32>
 }
+
+#[derive(Debug, Deserialize, Eq, Hash, JsonSchema, PartialEq, Serialize)]
+pub enum SetContentElement {
+    // Layer
+    BaseLayer,
+    SmallClearLayer,
+    LargeClearLayer,
+    MiniBasePlate,
+    HalfMiniBasePlate,
+
+    // Marbles
+    MarbleRed,
+    MarbleGreen,
+    MarbleBlue,
+    MarbleSilver,
+    MarbleGold,
+
+    // Stacker
+    Stacker,
+    StackerSmall,
+    StackerAngled,
+    StackerTowerClosed,
+    StackerTowerOpened,
+
+    // Walls & Baconies
+    WallSmall,
+    WallMedium,
+    WallLarge,
+    Balcony,
+    DoubleBalcony,
+
+    // Rails
+    Bernoulli,
+    BernoulliSmallLeft,
+    BernoulliSmallRight,
+    BernoulliSmallStraight,
+    Catcher,
+    DropHill,
+    DropValley,
+    FlexTube,
+    Narrow,
+    Slow,
+    StraightLarge,
+    StraightMedium,
+    StraightSmall,
+    UTurn,
+
+    // Standard Tiles
+    Bridge,
+    Cannon,
+    Cascade, // Scoop in GraviSheet
+    Catapult,
+    ColorSwap,
+    Cross,
+    Curve,
+    CurveCrossing,
+    Dipper,
+    DoubleBigCurve,
+    DoubleSmallCurve,
+    FlexibleTwoInOneA,
+    FlexibleTwoInOneB,
+    Flip,
+    GoalRail,
+    Hammer,
+    Jumper,
+    Lift, // TODO: Split up further?
+    Loop,
+    MultiJunction,
+    RibbonCurve,
+    Spinner,
+    // Called Screw internally
+    SpiralBase,
+    SpiralCurve,
+    SpiralEntrance,
+    Starter,
+    StraightCurveCrossing,
+    SwitchInsert,
+    ThreeEntranceFunnel,
+    ThreeWay,
+    TipTube,
+    Trampoline,
+    Transfer,
+    TripleSmallCurve,
+    // Called Spiral internally
+    TwoEntranceFunnel,
+    TwoInOneSmallCurveA,
+    TwoInOneSmallCurveB,
+    TwoWay,
+    Volcano,
+    Zipline,
+
+    // Basic tiles
+    BasicClosed,
+    BasicOpen,
+    BasicStraight,
+
+    // Inserts
+    GoalBasin,
+    Catch,
+    Drop,
+    Splash,
+    StraightTunnel,
+    CurveTunnel,
+    SwitchTunnel,
+
+    // Pro
+    Carousel,
+    Helix,
+    Mixer,
+    Splitter,
+    Turntable,
+
+    // Power
+    Controler,
+    DomeStarter,
+    Elevator,
+    Lever,
+    DropdownSwitch,
+    FinishTrigger,
+    FinishArena,
+    Trigger,
+    Queue,
+}
+
 
 impl Set {
 
@@ -35,17 +159,16 @@ impl Set {
          Ok(set)
     }
 
-
 }
 
-pub struct Sets {
+pub struct SetRepo {
     sets: Vec<Set>
 }
 
 
-impl Sets {
-    fn new() -> Sets {
-        Sets { sets: Vec::new() }
+impl SetRepo {
+    pub fn new() -> SetRepo {
+        SetRepo { sets: Vec::new() }
     }
 
     pub fn read_directory<P: AsRef<Path>>(&mut self, path: P) -> MurmelbahnResult<()> {

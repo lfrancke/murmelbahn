@@ -22,7 +22,10 @@ pub enum MurmelbahnError {
     IoError { source: std::io::Error },
 
     #[snafu(display("Encountered error: {}", msg))]
-    MiscError { msg: String }
+    ConversionFailed { msg: String},
+
+    #[snafu(display("Encountered error: {}", msg))]
+    MiscError { msg: String },
 }
 
 pub type MurmelbahnResult<T, E = MurmelbahnError> = Result<T, E>;

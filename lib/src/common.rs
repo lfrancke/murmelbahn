@@ -1,5 +1,4 @@
-use crate::bom::{BillOfMaterial, LayerKind, RailKind, WallKind};
-use crate::course::common::layer::TileKind;
+use crate::bom::{BillOfMaterial, LayerKind, RailKind, TileKind, WallKind};
 use derive_more::{Deref, Display};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -154,15 +153,15 @@ impl From<BillOfMaterial> for GraviSheetOutput {
             layer_large: bom.layer_kind(LayerKind::LargeClear),
             layer_small: bom.layer_kind(LayerKind::SmallClear),
             marbles: bom.marbles().1,
-            stacker_small: bom.small_stacker,
-            stacker_large: bom.large_stacker,
+            stacker_small: bom.tile_kind(TileKind::StackerSmall),
+            stacker_large: bom.tile_kind(TileKind::Stacker),
             stacker_angled: trampolin_1 + (2 * trampolin_2),
             stacker_tower_closed: bom.tile_kind(TileKind::StackerTowerClosed),
             stacker_tower_opened: bom.tile_kind(TileKind::StackerTowerOpened),
             wall_short: bom.wall_kind(WallKind::StraightSmall),
             wall_medium: bom.wall_kind(WallKind::StraightMedium),
             wall_long: bom.wall_kind(WallKind::StraightLarge),
-            balcony: bom.balconies as i32,
+            balcony: bom.tile_kind(TileKind::Balcony),
             balcony_double: bom.tile_kind(TileKind::DoubleBalcony),
             rail_short: bom.rail_kind(RailKind::StraightSmall),
             rail_medium: bom.rail_kind(RailKind::StraightMedium),

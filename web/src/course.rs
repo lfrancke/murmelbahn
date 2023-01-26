@@ -7,6 +7,7 @@ use serde::Deserialize;
 use std::sync::Arc;
 use axum::Json;
 use axum::response::{IntoResponse, Response};
+use murmelbahn_lib::bom::BillOfMaterial;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -39,7 +40,7 @@ pub(crate) async fn course_bom(
             Err(AppError::ZiplineAdded2019Unsupported)
         }
         Course::Power2022(course) | Course::Pro2020(course) => {
-            let bom = course.bill_of_material()?;
+            let bom = BillOfMaterial::try_from(course)?;
 
             Ok(match format {
                 Some(BomFormat::Csv) => {

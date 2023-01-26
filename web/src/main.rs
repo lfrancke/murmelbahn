@@ -3,22 +3,33 @@ mod set;
 mod course_repo;
 
 use std::net::SocketAddr;
+use std::path::PathBuf;
 use std::sync::Arc;
 use axum::response::{IntoResponse, Response};
 use axum::routing::get;
 use axum::{Extension, Json, Router};
 use axum::http::StatusCode;
+use clap::Parser;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 use serde_json::json;
 use sqlx::postgres::PgPoolOptions;
 use tracing::{debug, info};
 use murmelbahn_lib::error::MurmelbahnError;
+use murmelbahn_lib::set::SetRepo;
 use crate::course::{course_bom, course_dump};
 use crate::course_repo::CourseRepo;
 use crate::set::set_list;
 
+#[derive(Debug, Parser)]
+pub struct Config {
+
+    #[arg(env)]
+    pub sets_directory: PathBuf
+}
+
 pub struct AppState {
-    course_repo: CourseRepo
+    course_repo: CourseRepo,
+    sets_repo: SetRepo
 }
 
 pub enum AppError {
@@ -76,6 +87,9 @@ impl IntoResponse for AppError {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
+
+    let config = Config::parse();
+
     // TODO: Print version
     info!("Murmelbahn Web starting up");
 
@@ -87,8 +101,10 @@ async fn main() -> anyhow::Result<()> {
         .await?;
 
     let course_repo = CourseRepo::new(db);
+    let mut sets_repo = SetRepo::new();
+    sets_repo.read_directory(config.sets_directory)?;
 
-    let shared_state = Arc::new(AppState { course_repo });
+    let shared_state = Arc::new(AppState { course_repo, sets_repo });
 
     let course_routes = Router::new()
         .route("/:id/dump", get(course_dump))
