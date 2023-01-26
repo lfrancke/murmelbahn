@@ -1,8 +1,11 @@
-use axum::http::StatusCode;
+use std::sync::Arc;
+use axum::extract::State;
+use axum::Json;
 use axum::response::IntoResponse;
+use crate::AppState;
 
 pub async fn set_list(
+    State(state): State<Arc<AppState>>,
 ) -> impl IntoResponse {
-
-    (StatusCode::OK, "nothing is okay")
+    Json(state.sets_repo.sets.clone())
 }

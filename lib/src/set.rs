@@ -8,13 +8,13 @@ use serde::{Deserialize, Serialize};
 use snafu::prelude::*;
 use crate::error::{IoSnafu, MurmelbahnError, MurmelbahnResult, ReadSnafu, SerdeJsonSnafu};
 
-#[derive(Serialize, Deserialize, JsonSchema)]
+#[derive(Clone, Serialize, Deserialize, JsonSchema)]
 pub struct Name {
     pub language_code: String,
     pub name: String
 }
 
-#[derive(Serialize, Default, Deserialize, JsonSchema)]
+#[derive(Clone, Serialize, Default, Deserialize, JsonSchema)]
 pub struct Set {
     pub id: String,
 
@@ -25,7 +25,7 @@ pub struct Set {
     pub content: HashMap<SetContentElement, i32>
 }
 
-#[derive(Debug, Deserialize, Eq, Hash, JsonSchema, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, JsonSchema, PartialEq, Serialize)]
 pub enum SetContentElement {
     // Layer
     BaseLayer,
@@ -162,7 +162,7 @@ impl Set {
 }
 
 pub struct SetRepo {
-    sets: Vec<Set>
+    pub sets: Vec<Set>
 }
 
 

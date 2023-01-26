@@ -1,9 +1,11 @@
+use futures::TryStreamExt;
 use metrics::increment_counter;
 use snafu::{ResultExt, Snafu};
 use murmelbahn_lib::common::CourseCode;
-use sqlx::{Pool, Postgres};
+use sqlx::{Pool, Postgres, Row};
 use tokio::task::{JoinError, spawn_blocking};
 use tracing::{debug, info};
+use murmelbahn_lib::course::common::{Course, SavedCourse};
 
 #[derive(Debug, Snafu)]
 pub enum Error {
@@ -91,5 +93,24 @@ impl CourseRepo {
                 Err(err).context(DownloadSnafu)?
             }
         }
+    }
+
+    pub async fn process_all(&self) -> Result<(), Error> {
+        println!("Process all");
+        let mut rows = sqlx::query("SELECT code, serialized_bytes FROM courses")
+            .fetch(&self.db);
+
+        while let Some(row) = rows.try_next().await.unwrap() {
+            let bytes: Vec<u8> = row.try_get("serialized_bytes").unwrap();
+            let code: &str = row.try_get("code").unwrap();
+            let course = SavedCourse::from_bytes(&bytes).unwrap().course;
+
+            if let Course::Power2022(course) = course {
+                println!("Checking {}", code);
+            }
+        }
+
+        Ok(())
+
     }
 }

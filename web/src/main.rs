@@ -1,12 +1,13 @@
 mod course;
 mod set;
 mod course_repo;
+mod buildable;
 
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::Arc;
 use axum::response::{IntoResponse, Response};
-use axum::routing::get;
+use axum::routing::{get, post};
 use axum::{Extension, Json, Router};
 use axum::http::StatusCode;
 use clap::Parser;
@@ -16,6 +17,7 @@ use sqlx::postgres::PgPoolOptions;
 use tracing::{debug, info};
 use murmelbahn_lib::error::MurmelbahnError;
 use murmelbahn_lib::set::SetRepo;
+use crate::buildable::buildable;
 use crate::course::{course_bom, course_dump};
 use crate::course_repo::CourseRepo;
 use crate::set::set_list;
@@ -109,14 +111,17 @@ async fn main() -> anyhow::Result<()> {
     let course_routes = Router::new()
         .route("/:id/dump", get(course_dump))
         .route("/:id/bom", get(course_bom))
-        .with_state(shared_state);
+        .with_state(shared_state.clone());
 
-    let set_routes = Router::new().route("/list", get(set_list));
+    let set_routes = Router::new().route("/list", get(set_list)).with_state(shared_state.clone());
 
     let app = Router::new()
+        .route("/metrics", get(metrics).layer(build_prometheus_extension()))
+        .route("/buildable", get(buildable).post(buildable))
+        .with_state(shared_state.clone())
         .nest("/course", course_routes)
-        .nest("/set", set_routes)
-        .route("/metrics", get(metrics).layer(build_prometheus_extension()));
+        .nest("/set", set_routes);
+
 
     let addr = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 0], 3000));
     debug!("listening on {}", addr);
