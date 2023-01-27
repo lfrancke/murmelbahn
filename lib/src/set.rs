@@ -6,6 +6,8 @@ use std::path::Path;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use snafu::prelude::*;
+use tracing::info;
+use crate::bom::{LayerKind, RailKind, WallKind};
 use crate::error::{IoSnafu, MurmelbahnError, MurmelbahnResult, ReadSnafu, SerdeJsonSnafu};
 
 #[derive(Clone, Serialize, Deserialize, JsonSchema)]
@@ -148,6 +150,49 @@ pub enum SetContentElement {
     Queue,
 }
 
+impl SetContentElement {
+
+    pub fn element_for_layerkind(layer_kind: &LayerKind) -> SetContentElement {
+        match layer_kind {
+            LayerKind::Base => SetContentElement::BaseLayer,
+            LayerKind::SmallClear => SetContentElement::SmallClearLayer,
+            LayerKind::LargeClear => SetContentElement::LargeClearLayer
+        }
+    }
+
+    pub fn element_for_wallkind(wall_kind: &WallKind) -> SetContentElement {
+        match wall_kind {
+            WallKind::StraightSmall => SetContentElement::WallSmall,
+            WallKind::StraightMedium => SetContentElement::WallMedium,
+            WallKind::StraightLarge => SetContentElement::WallLarge
+        }
+    }
+
+    pub fn element_for_railkind(rail_kind: &RailKind) -> SetContentElement {
+        match rail_kind {
+            RailKind::StraightSmall => SetContentElement::StraightSmall,
+            RailKind::StraightMedium => SetContentElement::StraightMedium,
+            RailKind::StraightLarge => SetContentElement::StraightLarge,
+            RailKind::Bernoulli => SetContentElement::Bernoulli,
+            RailKind::DropHill => SetContentElement::DropHill,
+            RailKind::DropValley => SetContentElement::DropValley,
+            RailKind::UTurn => SetContentElement::UTurn,
+            RailKind::Narrow => SetContentElement::Narrow,
+            RailKind::Slow => SetContentElement::Slow,
+            RailKind::BernoulliSmallStraight => SetContentElement::BernoulliSmallStraight,
+            RailKind::BernoulliSmallLeft => SetContentElement::BernoulliSmallLeft,
+            RailKind::BernoulliSmallRight => SetContentElement::BernoulliSmallRight,
+            RailKind::FlexTube0 => SetContentElement::FlexTube,
+            RailKind::FlexTube60 => SetContentElement::FlexTube,
+            RailKind::FlexTube120 => SetContentElement::FlexTube,
+            RailKind::FlexTube180 => SetContentElement::FlexTube,
+            RailKind::FlexTube240 => SetContentElement::FlexTube,
+            RailKind::FlexTube300 => SetContentElement::FlexTube
+        }
+    }
+
+}
+
 
 impl Set {
 
@@ -162,13 +207,13 @@ impl Set {
 }
 
 pub struct SetRepo {
-    pub sets: Vec<Set>
+    pub sets: HashMap<String, Set>
 }
 
 
 impl SetRepo {
     pub fn new() -> SetRepo {
-        SetRepo { sets: Vec::new() }
+        SetRepo { sets: HashMap::new() }
     }
 
     pub fn read_directory<P: AsRef<Path>>(&mut self, path: P) -> MurmelbahnResult<()> {
@@ -186,7 +231,10 @@ impl SetRepo {
             // Only process files
             if file_path.is_file() {
                 let set = Set::from_path(file_path)?;
-                self.sets.push(set);
+                let set_id = set.id.clone();
+                if let Some(_) = self.sets.insert(set_id.clone(), set) {
+                    info!("Set with ID [{}] occurs twice, will use a random one", set_id);
+                }
             }
         }
 

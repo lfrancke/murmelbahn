@@ -1,53 +1,79 @@
 use std::collections::HashMap;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
-use crate::set::SetContentElement;
+use crate::bom::BillOfMaterial;
+use crate::error::{MurmelbahnError, MurmelbahnResult};
+use crate::set::{SetContentElement, SetRepo};
 
 #[derive(Debug, Deserialize, Serialize, JsonSchema)]
 pub struct Inventory {
     #[serde(default)]
-    pub sets: Vec<String>,
+    pub sets: HashMap<String, i32>,
 
     #[serde(default)]
     pub extra_elements: HashMap<SetContentElement, i32>
 }
 
+pub struct SummarizedInventory {
 
-/*
-impl BillOfMaterial {
-    pub fn add(&mut self, other: &BillOfMaterial) {
-        merge_counter_maps(&mut self.layers, &other.layers);
-        merge_counter_maps(&mut self.tiles, &other.tiles);
-        merge_counter_maps(&mut self.rails, &other.rails);
-    }
+    pub elements: HashMap<SetContentElement, i32>
 
-    pub fn can_be_built_with(&self, other: &BillOfMaterial) -> bool {
-        is_superset_of_and_has_higher_counts(&self.layers, &other.layers)
-            && is_superset_of_and_has_higher_counts(&self.tiles, &other.tiles)
-            && is_superset_of_and_has_higher_counts(&self.rails, &other.rails)
-    }
 }
 
-fn is_superset_of_and_has_higher_counts<T: Hash + Eq>(
-    map_1: &HashMap<T, i32>,
-    map_2: &HashMap<T, i32>,
-) -> bool {
-    //iterate over the items of map1
-    for (key, value) in map_1.iter() {
-        // check if the key exists in map2 and its value is greater or equal to map1
-        if !map_2.contains_key(key) || *map_2.get(key).unwrap() < *value {
-            return false;
+impl SummarizedInventory {
+    fn from_inventory(inventory: &Inventory, set_repo: SetRepo) -> MurmelbahnResult<SummarizedInventory> {
+
+        let mut elements = HashMap::new();
+
+        for (set_name, set_count) in inventory.sets.iter() {
+            match set_repo.sets.get(set_name) {
+                None => {
+                    return Err(MurmelbahnError::MiscError { msg: format!("Set [{}] is not known, can't summarize", set_name)})
+                }
+                Some(set) => {
+                    for (element, element_count) in set.content.iter() {
+                        let entry = elements.entry(element.clone()).or_insert(0);
+                        *entry += element_count * set_count;
+                    }
+                }
+            }
         }
+
+        for (extra_element, element_count) in inventory.extra_elements.iter() {
+            let entry = elements.entry(extra_element.clone()).or_insert(0);
+            *entry += element_count;
+        }
+
+        Ok(SummarizedInventory {
+            elements
+        })
     }
-    true
-}
 
-fn merge_counter_maps<T: Clone + Hash + Eq>(first: &mut HashMap<T, i32>, other: &HashMap<T, i32>) {
-    for (key, value) in other {
-        let entry = first.entry(key.clone()).or_insert(0);
-        *entry += value
+
+    // TODO: Return missing elements
+    fn is_buildable_with(&self, bom: &BillOfMaterial) -> bool {
+        for (layer_kind, layer_count) in bom.layers.iter() {
+            if self.elements.get(&SetContentElement::element_for_layerkind(layer_kind)).unwrap_or(&0) < layer_count {
+                return false;
+            }
+        }
+
+        for (wall_kind, wall_count) in bom.walls.iter() {
+            if self.elements.get(&SetContentElement::element_for_wallkind(wall_kind)).unwrap_or(&0) < wall_count {
+                return false;
+            }
+        }
+
+        for (rail_kind, rail_count) in bom.rails.iter() {
+            if self.elements.get(&SetContentElement::element_for_railkind(rail_kind)).unwrap_or(&0) < rail_count {
+                return false;
+            }
+        }
+
+
+        true
+
+
     }
+
 }
-
-
- */
