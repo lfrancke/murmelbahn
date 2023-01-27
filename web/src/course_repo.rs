@@ -78,7 +78,7 @@ impl CourseRepo {
                 increment_counter!("murmelbahn.course.downloads.success");
 
                 sqlx::query("INSERT INTO courses (code, serialized_bytes) VALUES ($1, $2)")
-                    .bind(&course)
+                    .bind(&course_code.to_string())
                     .bind(&course)
                     .execute(&self.db)
                     .await.context(DatabaseSnafu)?;
