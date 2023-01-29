@@ -274,16 +274,19 @@ impl TryFrom<PersistenceTileKind> for TileKind {
     }
 }
 
-// TODO: Marbles
+/// This is the Bill of Materials as it appears in the app.
+/// That is not very useful if you want to check whether you can build a course with your parts
+/// as it includes things like `SwitchLeft` and `SwitchRight` which are the same physical tile,
+/// just placed in a different configuration.
 #[derive(Debug, Default, Deserialize, JsonSchema, Serialize)]
-pub struct BillOfMaterial {
+pub struct AppBillOfMaterials {
     pub layers: HashMap<LayerKind, i32>,
     pub tiles: HashMap<TileKind, i32>,
     pub rails: HashMap<RailKind, i32>,
     pub walls: HashMap<WallKind, i32>,
 }
 
-impl BillOfMaterial {
+impl AppBillOfMaterials {
     pub fn layer_kind(&self, kind: LayerKind) -> i32 {
         self.layers.get(&kind).unwrap_or(&0).clone()
     }
@@ -437,7 +440,7 @@ impl CountContext {
 }
 
 // TODO: Use world positions everywhere?
-impl TryFrom<Course> for BillOfMaterial {
+impl TryFrom<Course> for AppBillOfMaterials {
     type Error = MurmelbahnError;
 
     fn try_from(value: Course) -> Result<Self, Self::Error> {
@@ -481,7 +484,7 @@ impl TryFrom<Course> for BillOfMaterial {
             context.add_rail(rail_kind);
         }
 
-        Ok(BillOfMaterial {
+        Ok(AppBillOfMaterials {
             layers: context.layers,
             tiles: context.tiles,
             rails: context.rails,

@@ -5,7 +5,10 @@ use murmelbahn_lib::common::CourseCode;
 use sqlx::{Pool, Postgres, Row};
 use tokio::task::{JoinError, spawn_blocking};
 use tracing::{debug, info};
+use murmelbahn_lib::bom::AppBillOfMaterials;
 use murmelbahn_lib::course::common::{Course, SavedCourse};
+use murmelbahn_lib::inventory::{Inventory, PhysicalBillOfMaterials};
+use murmelbahn_lib::set::SetRepo;
 
 #[derive(Debug, Snafu)]
 pub enum Error {
@@ -95,22 +98,36 @@ impl CourseRepo {
         }
     }
 
-    pub async fn process_all(&self) -> Result<(), Error> {
+    pub async fn process_all(&self, repo: &SetRepo, inventory: Inventory) -> Result<Vec<String>, Error> {
         println!("Process all");
         let mut rows = sqlx::query("SELECT code, serialized_bytes FROM courses")
             .fetch(&self.db);
 
+        let summarized_inventory: PhysicalBillOfMaterials = PhysicalBillOfMaterials::from_inventory(&inventory, repo).unwrap();
+        let mut courses = Vec::new();
         while let Some(row) = rows.try_next().await.unwrap() {
             let bytes: Vec<u8> = row.try_get("serialized_bytes").unwrap();
             let code: &str = row.try_get("code").unwrap();
             let course = SavedCourse::from_bytes(&bytes).unwrap().course;
 
-            if let Course::Power2022(course) = course {
-                println!("Checking {}", code);
+            if let Course::Power2022(course) | Course::Pro2020(course) = course {
+                let app_bom = AppBillOfMaterials::try_from(course).unwrap();
+                let physical_bom = PhysicalBillOfMaterials::from(app_bom);
+
+                let diff_bom = summarized_inventory.subtract(&physical_bom);
+                print!("Checking {} ", code);
+                if diff_bom.any_missing() {
+                    println!("...not buildable");
+                } else {
+                    courses.push(code.to_string());
+                    println!("...buildable");
+                }
             }
+
+
         }
 
-        Ok(())
+        Ok(courses)
 
     }
 }

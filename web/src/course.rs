@@ -7,7 +7,7 @@ use serde::Deserialize;
 use std::sync::Arc;
 use axum::Json;
 use axum::response::{IntoResponse, Response};
-use murmelbahn_lib::bom::BillOfMaterial;
+use murmelbahn_lib::bom::AppBillOfMaterials;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -22,6 +22,7 @@ pub(crate) struct BomParams {
     format: Option<BomFormat>,
 }
 
+// TODO: Needs to return a 404
 pub(crate) async fn course_bom(
     Path(course): Path<String>,
     Query(BomParams { format }): Query<BomParams>,
@@ -40,7 +41,7 @@ pub(crate) async fn course_bom(
             Err(AppError::ZiplineAdded2019Unsupported)
         }
         Course::Power2022(course) | Course::Pro2020(course) => {
-            let bom = BillOfMaterial::try_from(course)?;
+            let bom = AppBillOfMaterials::try_from(course)?;
 
             Ok(match format {
                 Some(BomFormat::Csv) => {
@@ -64,6 +65,7 @@ pub(crate) async fn course_bom(
 
 
 /// Dumps a course in JSON format
+// TODO: Needs to return a 404
 pub async fn course_dump(
     Path(course): Path<String>,
     State(state): State<Arc<AppState>>,

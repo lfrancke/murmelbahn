@@ -1,4 +1,4 @@
-use crate::bom::{BillOfMaterial, LayerKind, RailKind, TileKind, WallKind};
+use crate::bom::{AppBillOfMaterials, LayerKind, RailKind, TileKind, WallKind};
 use derive_more::{Deref, Display};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -131,8 +131,8 @@ pub struct GraviSheetOutput {
     pub tile_queue: i32,
 }
 
-impl From<BillOfMaterial> for GraviSheetOutput {
-    fn from(bom: BillOfMaterial) -> Self {
+impl From<AppBillOfMaterials> for GraviSheetOutput {
+    fn from(bom: AppBillOfMaterials) -> Self {
         let trampolin_0 = bom.tile_kind(TileKind::Trampolin0);
         let trampolin_1 = bom.tile_kind(TileKind::Trampolin1);
         let trampolin_2 = bom.tile_kind(TileKind::Trampolin2);
