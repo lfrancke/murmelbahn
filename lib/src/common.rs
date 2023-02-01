@@ -201,7 +201,9 @@ impl From<BillOfMaterial> for GraviSheetOutput {
             tile_switch_insert: bom.tile_kind(TileKind::SwitchLeft)
                 + bom.tile_kind(TileKind::SwitchRight),
             tile_two_entrance_funnel: bom.tile_kind(TileKind::Spiral),
-            tile_three_entrance_funnel: bom.tile_kind(TileKind::ThreeEntranceFunnel),
+            tile_three_entrance_funnel: bom.tile_kind(TileKind::ThreeEntranceFunnel)
+                + bom.tile_kind(TileKind::MixerSameExits)
+                + bom.tile_kind(TileKind::MixerOffsetExits),
             tile_basic: bom.tile_kind(TileKind::Drop)
                 + bom.tile_kind(TileKind::Catch)
                 + bom.tile_kind(TileKind::Splash)
