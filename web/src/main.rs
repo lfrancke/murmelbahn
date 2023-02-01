@@ -23,11 +23,10 @@ use sqlx::postgres::PgPoolOptions;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::Arc;
-use axum::http::header::CONTENT_TYPE;
 use tower_http::cors::{Any, CorsLayer};
 use tracing::{debug, info};
 
-static STATIC_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../gravitrax-frontend/dist");
+static STATIC_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../frontend/dist");
 
 #[derive(Debug, Parser)]
 pub struct Config {
@@ -120,7 +119,7 @@ async fn main() -> anyhow::Result<()> {
 
     let cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST])
-        .allow_headers([CONTENT_TYPE])
+        .allow_headers([header::CONTENT_TYPE])
         .allow_origin(Any);
 
     let course_routes = Router::new()
