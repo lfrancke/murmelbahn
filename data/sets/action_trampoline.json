@@ -1,0 +1,13 @@
+{
+  "id": "action_trampoline",
+  "names": [
+    {
+      "language_code": "de",
+      "name": "Trampolin"
+    }
+  ],
+  "content": {
+    "StackerAngled": 2,
+    "Trampoline": 2
+  }
+}

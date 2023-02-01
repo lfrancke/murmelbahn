@@ -4,8 +4,10 @@ use crate::set::{SetContentElement, SetRepo};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+ use ts_rs::TS;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, TS)]
+#[ts(export)]
 pub struct Inventory {
     #[serde(default)]
     pub sets: HashMap<String, i32>,

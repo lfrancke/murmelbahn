@@ -1,0 +1,55 @@
+{
+  "id": "vertical_starter",
+  "names": [
+    {
+      "language_code": "de",
+      "name": "PRO Starter-Set Vertical"
+    }
+  ],
+  "content": {
+    "BaseLayer": 4,
+    "LargeClearLayer": 1,
+
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "MarbleSilver": 3,
+
+    "Stacker": 20,
+    "StackerSmall": 9,
+    "StackerTowerClosed": 8,
+    "StackerTowerOpened": 4,
+
+    "WallSmall": 1,
+    "WallMedium": 2,
+    "WallLarge": 2,
+
+    "Balcony": 16,
+    "DoubleBalcony": 4,
+
+    "StraightSmall": 9,
+    "StraightMedium": 6,
+    "StraightLarge": 3,
+    "BernoulliSmallStraight": 2,
+    "BernoulliSmallLeft": 3,
+    "BernoulliSmallRight": 3,
+
+    "GoalRail": 1,
+    "Starter": 1,
+    "Curve": 28,
+
+    "Cross": 4,
+    "TwoWay": 2,
+    "ThreeWay": 1,
+    "SwitchInsert": 2,
+    "TwoEntranceFunnel": 1,
+    "Cannon": 1,
+
+    "BasicClosed": 1,
+    "BasicOpen": 3,
+    "GoalBasin": 1,
+    "Drop": 1,
+    "Catch": 2,
+    "Splash": 1
+  }
+}

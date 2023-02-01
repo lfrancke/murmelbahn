@@ -1,50 +1,50 @@
-mod course;
-mod set;
-mod course_repo;
 mod buildable;
+mod course;
+mod course_repo;
+mod set;
 
-use std::net::SocketAddr;
-use std::path::PathBuf;
-use std::sync::Arc;
-use axum::response::{IntoResponse, Redirect, Response};
-use axum::routing::{get, post};
-use axum::{body, Extension, Json, Router};
-use axum::body::{Empty, Full};
-use axum::extract::Path;
-use axum::http::{header, HeaderValue, StatusCode};
-use clap::Parser;
-use include_dir::{Dir, include_dir};
-use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
-use serde_json::json;
-use sqlx::postgres::PgPoolOptions;
-use tracing::{debug, info};
-use murmelbahn_lib::error::MurmelbahnError;
-use murmelbahn_lib::set::SetRepo;
 use crate::buildable::buildable;
 use crate::course::{course_bom, course_dump};
 use crate::course_repo::CourseRepo;
 use crate::set::set_list;
+use axum::body::{Empty, Full};
+use axum::extract::Path;
+use axum::http::{header, HeaderValue, Method, StatusCode};
+use axum::response::{IntoResponse, Redirect, Response};
+use axum::routing::{get};
+use axum::{body, Extension, Json, Router};
+use clap::Parser;
+use include_dir::{include_dir, Dir};
+use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
+use murmelbahn_lib::error::MurmelbahnError;
+use murmelbahn_lib::set::SetRepo;
+use serde_json::json;
+use sqlx::postgres::PgPoolOptions;
+use std::net::SocketAddr;
+use std::path::PathBuf;
+use std::sync::Arc;
+use axum::http::header::CONTENT_TYPE;
+use tower_http::cors::{Any, CorsLayer};
+use tracing::{debug, info};
 
 static STATIC_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../gravitrax-frontend/dist");
 
-
 #[derive(Debug, Parser)]
 pub struct Config {
-
     #[arg(env)]
-    pub sets_directory: PathBuf
+    pub sets_directory: PathBuf,
 }
 
 pub struct AppState {
     course_repo: CourseRepo,
-    sets_repo: SetRepo
+    sets_repo: SetRepo,
 }
 
 pub enum AppError {
     MurmelbahnLibError(MurmelbahnError),
     ZiplineAdded2019Unsupported,
     CourseError(course_repo::Error),
-    JsonError(serde_json::Error)
+    JsonError(serde_json::Error),
 }
 
 // Makes it possible to use `?`
@@ -66,22 +66,23 @@ impl From<serde_json::Error> for AppError {
     }
 }
 
-
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
             AppError::MurmelbahnLibError(_murmelbahn_error) => {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error")
             }
-            AppError::ZiplineAdded2019Unsupported => {
-                (StatusCode::BAD_REQUEST, "ZiplineAdded2019 data format is not currently supported")
-            }
+            AppError::ZiplineAdded2019Unsupported => (
+                StatusCode::BAD_REQUEST,
+                "ZiplineAdded2019 data format is not currently supported",
+            ),
             AppError::CourseError(_) => {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
             }
-            AppError::JsonError(_) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong serializing the response to JSON")
-            }
+            AppError::JsonError(_) => (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Something went wrong serializing the response to JSON",
+            ),
         };
 
         let body = Json(json!({
@@ -112,24 +113,36 @@ async fn main() -> anyhow::Result<()> {
     let mut sets_repo = SetRepo::new();
     sets_repo.read_directory(config.sets_directory)?;
 
-    let shared_state = Arc::new(AppState { course_repo, sets_repo });
+    let shared_state = Arc::new(AppState {
+        course_repo,
+        sets_repo,
+    });
+
+    let cors = CorsLayer::new()
+        .allow_methods([Method::GET, Method::POST])
+        .allow_headers([CONTENT_TYPE])
+        .allow_origin(Any);
 
     let course_routes = Router::new()
         .route("/:id/dump", get(course_dump))
         .route("/:id/bom", get(course_bom))
         .with_state(shared_state.clone());
 
-    let set_routes = Router::new().route("/list", get(set_list)).with_state(shared_state.clone());
+    let set_routes = Router::new()
+        .route("/list", get(set_list))
+
+        .with_state(shared_state.clone());
 
     let app = Router::new()
         .route("/metrics", get(metrics).layer(build_prometheus_extension()))
         .route("/buildable", get(buildable).post(buildable))
+        .layer(cors.clone())
         .with_state(shared_state.clone())
         .nest("/course", course_routes)
         .nest("/set", set_routes)
         .route("/*path", get(static_path))
+        .layer(cors)
         .route("/", get(|| async { Redirect::permanent("/index.html") }));
-
 
     let addr = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 0], 3000));
     debug!("listening on {}", addr);
@@ -140,7 +153,6 @@ async fn main() -> anyhow::Result<()> {
 
     Ok(())
 }
-
 
 /// This renders the metrics collected by the `metrics` crate into Prometheus compatible output.
 pub async fn metrics(Extension(context): Extension<PrometheusHandle>) -> String {
@@ -156,7 +168,6 @@ fn build_prometheus_extension() -> Extension<PrometheusHandle> {
         .expect("failed to install recorder");
     Extension(prometheus_handle)
 }
-
 
 async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
     let path = path.trim_start_matches('/');

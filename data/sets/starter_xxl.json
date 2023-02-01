@@ -1,0 +1,49 @@
+{
+  "id": "xxlstarter",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "XXL Starter-Set"
+    },
+    {
+      "language_code": "de",
+      "name": "XXL Starter-Set"
+    }
+  ],
+  "content": {
+    "BaseLayer": 6,
+    "LargeClearLayer": 4,
+
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "MarbleSilver": 6,
+
+    "Stacker": 80,
+    "StackerSmall": 24,
+
+    "StraightSmall": 18,
+    "StraightMedium": 12,
+    "StraightLarge": 6,
+
+    "GoalRail": 2,
+    "Starter": 2,
+    "Curve": 42,
+    "Cross": 6,
+    "TwoWay": 4,
+    "ThreeWay": 2,
+    "SwitchInsert": 4,
+    "TwoEntranceFunnel": 2,
+    "Cannon": 1,
+    "Loop": 1,
+    "Hammer": 1,
+
+    "BasicClosed": 2,
+    "BasicOpen": 6,
+    "GoalBasin": 2,
+    "Drop": 2,
+    "Catch": 4,
+    "Splash": 2
+
+  }
+}

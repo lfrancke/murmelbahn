@@ -1,0 +1,28 @@
+{
+  "id": "ext_trax",
+  "names": [
+    {
+      "language_code": "de",
+      "name": "Erweiterung Trax"
+    }
+  ],
+  "content": {
+    "LargeClearLayer": 1,
+
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "MarbleSilver": 3,
+
+    "Stacker": 16,
+    "StackerSmall": 8,
+
+
+    "StraightSmall": 3,
+    "StraightMedium": 2,
+    "StraightLarge": 1,
+
+    "Curve": 7,
+    "Cross": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "action_catapult",
+  "names": [
+    {
+      "language_code": "de",
+      "name": "Katapult"
+    }
+  ],
+  "content": {
+    "MarbleSilver": 4,
+    "Catapult": 1
+  }
+}

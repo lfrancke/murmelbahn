@@ -1,0 +1,26 @@
+{
+  "id": "ext_lift",
+  "names": [
+    {
+      "language_code": "de",
+      "name": "Erweiterung Lift"
+    }
+  ],
+  "content": {
+    "LargeClearLayer": 1,
+
+    "MarbleSilver": 7,
+
+    "Stacker": 8,
+    "StackerSmall": 4,
+
+
+    "StraightSmall": 3,
+    "StraightMedium": 2,
+    "StraightLarge": 1,
+
+    "LiftEntrance": 1,
+    "LiftExit": 1,
+    "LiftHeightTube": 2
+  }
+}

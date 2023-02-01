@@ -1,0 +1,16 @@
+{
+  "id": "action_zipline",
+  "names": [
+    {
+      "language_code": "de",
+      "name": "Seilbahn"
+    }
+  ],
+  "content": {
+    "StraightSmall": 3,
+    "StraightMedium": 2,
+    "StraightLarge": 1,
+
+    "Zipline": 1
+  }
+}

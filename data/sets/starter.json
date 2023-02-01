@@ -1,0 +1,47 @@
+{
+  "id": "starter",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Starter-Set"
+    },
+    {
+      "language_code": "de",
+      "name": "Starter-Set"
+    }
+  ],
+  "content": {
+    "BaseLayer": 4,
+    "LargeClearLayer": 2,
+
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "MarbleSilver": 3,
+
+    "Stacker": 40,
+    "StackerSmall": 12,
+
+    "StraightSmall": 9,
+    "StraightMedium": 6,
+    "StraightLarge": 3,
+
+    "GoalRail": 1,
+    "Starter": 1,
+    "Curve": 21,
+    "Cross": 3,
+    "TwoWay": 2,
+    "ThreeWay": 1,
+    "SwitchInsert": 2,
+    "TwoEntranceFunnel": 1,
+    "Cannon": 1,
+
+    "BasicClosed": 1,
+    "BasicOpen": 3,
+    "GoalBasin": 1,
+    "Drop": 1,
+    "Catch": 2,
+    "Splash": 1
+
+  }
+}
