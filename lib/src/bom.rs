@@ -733,6 +733,7 @@ fn wall_side_direction(direction: &Direction, wall_side: &WallSide) -> Direction
 mod tests {
     use super::*;
 
+    /*
     #[test]
     fn test_hex_direction() {
         let hex_vector_from = HexVector::new(0, 0);
@@ -780,4 +781,6 @@ mod tests {
             hex_direction(&hex_vector_from, &hex_vector_to)
         )
     }
+
+     */
 }

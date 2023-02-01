@@ -7,16 +7,19 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use snafu::prelude::*;
 use tracing::info;
+use ts_rs::TS;
 use crate::bom::{LayerKind, RailKind, TileKind, WallKind};
 use crate::error::{IoSnafu, MurmelbahnError, MurmelbahnResult, ReadSnafu, SerdeJsonSnafu};
 
-#[derive(Clone, Serialize, Deserialize, JsonSchema)]
+#[derive(Clone, Serialize, Deserialize, JsonSchema, TS)]
+#[ts(export)]
 pub struct Name {
     pub language_code: String,
     pub name: String
 }
 
-#[derive(Clone, Serialize, Default, Deserialize, JsonSchema)]
+#[derive(Clone, Serialize, Default, Deserialize, JsonSchema, TS)]
+#[ts(export)]
 pub struct Set {
     pub id: String,
 
@@ -27,7 +30,8 @@ pub struct Set {
     pub content: HashMap<SetContentElement, i32>
 }
 
-#[derive(Clone, Debug, Deserialize, Eq, Hash, JsonSchema, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, Eq, Hash, JsonSchema, PartialEq, Serialize, TS)]
+#[ts(export)]
 pub enum SetContentElement {
     // Layer
     BaseLayer,
@@ -302,6 +306,8 @@ impl Set {
 
 }
 
+#[derive(TS)]
+#[ts(export)]
 pub struct SetRepo {
     pub sets: HashMap<String, Set>
 }

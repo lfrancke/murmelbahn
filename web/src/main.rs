@@ -6,11 +6,14 @@ mod buildable;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::Arc;
-use axum::response::{IntoResponse, Response};
+use axum::response::{IntoResponse, Redirect, Response};
 use axum::routing::{get, post};
-use axum::{Extension, Json, Router};
-use axum::http::StatusCode;
+use axum::{body, Extension, Json, Router};
+use axum::body::{Empty, Full};
+use axum::extract::Path;
+use axum::http::{header, HeaderValue, StatusCode};
 use clap::Parser;
+use include_dir::{Dir, include_dir};
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 use serde_json::json;
 use sqlx::postgres::PgPoolOptions;
@@ -21,6 +24,9 @@ use crate::buildable::buildable;
 use crate::course::{course_bom, course_dump};
 use crate::course_repo::CourseRepo;
 use crate::set::set_list;
+
+static STATIC_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../gravitrax-frontend/dist");
+
 
 #[derive(Debug, Parser)]
 pub struct Config {
@@ -120,7 +126,9 @@ async fn main() -> anyhow::Result<()> {
         .route("/buildable", get(buildable).post(buildable))
         .with_state(shared_state.clone())
         .nest("/course", course_routes)
-        .nest("/set", set_routes);
+        .nest("/set", set_routes)
+        .route("/*path", get(static_path))
+        .route("/", get(|| async { Redirect::permanent("/index.html") }));
 
 
     let addr = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 0], 3000));
@@ -147,4 +155,25 @@ fn build_prometheus_extension() -> Extension<PrometheusHandle> {
         .install_recorder()
         .expect("failed to install recorder");
     Extension(prometheus_handle)
+}
+
+
+async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
+    let path = path.trim_start_matches('/');
+    let mime_type = mime_guess::from_path(path).first_or_text_plain();
+
+    match STATIC_DIR.get_file(path) {
+        None => Response::builder()
+            .status(StatusCode::NOT_FOUND)
+            .body(body::boxed(Empty::new()))
+            .unwrap(),
+        Some(file) => Response::builder()
+            .status(StatusCode::OK)
+            .header(
+                header::CONTENT_TYPE,
+                HeaderValue::from_str(mime_type.as_ref()).unwrap(),
+            )
+            .body(body::boxed(Full::from(file.contents())))
+            .unwrap(),
+    }
 }

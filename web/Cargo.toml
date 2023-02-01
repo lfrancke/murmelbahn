@@ -11,8 +11,10 @@ axum = { version = "0.6", features = ["query"] }
 clap = { version = "4.1", features = ["derive", "env"] }
 csv = "1.1"
 futures = "0.3"
+include_dir = "0.7"
 metrics = "0.20"
 metrics-exporter-prometheus = "0.11"
+mime_guess = "2.0"
 murmelbahn-lib = { path = "../lib" }
 serde = "1.0"
 serde_json = "1.0"
