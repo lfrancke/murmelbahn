@@ -12,7 +12,7 @@ RUN npm run build
 FROM rust:1.66 as rust_builder
 WORKDIR /usr/src/murmelbahn
 COPY . .
-COPY --from=node_builder /app/frontend/dist /usr/src/murmelbahn/dist
+COPY --from=node_builder /app/frontend/dist /usr/src/murmelbahn/frontend/dist
 RUN cargo install --path web
 
 # Final image
