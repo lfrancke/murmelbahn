@@ -107,20 +107,20 @@ pub struct BillOfMaterial {
 }
 
 impl BillOfMaterial {
-    pub fn layer_kind(&self, kind: LayerKind) -> i32 {
-        self.layers.get(&kind).unwrap_or(&0).clone()
+    pub fn layer_kind(&self, kind: LayerKind) -> Option<i32> {
+        self.layers.get(&kind).copied()
     }
 
-    pub fn tile_kind(&self, kind: TileKind) -> i32 {
-        self.tiles.get(&kind).unwrap_or(&0).clone()
+    pub fn tile_kind(&self, kind: TileKind) -> Option<i32> {
+        self.tiles.get(&kind).copied()
     }
 
-    pub fn wall_kind(&self, kind: WallKind) -> i32 {
-        self.walls.get(&kind).unwrap_or(&0).clone()
+    pub fn wall_kind(&self, kind: WallKind) -> Option<i32> {
+        self.walls.get(&kind).copied()
     }
 
-    pub fn rail_kind(&self, kind: RailKind) -> i32 {
-        self.rails.get(&kind).unwrap_or(&0).clone()
+    pub fn rail_kind(&self, kind: RailKind) -> Option<i32> {
+        self.rails.get(&kind).copied()
     }
 
     pub fn marbles(&self) -> (i32, i32) {
@@ -141,34 +141,35 @@ impl BillOfMaterial {
         let volcano = self.tile_kind(TileKind::Volcano);
         let spinner = self.tile_kind(TileKind::Spinner);
 
-        let min_marbles = cannon * 2
-            + zipline
-            + color_change
-            + bridge * 2
-            + catapult * 4
-            + splash
-            + volcano
-            + spinner
-            + dome_starter
-            + starter
-            + lift_small * 5
-            + lift_large * 8;
+        /*
+                let min_marbles = cannon * 2
+                    + zipline
+                    + color_change
+                    + bridge * 2
+                    + catapult * 4
+                    + splash
+                    + volcano
+                    + spinner
+                    + dome_starter
+                    + starter
+                    + lift_small * 5
+                    + lift_large * 8;
 
 
-        let max_marbles = cannon * 2
-            + zipline
-            + color_change
-            + bridge * 2
-            + catapult * 4
-            + splash * 3
-            + volcano * 3
-            + spinner * 6
-            + dome_starter * 7
-            + starter * 3
-            + lift_small * 5
-            + lift_large * 8;
-
-        (min_marbles, max_marbles)
+                let max_marbles = cannon * 2
+                    + zipline
+                    + color_change
+                    + bridge * 2
+                    + catapult * 4
+                    + splash * 3
+                    + volcano * 3
+                    + spinner * 6
+                    + dome_starter * 7
+                    + starter * 3
+                    + lift_small * 5
+                    + lift_large * 8;
+        */
+        (0, 0)
     }
 }
 

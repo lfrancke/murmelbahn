@@ -24,112 +24,112 @@ pub struct GraviSheetOutput {
     pub course_code: String,
     pub empty_1: Option<i32>,
     pub empty_2: Option<i32>,
-    pub layer_base: i32,
-    pub layer_base_mini: i32,
-    pub layer_base_mini_half: i32,
-    pub layer_large: i32,
-    pub layer_small: i32,
+    pub layer_base: Option<i32>,
+    pub layer_base_mini: Option<i32>,
+    pub layer_base_mini_half: Option<i32>,
+    pub layer_large: Option<i32>,
+    pub layer_small: Option<i32>,
 
-    pub marbles: i32,
+    pub marbles: Option<i32>,
 
-    pub stacker_small: i32,
-    pub stacker_large: i32,
-    pub stacker_angled: i32,
-    pub stacker_tower_closed: i32,
-    pub stacker_tower_opened: i32,
+    pub stacker_small: Option<i32>,
+    pub stacker_large: Option<i32>,
+    pub stacker_angled: Option<i32>,
+    pub stacker_tower_closed: Option<i32>,
+    pub stacker_tower_opened: Option<i32>,
 
-    pub wall_short: i32,
-    pub wall_medium: i32,
-    pub wall_long: i32,
+    pub wall_short: Option<i32>,
+    pub wall_medium: Option<i32>,
+    pub wall_long: Option<i32>,
 
-    pub balcony: i32,
-    pub balcony_double: i32,
+    pub balcony: Option<i32>,
+    pub balcony_double: Option<i32>,
 
-    pub rail_short: i32,
-    pub rail_medium: i32,
-    pub rail_long: i32,
-    pub rail_narrow: i32,
-    pub rail_slow: i32,
-    pub rail_goal: i32,
-    pub rail_bernoulli_small_straight: i32,
-    pub rail_bernoulli_small_left: i32,
-    pub rail_bernoulli_small_right: i32,
-    pub rail_bernoulli: i32,
-    pub rail_drop_hill: i32,
-    pub rail_drop_valley: i32,
-    pub catcher: i32,
+    pub rail_short: Option<i32>,
+    pub rail_medium: Option<i32>,
+    pub rail_long: Option<i32>,
+    pub rail_narrow: Option<i32>,
+    pub rail_slow: Option<i32>,
+    pub rail_goal: Option<i32>,
+    pub rail_bernoulli_small_straight: Option<i32>,
+    pub rail_bernoulli_small_left: Option<i32>,
+    pub rail_bernoulli_small_right: Option<i32>,
+    pub rail_bernoulli: Option<i32>,
+    pub rail_drop_hill: Option<i32>,
+    pub rail_drop_valley: Option<i32>,
+    pub catcher: Option<i32>,
 
-    pub tile_starter: i32,
-    pub tile_curve: i32,
-    pub tile_multi_junction: i32,
-    pub tile_curve_crossing: i32,
-    pub tile_curve_crossing_straight: i32,
-    pub tile_curve_big_double: i32,
-    pub tile_curve_small_triple: i32,
-    pub tile_curve_small_double: i32,
-    pub tile_curve_ribbon: i32,
-    pub tile_flexible_two_in_one_a: i32,
-    pub tile_flexible_two_in_one_b: i32,
-    pub tile_curve_small_two_in_one_a: i32,
-    pub tile_curve_small_two_in_one_b: i32,
-    pub tile_basic_closed: i32,
-    pub tile_goal_basin: i32,
-    pub tile_cross: i32,
-    pub tile_three_way: i32,
-    pub tile_two_way: i32,
-    pub tile_switch_insert: i32,
+    pub tile_starter: Option<i32>,
+    pub tile_curve: Option<i32>,
+    pub tile_multi_junction: Option<i32>,
+    pub tile_curve_crossing: Option<i32>,
+    pub tile_curve_crossing_straight: Option<i32>,
+    pub tile_curve_big_double: Option<i32>,
+    pub tile_curve_small_triple: Option<i32>,
+    pub tile_curve_small_double: Option<i32>,
+    pub tile_curve_ribbon: Option<i32>,
+    pub tile_flexible_two_in_one_a: Option<i32>,
+    pub tile_flexible_two_in_one_b: Option<i32>,
+    pub tile_curve_small_two_in_one_a: Option<i32>,
+    pub tile_curve_small_two_in_one_b: Option<i32>,
+    pub tile_basic_closed: Option<i32>,
+    pub tile_goal_basin: Option<i32>,
+    pub tile_cross: Option<i32>,
+    pub tile_three_way: Option<i32>,
+    pub tile_two_way: Option<i32>,
+    pub tile_switch_insert: Option<i32>,
 
     /// Called "Spiral" in the app
-    pub tile_two_entrance_funnel: i32,
-    pub tile_three_entrance_funnel: i32,
-    pub tile_basic: i32,
-    pub tile_drop: i32,
-    pub tile_catch: i32,
-    pub tile_splash: i32,
-    pub tile_basic_straight: i32,
-    pub tile_tunnel_straight: i32,
-    pub tile_tunnel_curve: i32,
-    pub tile_tunnel_switch: i32,
-    pub rail_uturn: i32,
+    pub tile_two_entrance_funnel: Option<i32>,
+    pub tile_three_entrance_funnel: Option<i32>,
+    pub tile_basic: Option<i32>,
+    pub tile_drop: Option<i32>,
+    pub tile_catch: Option<i32>,
+    pub tile_splash: Option<i32>,
+    pub tile_basic_straight: Option<i32>,
+    pub tile_tunnel_straight: Option<i32>,
+    pub tile_tunnel_curve: Option<i32>,
+    pub tile_tunnel_switch: Option<i32>,
+    pub rail_uturn: Option<i32>,
 
-    pub tile_bridge: i32,
-    pub tile_lift: i32,
-    pub tile_catapult: i32,
-    pub tile_color_swap: i32,
-    pub tile_dipper: i32,
-    pub rail_flextube: i32,
-    pub tile_flip: i32,
-    pub tile_hammer: i32,
-    pub tile_jumper: i32,
-    pub tile_loop: i32,
-    pub tile_cannon: i32,
+    pub tile_bridge: Option<i32>,
+    pub tile_lift: Option<i32>,
+    pub tile_catapult: Option<i32>,
+    pub tile_color_swap: Option<i32>,
+    pub tile_dipper: Option<i32>,
+    pub rail_flextube: Option<i32>,
+    pub tile_flip: Option<i32>,
+    pub tile_hammer: Option<i32>,
+    pub tile_jumper: Option<i32>,
+    pub tile_loop: Option<i32>,
+    pub tile_cannon: Option<i32>,
     /// Kaskade / Cascade
-    pub tile_scoop: i32,
-    pub tile_spinner: i32,
-    pub tile_spiral_base: i32,
-    pub tile_spiral_entrance: i32,
-    pub tile_spiral_curve: i32,
-    pub tile_tip_tube: i32,
-    pub tile_trampoline: i32,
-    pub tile_transfer: i32,
-    pub tile_volcano: i32,
-    pub tile_zipline: i32,
+    pub tile_scoop: Option<i32>,
+    pub tile_spinner: Option<i32>,
+    pub tile_spiral_base: Option<i32>,
+    pub tile_spiral_entrance: Option<i32>,
+    pub tile_spiral_curve: Option<i32>,
+    pub tile_tip_tube: Option<i32>,
+    pub tile_trampoline: Option<i32>,
+    pub tile_transfer: Option<i32>,
+    pub tile_volcano: Option<i32>,
+    pub tile_zipline: Option<i32>,
 
-    pub tile_carousel: i32,
-    pub tile_helix: i32,
-    pub tile_mixer: i32,
-    pub tile_splitter: i32,
-    pub tile_turntable: i32,
+    pub tile_carousel: Option<i32>,
+    pub tile_helix: Option<i32>,
+    pub tile_mixer: Option<i32>,
+    pub tile_splitter: Option<i32>,
+    pub tile_turntable: Option<i32>,
 
-    pub tile_controller: i32,
-    pub tile_dome_starter: i32,
-    pub tile_elevator: i32,
-    pub tile_lever: i32,
-    pub tile_dropdown_switch: i32,
-    pub tile_finish_trigger: i32,
-    pub tile_finish_arena: i32,
-    pub tile_trigger: i32,
-    pub tile_queue: i32,
+    pub tile_controller: Option<i32>,
+    pub tile_dome_starter: Option<i32>,
+    pub tile_elevator: Option<i32>,
+    pub tile_lever: Option<i32>,
+    pub tile_dropdown_switch: Option<i32>,
+    pub tile_finish_trigger: Option<i32>,
+    pub tile_finish_arena: Option<i32>,
+    pub tile_trigger: Option<i32>,
+    pub tile_queue: Option<i32>,
 }
 
 impl From<BillOfMaterial> for GraviSheetOutput {
@@ -137,32 +137,60 @@ impl From<BillOfMaterial> for GraviSheetOutput {
         let trampolin_0 = bom.tile_kind(TileKind::Trampolin0);
         let trampolin_1 = bom.tile_kind(TileKind::Trampolin1);
         let trampolin_2 = bom.tile_kind(TileKind::Trampolin2);
-        let total_trampolin = trampolin_0 + trampolin_1 + trampolin_2;
+        let total_trampolin = option_adder_helper(vec![trampolin_0, trampolin_1, trampolin_2]);
+        let stacker_angled = trampolin_1.unwrap_or(0) + (2 * trampolin_2.unwrap_or(0));
+        let stacker_angled = if stacker_angled == 0 {
+            None
+        } else {
+            Some(stacker_angled)
+        };
 
         let spiral_small = bom.tile_kind(TileKind::ScrewSmall);
         let spiral_medium = bom.tile_kind(TileKind::ScrewMedium);
         let spiral_large = bom.tile_kind(TileKind::ScrewLarge);
-        let total_spirals = spiral_small + spiral_medium + spiral_large;
+        let total_spirals = option_adder_helper(vec![spiral_small, spiral_medium, spiral_large]);
+        let tile_spiral_curve = spiral_medium.unwrap_or(0) * 5 + spiral_large.unwrap_or(0) * 12;
+        let tile_spiral_curve = if tile_spiral_curve == 0 {
+            None
+        } else {
+            Some(tile_spiral_curve)
+        };
 
         GraviSheetOutput {
             course_code: "PLACEHOLDER".to_string(),
             empty_1: None,
             empty_2: None,
             layer_base: bom.layer_kind(LayerKind::Base),
-            layer_base_mini: 0,
-            layer_base_mini_half: 0,
+            layer_base_mini: None,
+            layer_base_mini_half: None,
             layer_large: bom.layer_kind(LayerKind::LargeClear),
             layer_small: bom.layer_kind(LayerKind::SmallClear),
-            marbles: bom.marbles().1,
-            stacker_small: bom.small_stacker,
-            stacker_large: bom.large_stacker,
-            stacker_angled: trampolin_1 + (2 * trampolin_2),
+            marbles: if bom.marbles().1 == 0 {
+                None
+            } else {
+                Some(bom.marbles().1)
+            },
+            stacker_small: if bom.small_stacker == 0 {
+                None
+            } else {
+                Some(bom.small_stacker)
+            },
+            stacker_large: if bom.large_stacker == 0 {
+                None
+            } else {
+                Some(bom.large_stacker)
+            },
+            stacker_angled,
             stacker_tower_closed: bom.tile_kind(TileKind::StackerTowerClosed),
             stacker_tower_opened: bom.tile_kind(TileKind::StackerTowerOpened),
             wall_short: bom.wall_kind(WallKind::StraightSmall),
             wall_medium: bom.wall_kind(WallKind::StraightMedium),
             wall_long: bom.wall_kind(WallKind::StraightLarge),
-            balcony: bom.balconies as i32,
+            balcony: if bom.balconies == 0 {
+                None
+            } else {
+                Some(bom.balconies as i32)
+            },
             balcony_double: bom.tile_kind(TileKind::DoubleBalcony),
             rail_short: bom.rail_kind(RailKind::StraightSmall),
             rail_medium: bom.rail_kind(RailKind::StraightMedium),
@@ -176,7 +204,7 @@ impl From<BillOfMaterial> for GraviSheetOutput {
             rail_bernoulli: bom.rail_kind(RailKind::Bernoulli),
             rail_drop_hill: bom.rail_kind(RailKind::DropHill),
             rail_drop_valley: bom.rail_kind(RailKind::DropValley),
-            catcher: 0, // Not available in the app
+            catcher: None, // Not available in the app
 
             tile_starter: bom.tile_kind(TileKind::Starter),
             tile_curve: bom.tile_kind(TileKind::Curve),
@@ -195,20 +223,28 @@ impl From<BillOfMaterial> for GraviSheetOutput {
             tile_goal_basin: bom.tile_kind(TileKind::GoalBasin),
             tile_cross: bom.tile_kind(TileKind::Cross),
             tile_three_way: bom.tile_kind(TileKind::Threeway),
-            tile_two_way: bom.tile_kind(TileKind::TwoWay)
-                + bom.tile_kind(TileKind::SwitchLeft)
-                + bom.tile_kind(TileKind::SwitchRight),
-            tile_switch_insert: bom.tile_kind(TileKind::SwitchLeft)
-                + bom.tile_kind(TileKind::SwitchRight),
+            tile_two_way: option_adder_helper(vec![
+                bom.tile_kind(TileKind::TwoWay),
+                bom.tile_kind(TileKind::SwitchLeft),
+                bom.tile_kind(TileKind::SwitchRight),
+            ]),
+            tile_switch_insert: option_adder_helper(vec![
+                bom.tile_kind(TileKind::SwitchLeft),
+                bom.tile_kind(TileKind::SwitchRight),
+            ]),
             tile_two_entrance_funnel: bom.tile_kind(TileKind::Spiral),
-            tile_three_entrance_funnel: bom.tile_kind(TileKind::ThreeEntranceFunnel)
-                + bom.tile_kind(TileKind::MixerSameExits)
-                + bom.tile_kind(TileKind::MixerOffsetExits),
-            tile_basic: bom.tile_kind(TileKind::Drop)
-                + bom.tile_kind(TileKind::Catch)
-                + bom.tile_kind(TileKind::Splash)
-                + bom.tile_kind(TileKind::CurveTunnel)
-                + bom.tile_kind(TileKind::SwitchTunnel),
+            tile_three_entrance_funnel: option_adder_helper(vec![
+                bom.tile_kind(TileKind::ThreeEntranceFunnel),
+                bom.tile_kind(TileKind::MixerSameExits),
+                bom.tile_kind(TileKind::MixerOffsetExits),
+            ]),
+            tile_basic: option_adder_helper(vec![
+                bom.tile_kind(TileKind::Drop),
+                bom.tile_kind(TileKind::Catch),
+                bom.tile_kind(TileKind::Splash),
+                bom.tile_kind(TileKind::CurveTunnel),
+                bom.tile_kind(TileKind::SwitchTunnel),
+            ]),
             tile_drop: bom.tile_kind(TileKind::Drop),
             tile_catch: bom.tile_kind(TileKind::Catch),
             tile_splash: bom.tile_kind(TileKind::Splash),
@@ -218,17 +254,27 @@ impl From<BillOfMaterial> for GraviSheetOutput {
             tile_tunnel_switch: bom.tile_kind(TileKind::SwitchTunnel),
             rail_uturn: bom.rail_kind(RailKind::UTurn),
             tile_bridge: bom.tile_kind(TileKind::Bridge),
-            tile_lift: bom.tile_kind(TileKind::LiftSmall) + bom.tile_kind(TileKind::LiftLarge),
+            tile_lift: option_adder_helper(vec![
+                bom.tile_kind(TileKind::LiftSmall),
+                bom.tile_kind(TileKind::LiftLarge),
+            ]),
             tile_catapult: bom.tile_kind(TileKind::Catapult),
-            tile_color_swap: bom.tile_kind(TileKind::ColorSwapPreloaded)
-                + bom.tile_kind(TileKind::ColorSwapEmpty),
-            tile_dipper: bom.tile_kind(TileKind::DipperRight) + bom.tile_kind(TileKind::DipperLeft),
-            rail_flextube: bom.rail_kind(RailKind::FlexTube0)
-                + bom.rail_kind(RailKind::FlexTube60)
-                + bom.rail_kind(RailKind::FlexTube120)
-                + bom.rail_kind(RailKind::FlexTube180)
-                + bom.rail_kind(RailKind::FlexTube240)
-                + bom.rail_kind(RailKind::FlexTube300),
+            tile_color_swap: option_adder_helper(vec![
+                bom.tile_kind(TileKind::ColorSwapPreloaded),
+                bom.tile_kind(TileKind::ColorSwapEmpty),
+            ]),
+            tile_dipper: option_adder_helper(vec![
+                bom.tile_kind(TileKind::DipperRight),
+                bom.tile_kind(TileKind::DipperLeft),
+            ]),
+            rail_flextube: option_adder_helper(vec![
+                bom.rail_kind(RailKind::FlexTube0),
+                bom.rail_kind(RailKind::FlexTube60),
+                bom.rail_kind(RailKind::FlexTube120),
+                bom.rail_kind(RailKind::FlexTube180),
+                bom.rail_kind(RailKind::FlexTube240),
+                bom.rail_kind(RailKind::FlexTube300),
+            ]),
             tile_flip: bom.tile_kind(TileKind::Flip),
             tile_hammer: bom.tile_kind(TileKind::Hammer),
             tile_jumper: bom.tile_kind(TileKind::Jumper),
@@ -238,29 +284,47 @@ impl From<BillOfMaterial> for GraviSheetOutput {
             tile_spinner: bom.tile_kind(TileKind::Spinner),
             tile_spiral_base: total_spirals,
             tile_spiral_entrance: total_spirals,
-            tile_spiral_curve: spiral_medium * 5 + spiral_large * 12,
+            tile_spiral_curve,
             tile_tip_tube: bom.tile_kind(TileKind::TipTube),
             tile_trampoline: total_trampolin,
             tile_transfer: bom.tile_kind(TileKind::Transfer),
             tile_volcano: bom.tile_kind(TileKind::Volcano),
             tile_zipline: bom.tile_kind(TileKind::ZiplineStart), // TODO: Warn if imbalanced
-            tile_carousel: bom.tile_kind(TileKind::CarouselSameExits)
-                + bom.tile_kind(TileKind::CarouselOffsetExits),
+            tile_carousel: option_adder_helper(vec![
+                bom.tile_kind(TileKind::CarouselSameExits),
+                bom.tile_kind(TileKind::CarouselOffsetExits),
+            ]),
             tile_helix: bom.tile_kind(TileKind::Helix),
-            tile_mixer: bom.tile_kind(TileKind::MixerSameExits)
-                + bom.tile_kind(TileKind::MixerOffsetExits),
+            tile_mixer: option_adder_helper(vec![
+                bom.tile_kind(TileKind::MixerSameExits),
+                bom.tile_kind(TileKind::MixerOffsetExits),
+            ]),
             tile_splitter: bom.tile_kind(TileKind::Splitter),
             tile_turntable: bom.tile_kind(TileKind::Turntable),
-            tile_controller: 0, // Leaving out for now, hard to give a good number
+            tile_controller: None, // Leaving out for now, hard to give a good number
             tile_dome_starter: bom.tile_kind(TileKind::DomeStarter),
             tile_elevator: bom.tile_kind(TileKind::Elevator),
             tile_lever: bom.tile_kind(TileKind::Lever),
-            tile_dropdown_switch: bom.tile_kind(TileKind::DropdownSwitchRight)
-                + bom.tile_kind(TileKind::DropdownSwitchLeft),
+            tile_dropdown_switch: option_adder_helper(vec![
+                bom.tile_kind(TileKind::DropdownSwitchRight),
+                bom.tile_kind(TileKind::DropdownSwitchLeft),
+            ]),
             tile_finish_trigger: bom.tile_kind(TileKind::FinishTrigger),
             tile_finish_arena: bom.tile_kind(TileKind::FinishArena),
             tile_trigger: bom.tile_kind(TileKind::Trigger),
             tile_queue: bom.tile_kind(TileKind::Queue),
         }
+    }
+}
+
+fn option_adder_helper(vec: Vec<Option<i32>>) -> Option<i32> {
+    let sum = vec
+        .into_iter()
+        .fold(Some(0), |acc, x| acc.and_then(|acc| x.map(|x| acc + x)));
+
+    if sum == Some(0) {
+        None
+    } else {
+        sum
     }
 }
