@@ -108,6 +108,8 @@ impl PhysicalBillOfMaterials {
         false
     }
 
+
+    // TODO: The below is old and unused code, but there is some logic in here which needs to be ported to the new one
     /*
     /// This checks whether a certain BOM is buildable with an inventory of elements
     // TODO: Return missing elements

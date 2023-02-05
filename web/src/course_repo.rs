@@ -1,31 +1,33 @@
 use futures::TryStreamExt;
 use metrics::increment_counter;
-use snafu::{ResultExt, Snafu};
-use murmelbahn_lib::common::CourseCode;
-use sqlx::{Pool, Postgres, Row};
-use tokio::task::{JoinError, spawn_blocking};
-use tracing::{debug, info};
 use murmelbahn_lib::bom::AppBillOfMaterials;
+use murmelbahn_lib::common::CourseCode;
 use murmelbahn_lib::course::common::{Course, SavedCourse};
 use murmelbahn_lib::inventory::{Inventory, PhysicalBillOfMaterials};
 use murmelbahn_lib::set::SetRepo;
+use snafu::{ResultExt, Snafu};
+use sqlx::{Pool, Postgres, Row};
+use tokio::task::{spawn_blocking, JoinError};
+use tracing::{debug, info};
 
 #[derive(Debug, Snafu)]
 pub enum Error {
     #[snafu(display("Database error: {}", source))]
-    DatabaseError { source: sqlx::Error },
-    DownloadError { source: JoinError }
+    DatabaseError {
+        source: sqlx::Error,
+    },
+    DownloadError {
+        source: JoinError,
+    },
 }
 
 pub struct CourseRepo {
-    db: Pool<Postgres>
+    db: Pool<Postgres>,
 }
 
 impl CourseRepo {
     pub fn new(db: Pool<Postgres>) -> CourseRepo {
-        CourseRepo {
-            db
-        }
+        CourseRepo { db }
     }
 
     /// This gets the bytes for a course from the database or tries to download it from the
@@ -56,18 +58,25 @@ impl CourseRepo {
         }
     }
 
-    pub async fn course_from_db(&self, course_code: &CourseCode) -> Result<Option<Vec<u8>>, Error>{
+    pub async fn course_from_db(&self, course_code: &CourseCode) -> Result<Option<Vec<u8>>, Error> {
         // Check if we already have it in the database
         debug!("Trying to retrieve course {} from DB", course_code);
 
-            Ok(sqlx::query_as("SELECT serialized_bytes FROM courses WHERE code = $1")
+        Ok(
+            sqlx::query_as("SELECT serialized_bytes FROM courses WHERE code = $1")
                 .bind(course_code.as_str())
                 .fetch_optional(&self.db)
-                .await.context(DatabaseSnafu)?.map(|x: (Vec<u8>,)| x.0))
+                .await
+                .context(DatabaseSnafu)?
+                .map(|x: (Vec<u8>,)| x.0),
+        )
     }
 
     // TODO: A 404 on download should not be an error but a None
-    pub async fn download_and_cache_course(&self, course_code: &CourseCode) -> Result<Vec<u8>, Error> {
+    pub async fn download_and_cache_course(
+        &self,
+        course_code: &CourseCode,
+    ) -> Result<Vec<u8>, Error> {
         // Because murmelbahn_lib uses the blocking version, we'll have to wrap it here
         // I'm sure there are better ways to do this
         let code = course_code.clone();
@@ -86,7 +95,8 @@ impl CourseRepo {
                     .bind(&course_code.to_string())
                     .bind(&course)
                     .execute(&self.db)
-                    .await.context(DatabaseSnafu)?;
+                    .await
+                    .context(DatabaseSnafu)?;
 
                 Ok(course)
             }
@@ -98,12 +108,17 @@ impl CourseRepo {
         }
     }
 
-    pub async fn process_all(&self, repo: &SetRepo, inventory: Inventory) -> Result<Vec<String>, Error> {
+    pub async fn process_all(
+        &self,
+        repo: &SetRepo,
+        inventory: Inventory,
+    ) -> Result<Vec<String>, Error> {
         println!("Process all");
-        let mut rows = sqlx::query("SELECT code, serialized_bytes FROM courses")
-            .fetch(&self.db);
+        let mut rows = sqlx::query("SELECT code, serialized_bytes FROM courses").fetch(&self.db);
 
-        let summarized_inventory: PhysicalBillOfMaterials = PhysicalBillOfMaterials::from_inventory(&inventory, repo).unwrap();
+        let summarized_inventory: PhysicalBillOfMaterials =
+            PhysicalBillOfMaterials::from_inventory(&inventory, repo).unwrap();
+
         let mut courses = Vec::new();
         while let Some(row) = rows.try_next().await.unwrap() {
             let bytes: Vec<u8> = row.try_get("serialized_bytes").unwrap();
@@ -115,19 +130,12 @@ impl CourseRepo {
                 let physical_bom = PhysicalBillOfMaterials::from(app_bom);
 
                 let diff_bom = summarized_inventory.subtract(&physical_bom);
-                print!("Checking {} ", code);
-                if diff_bom.any_missing() {
-                    println!("...not buildable");
-                } else {
+                if !diff_bom.any_missing() {
                     courses.push(code.to_string());
-                    println!("...buildable");
                 }
             }
-
-
         }
 
         Ok(courses)
-
     }
 }

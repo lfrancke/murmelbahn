@@ -37,8 +37,8 @@ pub enum SetContentElement {
     BaseLayer,
     SmallClearLayer,
     LargeClearLayer,
-    MiniBasePlate,
-    HalfMiniBasePlate,
+    MiniBaseLayer,
+    HalfMiniBaseLayer,
 
     // Marbles
     MarbleRed,

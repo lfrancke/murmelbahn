@@ -108,6 +108,8 @@ async fn main() -> anyhow::Result<()> {
         .connect(&db_url)
         .await?;
 
+    info!("Connected with DB");
+
     let course_repo = CourseRepo::new(db);
     let mut sets_repo = SetRepo::new();
     sets_repo.read_directory(config.sets_directory)?;
@@ -143,7 +145,7 @@ async fn main() -> anyhow::Result<()> {
         .layer(cors)
         .route("/", get(|| async { Redirect::permanent("/index.html") }));
 
-    let addr = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 0], 3000));
+    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
     debug!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())

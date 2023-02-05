@@ -169,27 +169,15 @@ impl From<AppBillOfMaterials> for GraviSheetOutput {
             } else {
                 Some(bom.marbles().1)
             },
-            stacker_small: if bom.small_stacker == 0 {
-                None
-            } else {
-                Some(bom.small_stacker)
-            },
-            stacker_large: if bom.large_stacker == 0 {
-                None
-            } else {
-                Some(bom.large_stacker)
-            },
+            stacker_small: bom.tile_kind(TileKind::StackerSmall),
+            stacker_large: bom.tile_kind(TileKind::Stacker),
             stacker_angled,
             stacker_tower_closed: bom.tile_kind(TileKind::StackerTowerClosed),
             stacker_tower_opened: bom.tile_kind(TileKind::StackerTowerOpened),
             wall_short: bom.wall_kind(WallKind::StraightSmall),
             wall_medium: bom.wall_kind(WallKind::StraightMedium),
             wall_long: bom.wall_kind(WallKind::StraightLarge),
-            balcony: if bom.balconies == 0 {
-                None
-            } else {
-                Some(bom.balconies as i32)
-            },
+            balcony: bom.tile_kind(TileKind::Balcony),
             balcony_double: bom.tile_kind(TileKind::DoubleBalcony),
             rail_short: bom.rail_kind(RailKind::StraightSmall),
             rail_medium: bom.rail_kind(RailKind::StraightMedium),

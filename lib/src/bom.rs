@@ -286,7 +286,7 @@ pub struct AppBillOfMaterials {
     pub walls: HashMap<WallKind, i32>,
 }
 
-impl AppBillOfMaterial {
+impl AppBillOfMaterials {
     pub fn layer_kind(&self, kind: LayerKind) -> Option<i32> {
         self.layers.get(&kind).copied()
     }

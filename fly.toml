@@ -5,6 +5,7 @@ processes = []
 
 [env]
   RUST_LOG = "murmelbahn_lib=debug,murmelbahn_web=debug,sqlx=warn,info"
+  SETS_DIRECTORY = "data/sets"
 
 [experimental]
   allowed_public_ports = []

@@ -1,0 +1,41 @@
+{
+  "id": "game_flow",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "The Game: Flow"
+    },
+    {
+      "language_code": "de",
+      "name": "The Game: Flow"
+    }
+  ],
+  "content": {
+    "MiniBaseLayer": 4,
+    "SmallClearLayer": 1,
+
+    "MarbleRed": 1,
+    "MarbleBlue": 1,
+
+    "Stacker": 6,
+
+    "StraightSmall": 3,
+    "StraightMedium": 2,
+    "StraightLarge": 2,
+
+    "Starter": 1,
+    "CurveCrossing": 1,
+    "StraightCurveCrossing": 1,
+    "DoubleSmallCurve": 1,
+    "RibbonCurve": 1,
+    "FlexibleTwoInOneA": 1,
+    "FlexibleTwoInOneB": 1,
+    "TwoInOneSmallCurveA": 1,
+    "TwoInOneSmallCurveB": 1,
+    "ThreeWay": 1,
+    "TwoWay": 1,
+    "SwitchInsert": 1,
+    "GoalBasin": 1,
+    "BasicOpen": 1
+  }
+}

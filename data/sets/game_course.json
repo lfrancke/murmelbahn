@@ -1,0 +1,36 @@
+{
+  "id": "game_course",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "The Game: Course"
+    },
+    {
+      "language_code": "de",
+      "name": "The Game: Course"
+    }
+  ],
+  "content": {
+    "BaseLayer": 4,
+    "MiniBaseLayer": 2,
+    "SmallClearLayer": 2,
+
+    "MarbleRed": 1,
+
+    "Stacker": 11,
+    "StackerSmall": 1,
+
+    "StraightSmall": 3,
+    "StraightMedium": 2,
+    "StraightLarge": 1,
+
+    "Starter": 1,
+    "Curve": 7,
+    "GoalBasin": 1,
+    "Catch": 1,
+    "BasicOpen": 2,
+    "Cross": 1,
+    "TwoEntranceFunnel": 1,
+    "FlexTube": 2
+  }
+}
