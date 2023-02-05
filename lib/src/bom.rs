@@ -304,34 +304,33 @@ impl AppBillOfMaterials {
     }
 
     pub fn marbles(&self) -> (i32, i32) {
-        let zipline = self.tile_kind(TileKind::ZiplineStart);
-        let color_change = self.tile_kind(TileKind::ColorSwapPreloaded);
-        let cannon = self.tile_kind(TileKind::Cannon);
-        let bridge = self.tile_kind(TileKind::Bridge);
-        let catapult = self.tile_kind(TileKind::Catapult);
-        let dome_starter = self.tile_kind(TileKind::DomeStarter);
-        let starter = self.tile_kind(TileKind::Starter);
-        let lift_small = self.tile_kind(TileKind::LiftSmall);
-        let lift_large = self.tile_kind(TileKind::LiftLarge);
+        let zipline = self.tile_kind(TileKind::ZiplineStart).unwrap_or(0);
+        let cannon = self.tile_kind(TileKind::Cannon).unwrap_or(0);
+        let bridge = self.tile_kind(TileKind::Bridge).unwrap_or(0);
+        let color_change = self.tile_kind(TileKind::ColorSwapPreloaded).unwrap_or(0);
+        let catapult = self.tile_kind(TileKind::Catapult).unwrap_or(0);
+        let lift_small = self.tile_kind(TileKind::LiftSmall).unwrap_or(0);
+        let lift_large = self.tile_kind(TileKind::LiftLarge).unwrap_or(0);
         // TODO: Tiptube?
 
+        // TODO:
         // TODO: To get better number we should check how many rails/adjacent tiles there are
         // for this next group
+        /*
         let splash = self.tile_kind(TileKind::Splash);
         let volcano = self.tile_kind(TileKind::Volcano);
         let spinner = self.tile_kind(TileKind::Spinner);
 
-        /*
+        let dome_starter = self.tile_kind(TileKind::DomeStarter);
+        let starter = self.tile_kind(TileKind::Starter);
+         */
+
+
                 let min_marbles = cannon * 2
                     + zipline
                     + color_change
                     + bridge * 2
                     + catapult * 4
-                    + splash
-                    + volcano
-                    + spinner
-                    + dome_starter
-                    + starter
                     + lift_small * 5
                     + lift_large * 8;
 
@@ -341,15 +340,10 @@ impl AppBillOfMaterials {
                     + color_change
                     + bridge * 2
                     + catapult * 4
-                    + splash * 3
-                    + volcano * 3
-                    + spinner * 6
-                    + dome_starter * 7
-                    + starter * 3
                     + lift_small * 5
                     + lift_large * 8;
-        */
-        (0, 0)
+
+        (min_marbles, max_marbles)
     }
 }
 
