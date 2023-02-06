@@ -1,0 +1,386 @@
+enum CourseKind : u32 {
+  None = 0,
+  Custom = 1,
+  RegularEditorial = 2,
+  Tutorial = 4,
+  DownloadUser = 5,
+  Recovery = 6,
+  DownloadEditorial = 7,
+  InAppPurchase = 8,
+  ProEditorial = 9,
+  PowerEditorial = 10
+};
+
+enum ObjectiveKind : u32 {
+  None = 0
+};
+
+enum TileKind : u32 {
+  None = 0,
+  Starter = 1,
+  Curve = 2,
+  Catch = 3,
+  GoalBasin = 4,
+  Drop = 5,
+  Catapult = 7,
+  Cross = 8,
+  Threeway = 9,
+  TwoWay = 10,
+  Spiral = 11,
+  Splash = 12,
+  Loop = 13,
+  Cannon = 14,
+  Stacker = 15,
+  StackerSmall = 16,
+  SwitchLeft = 17,
+  SwitchRight = 18,
+  GoalRail = 19,
+  StackerBatch = 20,
+  Cascade = 21,
+  StraightTunnel = 22,
+  CurveTunnel = 23,
+  SwitchTunnel = 24,
+  Trampolin0 = 25,
+  Trampolin1 = 26,
+  Trampolin2 = 27,
+  LiftSmall = 28,
+  LiftLarge = 29,
+  Flip = 30,
+  TipTube = 31,
+  Volcano = 32,
+  Jumper = 33,
+  Transfert = 34,
+  ZiplineStart = 35,
+  ZiplineEnd = 36,
+  Bridge = 37,
+  ScrewSmall = 38,
+  ScrewMedium = 39,
+  ScrewLarge = 40,
+  MixerOffsetExits = 41,
+  Splitter = 42,
+  StackerTowerClosed = 43,
+  StackerTowerOpened = 44,
+  DoubleBalcony = 45,
+  MixerSameExits = 46,
+  DipperLeft = 47,
+  DipperRight = 48,
+  Helix = 49,
+  Turntable = 50,
+  Spinner = 51,
+  TwoInOneSmallCurveA = 52,
+  TwoInOneSmallCurveB = 53,
+  FlexibleTwoInOneB = 54,
+  RibbonCurve = 55,
+  ThreeEntranceFunnel = 56,
+  CurveCrossing = 57,
+  DoubleBigCurve = 58,
+  DoubleSmallCurve = 59,
+  MultiJunction = 60,
+  StraightCurveCrossing = 61,
+  TripleSmallCurve = 62,
+  FlexibleTwoInOneA = 63,
+  ColorSwapEmpty = 64,
+  ColorSwapPreloaded = 65,
+  CarouselSameExits = 66,
+  CarouselOffsetExits = 67,
+  DomeStarter = 68,
+  FinishTrigger = 69,
+  FinishArena = 70,
+  Trigger = 71,
+  DropdownSwitchLeft = 72,
+  DropdownSwitchRight = 73,
+  Queue = 74,
+  Lever = 75,
+  Elevator = 77
+
+};
+
+enum LayerKind : u32 {
+  BaselayerPiece = 0,
+  Baselayer = 1,
+  LargeLayer = 2,
+  LargeGhostLayer = 3,
+  SmallLayer = 4,
+};
+
+enum PowerSignalMode : u32 {
+  Off = 0,
+  Red = 1,
+  Green = 2,
+  Blue = 3,
+  Automatic = 4
+};
+
+enum CourseElementGeneration : u32 {
+  InitialLaunch = 0,
+  Christmas2018 = 1,
+  Easter2019 = 2,
+  Autumn2019 = 3,
+  Easter2020 = 4,
+  Pro = 5,
+  Fall2021 = 6,
+  Spring2022 = 7,
+  Power = 8
+};
+
+enum CourseSaveDataVersion : u32 {
+    InitialLaunch = 100101,
+    RailRework2018 = 100201,
+    PersistenceRefactor2019 = 1,
+    ZiplineAdded2019 = 2,
+    Pro2020 = 3,
+    Power2022 = 4
+};
+
+CourseSaveDataVersion current_save_data_version;
+
+enum RailKind : u32 {
+  Straight = 0,
+  Bernoulli = 1,
+  DropHill = 3,
+  DropValley = 4,
+  UTurn = 5,
+  Narrow = 6,
+  Slow = 7,
+  BernoulliSmallStraight = 8,
+  BernoulliSmallLeft = 9,
+  BernoulliSmallRight = 10,
+  FlexTube0 = 11,
+  FlexTube60 = 12,
+  FlexTube120 = 13,
+  FlexTube180 = 14,
+  FlexTube240 = 15,
+  FlexTube300 = 16
+};
+
+enum RopeKind : u32 {
+  None = 0,
+  Straight = 1
+};
+
+enum WallSide : s32 {
+    West = 0,
+    East = 1,
+};
+
+
+struct String {
+    u8   length [[hidden]];
+    char bytes[length];
+};
+
+struct SaveDataHeader {
+  u128                  guid;
+  CourseSaveDataVersion version;
+};
+
+struct CourseMetaData {
+  u64           creation_timestamp;
+  String        title [[inline]];
+  u32           order_number;
+  CourseKind    course_kind;
+  ObjectiveKind objective_kind;
+  u32           difficulty;
+  bool          completed;
+};
+
+/*
+SerializationUtils$$ReadHexVectorFromStream seems to read y before x
+TODO: double check how it's written
+*/
+struct HexVector {
+  s32 y;
+  s32 x;
+};
+
+
+/*
+Used by:
+  - Power 2022
+
+TODO: retainer_id und power_signal_mode sind Optional
+*/
+struct TileTowerConstructionData {
+    TileKind        kind;
+    u32             height_in_small_stacker;
+    u32             hex_rotation;
+    s32             retainer_id;
+    if (current_save_data_version == CourseSaveDataVersion::Power2022) {
+        PowerSignalMode power_signal_mode;
+    }
+};
+
+/*
+Used by:
+  - Power2022
+*/
+struct TileTowerTreeNodeData {
+    u32              index;
+    u32              children_count;
+    TileTowerConstructionData construction_data;
+
+    // This workaround won't be needed anymore in ImHex versions larger than 1.26.2
+    if (children_count > 0) {
+        TileTowerTreeNodeData children[children_count];
+    }
+};
+
+/*
+Used by:
+  - Power2022
+*/
+struct CellConstructionData {
+  HexVector             local_hex_position;
+  TileTowerTreeNodeData tree_node_data;
+};
+
+/*
+Used by:
+  - Power2022
+*/
+struct RailConstructionExitIdentifier {
+  u32       retainer_id;
+  HexVector cell_local_hex_pos;
+  u32       side_hex_rot;
+  float     exit_local_pos_y;
+};
+
+/*
+Used by:
+  - Power2022
+*/
+struct RailConstructionData {
+    RailConstructionExitIdentifier exit_1_identifier;
+    RailConstructionExitIdentifier exit_2_identifier;
+    RailKind                       rail_kind;
+};
+
+/*
+Used by:
+  - ZiplineAdded2019
+  - Power2022
+*/
+struct PillarConstructionData {
+  u32       lower_layer_id;
+  HexVector lower_cell_local_position;
+  u32       upper_layer_id;
+  HexVector upper_cell_local_position;
+};
+
+
+struct WallCoordinate {
+    s32 column;
+    s32 row;
+};
+
+/*
+Used by:
+  - ZiplineAdded2019
+  - Power2022
+*/
+struct WallBalconyConstructionData {
+    s32            retainer_id;
+    WallSide       wall_side;
+    WallCoordinate wall_coordinate;
+    bool           has_cell_construction_data;
+    if (has_cell_construction_data) {
+        CellConstructionData cell_construction_data;
+    }
+};
+
+/*
+Used by:
+  - ZiplineAdded2019
+  - Power2022
+*/
+struct WallConstructionData {
+    s32                         lower_stacker_tower_1_retainer_id;
+    HexVector                   lower_stacker_tower_1_local_hex_pos;
+    s32                         lower_stacker_tower_2_retainer_id;
+    HexVector                   lower_stacker_tower_2_local_hex_pos;
+
+    s32                         balcony_construction_data_size;
+    WallBalconyConstructionData balcony_construction_data[balcony_construction_data_size];
+};
+
+
+namespace ZiplineAdded2019 {
+    struct CellConstructionData {
+        s32       hex_rotation;
+        HexVector local_hex_position;
+        s32       tile_kind_size;
+        TileKind  tile_kinds[tile_kind_size];
+    };
+
+    struct RailConstructionExitIdentifier {
+        s32       retainer_id;
+        HexVector local_hex_pos;
+        s32       side_hex_rot;
+    };
+
+    struct RailConstructionData {
+        RailConstructionExitIdentifier exit_1_identifier;
+        RailConstructionExitIdentifier exit_2_identifier;
+        RailKind                       rail_kind;
+        bool                           materialized;
+    };
+
+    struct RopeConstructionData {
+        u32       start_tile_layer_index;
+        HexVector start_tile_local_hex_pos;
+        u32       end_tile_layer_index;
+        HexVector end_tile_local_hex_pos;
+        RopeKind  rope_kind;
+    };
+}
+
+/*
+Used by:
+  - ZiplineAdded2019
+  - Power2022
+*/
+struct LayerConstructionData {
+    u32                  layer_id;
+    LayerKind            layer_kind;
+    float                layer_height;
+    HexVector            hex_vector;
+    u32                  cell_construction_data_size;
+    if (current_save_data_version == CourseSaveDataVersion::ZiplineAdded2019) {
+        ZiplineAdded2019::CellConstructionData cell_construction_data[cell_construction_data_size];
+    } else {
+        CellConstructionData cell_construction_data[cell_construction_data_size];
+    }
+};
+
+struct Course {
+    SaveDataHeader          header;
+    CourseMetaData          meta_data;
+
+    current_save_data_version = header.version;
+
+    u32 layer_construction_data_size;
+    LayerConstructionData layer_construction_data[layer_construction_data_size];
+
+    u32 rail_construction_data_size;
+    if (current_save_data_version == CourseSaveDataVersion::ZiplineAdded2019) {
+        ZiplineAdded2019::RailConstructionData rail_construction_data[rail_construction_data_size];
+    } else {
+        RailConstructionData rail_construction_data[rail_construction_data_size];
+    }
+
+    u32                     pillar_construction_data_size;
+    PillarConstructionData  pillar_construction_data[pillar_construction_data_size];
+
+    if (header.version == CourseSaveDataVersion::ZiplineAdded2019) {
+        u32                                    rope_construction_data_size;
+        ZiplineAdded2019::RopeConstructionData rope_construction_data[rope_construction_data_size];
+    }
+
+    CourseElementGeneration generation;
+
+    u32                  wall_construction_data_size;
+    WallConstructionData wall_construction_data[wall_construction_data_size];
+};
+
+
+Course course @ 0x00;
