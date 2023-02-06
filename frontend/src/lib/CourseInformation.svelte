@@ -2,10 +2,15 @@
   let courseCode: string | null = null;
 </script>
 
-<input type="text" placeholder="Course code" class="input w-full max-w-xs" bind:value="{courseCode}"/>
+<div class="form-control w-full max-w-xs">
+  <label class="label">
+    <span class="label-text">What is the course code?</span>
+  </label>
+  <input type="text" placeholder="Enter the course code here" class="input input-bordered input-primary w-full max-w-xs" bind:value={courseCode} />
+</div>
 
 {#if courseCode === null}
-  <p>Please enter a course code to get detailed information</p>
+  <p>Please enter a course code to get links to detailed information</p>
 {:else}
   <ul>
     <li><a href="/course/{courseCode}/dump">Course dump (JSON)</a></li>
