@@ -23,6 +23,7 @@ use sqlx::postgres::PgPoolOptions;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::Arc;
+use metrics::increment_counter;
 use tower_http::cors::{Any, CorsLayer};
 use tracing::{debug, info};
 
@@ -171,6 +172,7 @@ fn build_prometheus_extension() -> Extension<PrometheusHandle> {
 }
 
 async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
+    increment_counter!("murmelbahn.static.requests");
     let path = path.trim_start_matches('/');
     let mime_type = mime_guess::from_path(path).first_or_text_plain();
 
