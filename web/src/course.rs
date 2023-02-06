@@ -41,12 +41,14 @@ pub(crate) async fn course_bom(
             Err(AppError::ZiplineAdded2019Unsupported)
         }
         Course::Power2022(course) | Course::Pro2020(course) => {
+            let title = course.meta_data.title.clone();
             let bom = AppBillOfMaterials::try_from(course)?;
 
             Ok(match format {
                 Some(BomFormat::Csv) => {
                     let mut wtr = csv::Writer::from_writer(Vec::new());
                     let mut output = GraviSheetOutput::from(bom);
+                    output.title = title;
                     output.course_code = course_code.to_string();
                     wtr.serialize(output).unwrap();
                     String::from_utf8(wtr.into_inner().unwrap()).unwrap().into_response()

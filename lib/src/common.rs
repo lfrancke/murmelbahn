@@ -20,9 +20,11 @@ pub struct Count<T> {
 
 #[derive(Debug, Serialize)]
 pub struct GraviSheetOutput {
-    pub course_code: String,
+    pub title: String,
     pub empty_1: Option<i32>,
+    pub course_code: String,
     pub empty_2: Option<i32>,
+    pub empty_3: Option<i32>,
     pub layer_base: Option<i32>,
     pub layer_base_mini: Option<i32>,
     pub layer_base_mini_half: Option<i32>,
@@ -156,9 +158,11 @@ impl From<AppBillOfMaterials> for GraviSheetOutput {
         };
 
         GraviSheetOutput {
+            title: "PLACEHOLDER".to_string(),
             course_code: "PLACEHOLDER".to_string(),
             empty_1: None,
             empty_2: None,
+            empty_3: None,
             layer_base: bom.layer_kind(LayerKind::Base),
             layer_base_mini: None,
             layer_base_mini_half: None,

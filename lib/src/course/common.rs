@@ -134,7 +134,7 @@ pub struct CourseMetaData {
     #[deku(
         map = "|field: Vec<u8>| -> Result<_, DekuError> { Ok(std::str::from_utf8(&field).unwrap().to_owned()) }"
     )] // This is also horrible, maybe someone can tell me a better way to do it
-    title: String,
+    pub title: String,
 
     pub order_number: i32,
     pub course_kind: CourseKind,
