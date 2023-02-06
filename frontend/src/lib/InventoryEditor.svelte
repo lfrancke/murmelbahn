@@ -7,7 +7,7 @@
     let buildable = null;
 
     onMount(async () => {
-        const res = await fetch('http://localhost:3000/set/list');
+        const res = await fetch('/set/list');
         data = await res.json();
     });
 
@@ -26,7 +26,7 @@
     }
 
     async function doPost(data) {
-        const res = await fetch('http://localhost:3000/buildable', {
+        const res = await fetch('/buildable', {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
