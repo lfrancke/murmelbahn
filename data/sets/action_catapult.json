@@ -2,8 +2,12 @@
   "id": "action_catapult",
   "names": [
     {
+      "language_code": "en",
+      "name": "Accessory Catapult"
+    },
+    {
       "language_code": "de",
-      "name": "Katapult"
+      "name": "Action-Stein Katapult"
     }
   ],
   "content": {

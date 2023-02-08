@@ -2,6 +2,10 @@
   "id": "ext_lift",
   "names": [
     {
+      "language_code": "en",
+      "name": "Expansion Lifter"
+    },
+    {
       "language_code": "de",
       "name": "Erweiterung Lift"
     }

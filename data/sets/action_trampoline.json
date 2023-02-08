@@ -2,8 +2,12 @@
   "id": "action_trampoline",
   "names": [
     {
+      "language_code": "en",
+      "name": "Accessory Trampoline"
+    },
+    {
       "language_code": "de",
-      "name": "Trampolin"
+      "name": "Action-Stein Trampolin"
     }
   ],
   "content": {

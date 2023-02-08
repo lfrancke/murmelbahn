@@ -2,8 +2,12 @@
   "id": "action_zipline",
   "names": [
     {
+      "language_code": "en",
+      "name": "Acccessory Zipline"
+    },
+    {
       "language_code": "de",
-      "name": "Seilbahn"
+      "name": "Action-Stein Seilbahn"
     }
   ],
   "content": {

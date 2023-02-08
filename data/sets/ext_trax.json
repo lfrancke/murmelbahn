@@ -2,6 +2,10 @@
   "id": "ext_trax",
   "names": [
     {
+      "language_code": "en",
+      "name": "Expansion Trax"
+    },
+    {
       "language_code": "de",
       "name": "Erweiterung Trax"
     }
