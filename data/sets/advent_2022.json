@@ -1,0 +1,48 @@
+{
+  "id": "advent_2022",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Advent Calendar (2022)"
+    },
+    {
+      "language_code": "de",
+      "name": "Adventskalender (2022)"
+    }
+  ],
+  "content": {
+    "BaseLayer": 1,
+    "LargeClearLayer": 2,
+
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleGold": 1,
+
+    "Stacker": 23,
+    "StackerSmall": 2,
+    "StackerAngled": 1,
+
+    "StraightSmall": 5,
+    "StraightMedium": 1,
+    "BernoulliSmallStraight": 2,
+    "BernoulliSmallLeft": 3,
+    "BernoulliSmallRight": 3,
+
+    "Curve": 3,
+    "MultiJunction": 1,
+    "CurveCrossing": 1,
+    "StraightCurveCrossing": 1,
+    "DoubleBigCurve": 1,
+    "TripleSmallCurve": 1,
+    "FlexibleTwoInOneA": 1,
+
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "ThreeWay": 1,
+
+    "ColorSwap": 1,
+    "Jumper": 1,
+    "Spinner": 1,
+    "Trampoline": 1
+  }
+}

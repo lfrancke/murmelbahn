@@ -15,6 +15,7 @@ COPY . .
 COPY --from=node_builder /app/frontend/dist /usr/src/murmelbahn/frontend/dist
 RUN cargo install --path web
 
+
 # Final image
 FROM debian:bullseye-slim
 EXPOSE 3000

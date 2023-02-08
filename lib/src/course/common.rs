@@ -1,7 +1,7 @@
-use std::cmp::max;
 use deku::prelude::*;
 use serde::Serialize;
 use snafu::ResultExt;
+use std::cmp::max;
 use std::fs;
 use std::path::Path;
 
@@ -13,7 +13,7 @@ pub mod pillar;
 pub mod rail;
 pub mod wall;
 
-#[derive(Debug, DekuRead, Serialize)]
+#[derive(Clone, Debug, DekuRead, Serialize)]
 #[deku(type = "u32")]
 pub enum CourseKind {
     None = 0,
@@ -28,7 +28,7 @@ pub enum CourseKind {
     PowerEditorial = 10,
 }
 
-#[derive(Debug, DekuRead, Serialize)]
+#[derive(Clone, Debug, DekuRead, Serialize)]
 #[deku(type = "u32")]
 pub enum ObjectiveKind {
     None = 0,
@@ -55,7 +55,7 @@ pub enum Direction {
     SouthEast,
     SouthWest,
     West,
-    NorthWest
+    NorthWest,
 }
 
 impl Direction {
@@ -67,7 +67,7 @@ impl Direction {
             3 => Direction::West,
             4 => Direction::NorthWest,
             5 => Direction::NorthEast,
-            _ => panic!("Invalid hex rotation")
+            _ => panic!("Invalid hex rotation"),
         }
     }
 }
@@ -79,12 +79,8 @@ pub struct HexVector {
 }
 
 impl HexVector {
-
     pub fn new(x: i32, y: i32) -> HexVector {
-        HexVector {
-            x,
-            y
-        }
+        HexVector { x, y }
     }
 
     pub fn add(&self, other: &HexVector) -> HexVector {
@@ -118,12 +114,10 @@ impl HexVector {
         let distance = dx + max(0, dy - dx);
         distance
     }
-
-
 }
 
 #[deku_derive(DekuRead)]
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub struct CourseMetaData {
     pub creation_timestamp: u64,
 
@@ -179,7 +173,16 @@ pub enum Course {
     Power2022(#[deku(ctx = "CourseSaveDataVersion::Power2022")] power2022::Course),
 
     #[deku(id_pat = "CourseSaveDataVersion::Pro2020")]
-    Pro2020(#[deku(ctx = "CourseSaveDataVersion::Pro2020")] power2022::Course)
+    Pro2020(#[deku(ctx = "CourseSaveDataVersion::Pro2020")] power2022::Course),
+}
+
+impl Course {
+    pub fn meta_data(&self) -> CourseMetaData {
+        match self {
+            Course::ZiplineAdded2019(course) => course.meta_data.clone(),
+            Course::Power2022(course) | Course::Pro2020(course) => course.meta_data.clone(),
+        }
+    }
 }
 
 #[derive(Debug, DekuRead, Serialize)]
