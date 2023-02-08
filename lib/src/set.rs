@@ -1,21 +1,21 @@
+use crate::bom::{LayerKind, RailKind, TileKind, WallKind};
+use crate::error::{IoSnafu, MurmelbahnError, MurmelbahnResult, ReadSnafu, SerdeJsonSnafu};
+use schemars::JsonSchema;
+use serde::{Deserialize, Serialize};
+use snafu::prelude::*;
 use std::collections::HashMap;
 use std::fs;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
-use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
-use snafu::prelude::*;
 use tracing::info;
 use ts_rs::TS;
-use crate::bom::{LayerKind, RailKind, TileKind, WallKind};
-use crate::error::{IoSnafu, MurmelbahnError, MurmelbahnResult, ReadSnafu, SerdeJsonSnafu};
 
 #[derive(Clone, Serialize, Deserialize, JsonSchema, TS)]
 #[ts(export)]
 pub struct Name {
     pub language_code: String,
-    pub name: String
+    pub name: String,
 }
 
 #[derive(Clone, Serialize, Default, Deserialize, JsonSchema, TS)]
@@ -27,7 +27,7 @@ pub struct Set {
     pub names: Vec<Name>,
 
     #[serde(default)]
-    pub content: HashMap<SetContentElement, i32>
+    pub content: HashMap<SetContentElement, i32>,
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, Hash, JsonSchema, PartialEq, Serialize, TS)]
@@ -157,12 +157,11 @@ pub enum SetContentElement {
 }
 
 impl SetContentElement {
-
     pub fn element_for_layerkind(layer_kind: &LayerKind) -> SetContentElement {
         match layer_kind {
             LayerKind::Base => SetContentElement::BaseLayer,
             LayerKind::SmallClear => SetContentElement::SmallClearLayer,
-            LayerKind::LargeClear => SetContentElement::LargeClearLayer
+            LayerKind::LargeClear => SetContentElement::LargeClearLayer,
         }
     }
 
@@ -170,7 +169,7 @@ impl SetContentElement {
         match wall_kind {
             WallKind::StraightSmall => SetContentElement::WallSmall,
             WallKind::StraightMedium => SetContentElement::WallMedium,
-            WallKind::StraightLarge => SetContentElement::WallLarge
+            WallKind::StraightLarge => SetContentElement::WallLarge,
         }
     }
 
@@ -193,7 +192,7 @@ impl SetContentElement {
             RailKind::FlexTube120 => SetContentElement::FlexTube,
             RailKind::FlexTube180 => SetContentElement::FlexTube,
             RailKind::FlexTube240 => SetContentElement::FlexTube,
-            RailKind::FlexTube300 => SetContentElement::FlexTube
+            RailKind::FlexTube300 => SetContentElement::FlexTube,
         }
     }
 
@@ -242,40 +241,80 @@ impl SetContentElement {
             TileKind::Lever => vec![SetContentElement::Lever],
             TileKind::Elevator => vec![SetContentElement::Elevator],
             TileKind::Catch => vec![SetContentElement::Catch, SetContentElement::BasicClosed],
-            TileKind::GoalBasin => vec![SetContentElement::GoalBasin, SetContentElement::BasicClosed],
+            TileKind::GoalBasin => {
+                vec![SetContentElement::GoalBasin, SetContentElement::BasicClosed]
+            }
             TileKind::Drop => vec![SetContentElement::Drop, SetContentElement::BasicOpen],
             TileKind::TwoWay => vec![SetContentElement::TwoWay],
             TileKind::Splash => vec![SetContentElement::Splash],
             TileKind::Stacker => vec![SetContentElement::Stacker],
             TileKind::StackerSmall => vec![SetContentElement::StackerSmall],
-            TileKind::SwitchLeft => vec![SetContentElement::TwoWay, SetContentElement::SwitchInsert],
-            TileKind::SwitchRight => vec![SetContentElement::TwoWay, SetContentElement::SwitchInsert],
+            TileKind::SwitchLeft => {
+                vec![SetContentElement::TwoWay, SetContentElement::SwitchInsert]
+            }
+            TileKind::SwitchRight => {
+                vec![SetContentElement::TwoWay, SetContentElement::SwitchInsert]
+            }
             TileKind::StackerBatch => vec![],
-            TileKind::StraightTunnel => vec![SetContentElement::StraightTunnel, SetContentElement::BasicStraight],
-            TileKind::CurveTunnel => vec![SetContentElement::CurveTunnel, SetContentElement::BasicClosed],
-            TileKind::SwitchTunnel => vec![SetContentElement::SwitchTunnel, SetContentElement::BasicClosed],
+            TileKind::StraightTunnel => vec![
+                SetContentElement::StraightTunnel,
+                SetContentElement::BasicStraight,
+            ],
+            TileKind::CurveTunnel => vec![
+                SetContentElement::CurveTunnel,
+                SetContentElement::BasicClosed,
+            ],
+            TileKind::SwitchTunnel => vec![
+                SetContentElement::SwitchTunnel,
+                SetContentElement::BasicClosed,
+            ],
             TileKind::Trampolin0 => vec![SetContentElement::Trampoline],
-            TileKind::Trampolin1 => vec![SetContentElement::Trampoline, SetContentElement::StackerAngled],
-            TileKind::Trampolin2 => vec![SetContentElement::Trampoline, SetContentElement::StackerAngled, SetContentElement::StackerAngled],
-            TileKind::LiftSmall => vec![SetContentElement::LiftEntrance, SetContentElement::LiftExit, SetContentElement::LiftHeightTube],
-            TileKind::LiftLarge => vec![SetContentElement::LiftEntrance, SetContentElement::LiftExit, SetContentElement::LiftHeightTube, SetContentElement::LiftHeightTube],
+            TileKind::Trampolin1 => vec![
+                SetContentElement::Trampoline,
+                SetContentElement::StackerAngled,
+            ],
+            TileKind::Trampolin2 => vec![
+                SetContentElement::Trampoline,
+                SetContentElement::StackerAngled,
+                SetContentElement::StackerAngled,
+            ],
+            TileKind::LiftSmall => vec![
+                SetContentElement::LiftEntrance,
+                SetContentElement::LiftExit,
+                SetContentElement::LiftHeightTube,
+            ],
+            TileKind::LiftLarge => vec![
+                SetContentElement::LiftEntrance,
+                SetContentElement::LiftExit,
+                SetContentElement::LiftHeightTube,
+                SetContentElement::LiftHeightTube,
+            ],
             TileKind::ZiplineStart => vec![SetContentElement::Zipline],
             TileKind::ZiplineEnd => vec![],
-            TileKind::ScrewSmall => vec![SetContentElement::SpiralBase, SetContentElement::SpiralEntrance],
+            TileKind::ScrewSmall => vec![
+                SetContentElement::SpiralBase,
+                SetContentElement::SpiralEntrance,
+            ],
             TileKind::ScrewMedium => {
-                let mut vec = vec![SetContentElement::SpiralBase, SetContentElement::SpiralEntrance];
+                let mut vec = vec![
+                    SetContentElement::SpiralBase,
+                    SetContentElement::SpiralEntrance,
+                ];
                 for _ in 0..5 {
                     vec.push(SetContentElement::SpiralCurve);
                 }
                 vec
-            },
+            }
             TileKind::ScrewLarge => {
-                let mut vec = vec![SetContentElement::SpiralBase, SetContentElement::SpiralEntrance];
+                let mut vec = vec![
+                    SetContentElement::SpiralBase,
+                    SetContentElement::SpiralEntrance,
+                ];
                 for _ in 0..12 {
                     vec.push(SetContentElement::SpiralCurve);
                 }
                 vec
-            },
+            }
             TileKind::MixerOffsetExits => vec![SetContentElement::Mixer],
             TileKind::StackerTowerClosed => vec![SetContentElement::StackerTowerClosed],
             TileKind::StackerTowerOpened => vec![SetContentElement::StackerTowerOpened],
@@ -290,39 +329,38 @@ impl SetContentElement {
             TileKind::DropdownSwitchRight => vec![SetContentElement::DropdownSwitch],
         }
     }
-
 }
 
-
 impl Set {
-
     pub fn from_path<P: AsRef<Path>>(path: P) -> MurmelbahnResult<Set> {
-         let file = File::open(path).context(ReadSnafu {})?;
-         let reader = BufReader::new(file);
+        let file = File::open(path).context(ReadSnafu {})?;
+        let reader = BufReader::new(file);
 
-         let set = serde_json::from_reader(reader).context(SerdeJsonSnafu)?;
-         Ok(set)
+        let set = serde_json::from_reader(reader).context(SerdeJsonSnafu)?;
+        Ok(set)
     }
-
 }
 
 #[derive(TS)]
 #[ts(export)]
 pub struct SetRepo {
-    pub sets: HashMap<String, Set>
+    pub sets: HashMap<String, Set>,
 }
-
 
 impl SetRepo {
     pub fn new() -> SetRepo {
-        SetRepo { sets: HashMap::new() }
+        SetRepo {
+            sets: HashMap::new(),
+        }
     }
 
     pub fn read_directory<P: AsRef<Path>>(&mut self, path: P) -> MurmelbahnResult<()> {
         let path = path.as_ref();
 
         if !path.exists() || !path.is_dir() {
-            return Err(MurmelbahnError::MiscError { msg: "Path is not a directory".to_string() });
+            return Err(MurmelbahnError::MiscError {
+                msg: "Path is not a directory".to_string(),
+            });
         }
 
         // Read all files in the directory
@@ -335,7 +373,10 @@ impl SetRepo {
                 let set = Set::from_path(file_path)?;
                 let set_id = set.id.clone();
                 if let Some(_) = self.sets.insert(set_id.clone(), set) {
-                    info!("Set with ID [{}] occurs twice, will use a random one", set_id);
+                    info!(
+                        "Set with ID [{}] occurs twice, will use a random one",
+                        set_id
+                    );
                 }
             }
         }

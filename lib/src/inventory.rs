@@ -4,7 +4,7 @@ use crate::set::{SetContentElement, SetRepo};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
- use ts_rs::TS;
+use ts_rs::TS;
 
 #[derive(Deserialize, Serialize, TS)]
 #[ts(export)]
@@ -26,19 +26,25 @@ pub struct PhysicalBillOfMaterials {
 impl From<AppBillOfMaterials> for PhysicalBillOfMaterials {
     fn from(bom: AppBillOfMaterials) -> Self {
         let mut elements: HashMap<SetContentElement, i32> = HashMap::new();
-        
+
         for (layer_kind, layer_count) in bom.layers.iter() {
-            let entry = elements.entry(SetContentElement::element_for_layerkind(layer_kind) ).or_insert(0);
+            let entry = elements
+                .entry(SetContentElement::element_for_layerkind(layer_kind))
+                .or_insert(0);
             *entry += layer_count.clone();
         }
 
         for (wall_kind, wall_count) in bom.walls.iter() {
-            let entry = elements.entry(SetContentElement::element_for_wallkind(wall_kind) ).or_insert(0);
+            let entry = elements
+                .entry(SetContentElement::element_for_wallkind(wall_kind))
+                .or_insert(0);
             *entry += wall_count.clone();
         }
 
         for (rail_kind, rail_count) in bom.rails.iter() {
-            let entry = elements.entry(SetContentElement::element_for_railkind(rail_kind) ).or_insert(0);
+            let entry = elements
+                .entry(SetContentElement::element_for_railkind(rail_kind))
+                .or_insert(0);
             *entry += rail_count.clone();
         }
 
@@ -50,10 +56,7 @@ impl From<AppBillOfMaterials> for PhysicalBillOfMaterials {
             }
         }
 
-
-        PhysicalBillOfMaterials {
-            elements,
-        }
+        PhysicalBillOfMaterials { elements }
     }
 }
 
@@ -102,12 +105,11 @@ impl PhysicalBillOfMaterials {
         for (element, element_count) in self.elements.iter() {
             if element_count < &0 {
                 println!("{:?} is missing {}", element, element_count.abs());
-                return true
+                return true;
             }
         }
         false
     }
-
 
     // TODO: The below is old and unused code, but there is some logic in here which needs to be ported to the new one
     /*

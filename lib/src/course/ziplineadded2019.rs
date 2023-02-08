@@ -1,20 +1,19 @@
-use deku::prelude::*;
-use serde::Serialize;
-use crate::course::common::{CourseElementGeneration, CourseMetaData, HexVector};
 use crate::course::common::layer::{LayerKind, TileKind};
 use crate::course::common::pillar::PillarConstructionData;
 use crate::course::common::rail::RailKind;
+use crate::course::common::{CourseElementGeneration, CourseMetaData, HexVector};
+use deku::prelude::*;
+use serde::Serialize;
 
 // TODO: TileTowerTreeNodeData FromPreProSaveGameData(PreProTileTowerConstructionData oldData)
 // That would be a fn from_ziplineadded2019_constructiondata(construction_data: CellConstructionDataZiplineAdded2019) -> CellConstructionData but we'd also need on for Course itself...
-
 
 #[derive(Debug, DekuRead, Serialize)]
 #[deku(type = "u32")]
 pub enum RopeKind {
     None = 0,
     Straight = 1,
-    TODO = 3
+    TODO = 3,
 }
 
 #[deku_derive(DekuRead)]
@@ -81,7 +80,6 @@ pub struct RopeConstructionData {
     pub rope_kind: RopeKind,
 }
 
-
 #[derive(Debug, DekuRead, Serialize)]
 pub struct RailConstructionExitIdentifier {
     pub retainer_id: u32,
@@ -94,5 +92,5 @@ pub struct RailConstructionData {
     pub exit_1_identifier: RailConstructionExitIdentifier,
     pub exit_2_identifier: RailConstructionExitIdentifier,
     pub rail_kind: RailKind,
-    pub materialized: bool
+    pub materialized: bool,
 }

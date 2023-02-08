@@ -1,13 +1,13 @@
 use crate::{AppError, AppState};
 use axum::extract::{Path, Query, State};
+use axum::response::{IntoResponse, Response};
+use axum::Json;
 use metrics::increment_counter;
+use murmelbahn_lib::bom::AppBillOfMaterials;
 use murmelbahn_lib::common::{CourseCode, GraviSheetOutput};
 use murmelbahn_lib::course::common::{Course, SavedCourse};
 use serde::Deserialize;
 use std::sync::Arc;
-use axum::Json;
-use axum::response::{IntoResponse, Response};
-use murmelbahn_lib::bom::AppBillOfMaterials;
 
 #[derive(Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -30,7 +30,9 @@ pub(crate) async fn course_bom(
 ) -> Result<Response, AppError> {
     increment_counter!("murmelbahn.bom.requests");
     let course_code = CourseCode::new(course);
-    let course_bytes = state.course_repo.get_course_bytes(&course_code)
+    let course_bytes = state
+        .course_repo
+        .get_course_bytes(&course_code)
         .await?
         .unwrap();
     let course = SavedCourse::from_bytes(&course_bytes)?.course;
@@ -51,20 +53,16 @@ pub(crate) async fn course_bom(
                     output.title = title;
                     output.course_code = course_code.to_string();
                     wtr.serialize(output).unwrap();
-                    String::from_utf8(wtr.into_inner().unwrap()).unwrap().into_response()
+                    String::from_utf8(wtr.into_inner().unwrap())
+                        .unwrap()
+                        .into_response()
                 }
-                None | Some(BomFormat::Json) => {
-                    Json(bom).into_response()
-                }
-                Some(BomFormat::Rust) => {
-                    format!("{:#?}", bom).into_response()
-                }
+                None | Some(BomFormat::Json) => Json(bom).into_response(),
+                Some(BomFormat::Rust) => format!("{:#?}", bom).into_response(),
             })
         }
     };
 }
-
-
 
 /// Dumps a course in JSON format
 // TODO: Needs to return a 404
@@ -76,7 +74,11 @@ pub async fn course_dump(
 
     // Could write a custom Axum extractor at some point
     let course_code = CourseCode::new(course);
-    let course_bytes = state.course_repo.get_course_bytes(&course_code).await?.unwrap(); // TODO
+    let course_bytes = state
+        .course_repo
+        .get_course_bytes(&course_code)
+        .await?
+        .unwrap(); // TODO
     let course = SavedCourse::from_bytes(&course_bytes).unwrap(); // TODO
     Ok(Json(course))
 }

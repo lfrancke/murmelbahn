@@ -1,7 +1,7 @@
+use anyhow::Error;
 use std::path::PathBuf;
 use std::thread;
 use std::time::Duration;
-use anyhow::Error;
 use tracing::{debug, error, info};
 
 use crate::Config;
@@ -14,8 +14,10 @@ pub struct DownloadMultipleArgs {
     destination: Option<PathBuf>,
 }
 
-pub fn download_multiple_courses(args: DownloadMultipleArgs, _config: Config) -> anyhow::Result<()> {
-
+pub fn download_multiple_courses(
+    args: DownloadMultipleArgs,
+    _config: Config,
+) -> anyhow::Result<()> {
     let destination = match args.destination {
         None => PathBuf::from(""),
         Some(dest) => {

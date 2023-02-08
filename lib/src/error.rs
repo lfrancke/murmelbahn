@@ -4,7 +4,10 @@ use snafu::prelude::*;
 #[snafu(visibility(pub))]
 pub enum MurmelbahnError {
     #[snafu(display("Unable to download course [{}]: {}", course, source))]
-    DownloadFailed { source: reqwest::Error, course: String },
+    DownloadFailed {
+        source: reqwest::Error,
+        course: String,
+    },
 
     #[snafu(display("Failed to deserialize course: {}", source))]
     DeserializeFailed { source: deku::DekuError },
@@ -18,11 +21,11 @@ pub enum MurmelbahnError {
     #[snafu(display("Encountered unsupported piece"))]
     UnsupportedPiece,
 
-    #[snafu(display("IO Error {}",  source))]
+    #[snafu(display("IO Error {}", source))]
     IoError { source: std::io::Error },
 
     #[snafu(display("Encountered error: {}", msg))]
-    ConversionFailed { msg: String},
+    ConversionFailed { msg: String },
 
     #[snafu(display("Encountered error: {}", msg))]
     MiscError { msg: String },

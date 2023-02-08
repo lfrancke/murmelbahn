@@ -11,10 +11,11 @@ use axum::body::{Empty, Full};
 use axum::extract::Path;
 use axum::http::{header, HeaderValue, Method, StatusCode};
 use axum::response::{IntoResponse, Redirect, Response};
-use axum::routing::{get};
+use axum::routing::get;
 use axum::{body, Extension, Json, Router};
 use clap::Parser;
 use include_dir::{include_dir, Dir};
+use metrics::increment_counter;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 use murmelbahn_lib::error::MurmelbahnError;
 use murmelbahn_lib::set::SetRepo;
@@ -23,7 +24,6 @@ use sqlx::postgres::PgPoolOptions;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::Arc;
-use metrics::increment_counter;
 use tower_http::cors::{Any, CorsLayer};
 use tracing::{debug, info};
 
@@ -132,7 +132,6 @@ async fn main() -> anyhow::Result<()> {
 
     let set_routes = Router::new()
         .route("/list", get(set_list))
-
         .with_state(shared_state.clone());
 
     let app = Router::new()

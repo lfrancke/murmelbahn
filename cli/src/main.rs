@@ -2,14 +2,14 @@ pub(crate) mod command;
 
 use std::fs;
 
+use crate::command::download::DownloadArgs;
+use crate::command::download_multiple::DownloadMultipleArgs;
+use crate::command::dump::{dump_course, DumpArgs};
 use anyhow::Result;
 use clap::Parser;
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use tracing::info;
-use crate::command::download::DownloadArgs;
-use crate::command::download_multiple::DownloadMultipleArgs;
-use crate::command::dump::{dump_course, DumpArgs};
 
 #[derive(clap::Parser)]
 #[command(author, version, about, long_about = None)]
@@ -55,7 +55,9 @@ fn main() -> Result<()> {
     match args.action {
         Action::Download(args) => command::download::download_course(args, config),
         Action::Dump(args) => dump_course(args, config),
-        Action::DownloadMultiple(args) => command::download_multiple::download_multiple_courses(args, config),
+        Action::DownloadMultiple(args) => {
+            command::download_multiple::download_multiple_courses(args, config)
+        }
     }
 }
 
@@ -71,21 +73,28 @@ fn read_config() -> Config {
                 return Default::default();
             }
 
-            let toml_string = toml::to_string(&Config::default()).expect("Could not encode TOML value");
+            let toml_string =
+                toml::to_string(&Config::default()).expect("Could not encode TOML value");
             if let Err(e) = fs::write(conf_file.clone(), toml_string) {
                 info!("Failed writing default config, will use defaults: {}", e);
                 return Default::default();
             } else {
-                info!("I have written a default config file to '{:?}', please adjust as needed", conf_file);
+                info!(
+                    "I have written a default config file to '{:?}', please adjust as needed",
+                    conf_file
+                );
             }
         }
 
         let toml_string = match fs::read_to_string(&conf_file) {
             Err(e) => {
-                info!("Failed reading config file from disk, will use defaults: {}", e);
+                info!(
+                    "Failed reading config file from disk, will use defaults: {}",
+                    e
+                );
                 return Default::default();
             }
-            Ok(toml) => toml
+            Ok(toml) => toml,
         };
 
         return match toml::from_str(&toml_string) {

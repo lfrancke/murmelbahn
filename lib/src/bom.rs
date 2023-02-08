@@ -1,10 +1,11 @@
 use crate::course::common::layer::{
-    LayerConstructionData, TileTowerConstructionData, TileTowerTreeNodeData, TileKind as PersistenceTileKind, LayerKind as PersistenceLayerKind
+    LayerConstructionData, LayerKind as PersistenceLayerKind, TileKind as PersistenceTileKind,
+    TileTowerConstructionData, TileTowerTreeNodeData,
 };
 use crate::course::common::pillar::PillarConstructionData;
+use crate::course::common::rail::RailKind as PersistenceRailKind;
 use crate::course::common::wall::{WallConstructionData, WallSide};
 use crate::course::common::{Direction, HexVector};
-use crate::course::common::rail::RailKind as PersistenceRailKind;
 use crate::course::power2022::Course;
 use crate::error::MurmelbahnError::UnsupportedPiece;
 use crate::error::{MurmelbahnError, MurmelbahnResult};
@@ -325,23 +326,21 @@ impl AppBillOfMaterials {
         let starter = self.tile_kind(TileKind::Starter);
          */
 
+        let min_marbles = cannon * 2
+            + zipline
+            + color_change
+            + bridge * 2
+            + catapult * 4
+            + lift_small * 5
+            + lift_large * 8;
 
-                let min_marbles = cannon * 2
-                    + zipline
-                    + color_change
-                    + bridge * 2
-                    + catapult * 4
-                    + lift_small * 5
-                    + lift_large * 8;
-
-
-                let max_marbles = cannon * 2
-                    + zipline
-                    + color_change
-                    + bridge * 2
-                    + catapult * 4
-                    + lift_small * 5
-                    + lift_large * 8;
+        let max_marbles = cannon * 2
+            + zipline
+            + color_change
+            + bridge * 2
+            + catapult * 4
+            + lift_small * 5
+            + lift_large * 8;
 
         (min_marbles, max_marbles)
     }
@@ -449,33 +448,33 @@ impl TryFrom<Course> for AppBillOfMaterials {
         for rail_construction_datum in value.rail_construction_data.iter() {
             // As far as I know `Straight` rails are the only ones that come in different length but are only
             // encoded as a single enum variant.
-            let rail_kind =
-                if &rail_construction_datum.rail_kind == &PersistenceRailKind::Straight {
-                    // A rail has two ends/exits, both are located on a layer,
-                    // the layer in question is found in the `retainer_id` field
-                    let exit_1_world_pos = context.local_to_world_hex_vector(
-                        &rail_construction_datum.exit_1_identifier.cell_local_hex_pos,
-                        rail_construction_datum.exit_1_identifier.retainer_id,
-                    );
-                    let exit_2_world_pos = context.local_to_world_hex_vector(
-                        &rail_construction_datum.exit_2_identifier.cell_local_hex_pos,
-                        rail_construction_datum.exit_2_identifier.retainer_id,
-                    );
+            let rail_kind = if &rail_construction_datum.rail_kind == &PersistenceRailKind::Straight
+            {
+                // A rail has two ends/exits, both are located on a layer,
+                // the layer in question is found in the `retainer_id` field
+                let exit_1_world_pos = context.local_to_world_hex_vector(
+                    &rail_construction_datum.exit_1_identifier.cell_local_hex_pos,
+                    rail_construction_datum.exit_1_identifier.retainer_id,
+                );
+                let exit_2_world_pos = context.local_to_world_hex_vector(
+                    &rail_construction_datum.exit_2_identifier.cell_local_hex_pos,
+                    rail_construction_datum.exit_2_identifier.retainer_id,
+                );
 
-                    let distance = exit_1_world_pos.distance(&exit_2_world_pos) - 1;
+                let distance = exit_1_world_pos.distance(&exit_2_world_pos) - 1;
 
-                    match distance {
-                        1 => RailKind::StraightSmall,
-                        2 => RailKind::StraightMedium,
-                        3 => RailKind::StraightLarge,
-                        _ => {
-                            error!("Unrecognized length for small rail: {}", distance); // TODO: Abort?
-                            panic!("No no no");
-                        }
+                match distance {
+                    1 => RailKind::StraightSmall,
+                    2 => RailKind::StraightMedium,
+                    3 => RailKind::StraightLarge,
+                    _ => {
+                        error!("Unrecognized length for small rail: {}", distance); // TODO: Abort?
+                        panic!("No no no");
                     }
-                } else {
-                    RailKind::try_from(rail_construction_datum.rail_kind.clone()).unwrap()
-                };
+                }
+            } else {
+                RailKind::try_from(rail_construction_datum.rail_kind.clone()).unwrap()
+            };
 
             context.add_rail(rail_kind);
         }
@@ -657,13 +656,9 @@ fn process_wall_construction_data(walls: &[WallConstructionData], mut context: &
         for balcony in wall.balcony_construction_datas.iter() {
             let hex_vector = wall
                 .lower_stacker_tower_1_local_hex_pos
-                .hex_vector_in_distance(
-                    &wall_direction,
-                    balcony.wall_coordinate.column,
-                );
+                .hex_vector_in_distance(&wall_direction, balcony.wall_coordinate.column);
 
-            let target_direction =
-                wall_side_direction(&wall_direction, &balcony.wall_side);
+            let target_direction = wall_side_direction(&wall_direction, &balcony.wall_side);
             let balcony_hex_vector = hex_vector.neighbor(&target_direction);
 
             let balcony_world_hex_vector = context.local_to_world_hex_vector(
@@ -671,13 +666,11 @@ fn process_wall_construction_data(walls: &[WallConstructionData], mut context: &
                 wall.lower_stacker_tower_1_retainer_id,
             );
 
-            context.retainer_positions.insert(
-                balcony.retainer_id,
-                balcony_world_hex_vector.clone(),
-            );
+            context
+                .retainer_positions
+                .insert(balcony.retainer_id, balcony_world_hex_vector.clone());
 
-            if let Some(cell_construction_data) = &balcony.cell_construction_datas
-            {
+            if let Some(cell_construction_data) = &balcony.cell_construction_datas {
                 process_tree_node_data(
                     &cell_construction_data.tree_node_data,
                     &balcony_world_hex_vector,

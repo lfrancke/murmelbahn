@@ -1,12 +1,10 @@
-use deku::prelude::*;
-use serde::Serialize;
 use crate::course::common::layer::LayerConstructionData;
 use crate::course::common::pillar::PillarConstructionData;
 use crate::course::common::rail::RailConstructionData;
 use crate::course::common::wall::WallConstructionData;
-use crate::course::common::{
-    CourseElementGeneration, CourseMetaData, CourseSaveDataVersion,
-};
+use crate::course::common::{CourseElementGeneration, CourseMetaData, CourseSaveDataVersion};
+use deku::prelude::*;
+use serde::Serialize;
 
 #[deku_derive(DekuRead)]
 #[derive(Debug, Serialize)]

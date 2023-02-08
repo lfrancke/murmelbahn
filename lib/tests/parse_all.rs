@@ -1,10 +1,10 @@
+use csv::ReaderBuilder;
+use murmelbahn_lib::common::GraviSheetOutput;
+use murmelbahn_lib::course::common::Course;
+use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
-use csv::ReaderBuilder;
-use serde::Deserialize;
-use murmelbahn_lib::common::GraviSheetOutput;
-use murmelbahn_lib::course::common::{Course};
 
 #[derive(Debug, Deserialize)]
 pub struct GraviSheetInput {
@@ -114,17 +114,20 @@ pub struct GraviSheetInput {
     pub tile_finish_trigger: Option<i32>,
     pub tile_finish_arena: Option<i32>,
     pub tile_trigger: Option<i32>,
-    pub tile_queue: Option<i32>
+    pub tile_queue: Option<i32>,
 }
 
 macro_rules! generate_compare {
     ($field_name:ident, $self:ident, $output:ident) => {
-        compare($self.$field_name, $output.$field_name, stringify!($field_name))
-    }
+        compare(
+            $self.$field_name,
+            $output.$field_name,
+            stringify!($field_name),
+        )
+    };
 }
 
 impl GraviSheetInput {
-
     pub fn compare_with_output(&self, output: &GraviSheetOutput) {
         compare(self.layer_base, output.layer_base, "layer_base");
         // compare(self.layer_base_mini, output.layer_base_mini); IGNORE
@@ -137,8 +140,16 @@ impl GraviSheetInput {
         compare(self.stacker_small, output.stacker_small, "stacker_small");
         compare(self.stacker_large, output.stacker_large, "stacker_large");
         compare(self.stacker_angled, output.stacker_angled, "stacker_angled");
-        compare(self.stacker_tower_closed, output.stacker_tower_closed, "stacker_tower_closed");
-        compare(self.stacker_tower_opened, output.stacker_tower_opened, "stacker_tower_opened");
+        compare(
+            self.stacker_tower_closed,
+            output.stacker_tower_closed,
+            "stacker_tower_closed",
+        );
+        compare(
+            self.stacker_tower_opened,
+            output.stacker_tower_opened,
+            "stacker_tower_opened",
+        );
 
         generate_compare!(wall_short, self, output);
         generate_compare!(wall_medium, self, output);
@@ -228,15 +239,11 @@ impl GraviSheetInput {
         generate_compare!(tile_trigger, self, output);
         generate_compare!(tile_queue, self, output);
     }
-
-
 }
 
 fn compare(a: Option<i32>, b: i32, msg: &str) {
     a.map(|val| assert_eq!(val, b, "{}", msg));
 }
-
-
 
 #[test]
 fn test_parse_all() {
