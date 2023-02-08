@@ -41,14 +41,14 @@ impl CourseRepo {
         // Check if we already have it in the database
         info!("Request for course: {}", course_code);
 
-        let course = self.course_from_db(&course_code).await?;
+        let course = self.course_from_db(course_code).await?;
 
         match course {
             None => {
                 info!("{} not found in cache, downloading", course_code);
                 increment_counter!("murmelbahn.course.cache.miss");
 
-                Ok(Some(self.download_and_cache_course(&course_code).await?))
+                Ok(Some(self.download_and_cache_course(course_code).await?))
             }
             Some(course) => {
                 debug!("Serving {} from cache", course_code);

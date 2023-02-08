@@ -448,8 +448,7 @@ impl TryFrom<Course> for AppBillOfMaterials {
         for rail_construction_datum in value.rail_construction_data.iter() {
             // As far as I know `Straight` rails are the only ones that come in different length but are only
             // encoded as a single enum variant.
-            let rail_kind = if &rail_construction_datum.rail_kind == &PersistenceRailKind::Straight
-            {
+            let rail_kind = if rail_construction_datum.rail_kind == PersistenceRailKind::Straight {
                 // A rail has two ends/exits, both are located on a layer,
                 // the layer in question is found in the `retainer_id` field
                 let exit_1_world_pos = context.local_to_world_hex_vector(
@@ -495,7 +494,7 @@ impl TryFrom<Course> for AppBillOfMaterials {
 /// This is not an associated function to make it easier to test in isolation.
 fn process_layer_construction_data(
     layers: &[LayerConstructionData],
-    mut context: &mut CountContext,
+    context: &mut CountContext,
 ) -> MurmelbahnResult<()> {
     for layer in layers.iter() {
         trace!(
@@ -518,7 +517,7 @@ fn process_layer_construction_data(
                 &cell.tree_node_data,
                 &world_cell_position,
                 height.upper,
-                &mut context,
+                context,
             );
         }
     }
@@ -622,7 +621,7 @@ fn process_pillar_construction_data(
     }
 }
 
-fn process_wall_construction_data(walls: &[WallConstructionData], mut context: &mut CountContext) {
+fn process_wall_construction_data(walls: &[WallConstructionData], context: &mut CountContext) {
     for wall in walls.iter() {
         context.add_tile(
             TileKind::Balcony,
@@ -640,9 +639,9 @@ fn process_wall_construction_data(walls: &[WallConstructionData], mut context: &
 
         // Distance in fields -1 because we usually want to know how long a thing needs to be between
         // both cells (e.g. rails and walls)
-        let distance = tower_1_world_pos.distance(&tower_2_world_pos) - 1;
+        let distance = tower_1_world_pos.distance(tower_2_world_pos) - 1;
 
-        let wall_direction = hex_direction(&tower_1_world_pos, &tower_2_world_pos);
+        let wall_direction = hex_direction(tower_1_world_pos, tower_2_world_pos);
 
         trace!("Wall:\n{:#?}", wall);
         trace!(
@@ -675,7 +674,7 @@ fn process_wall_construction_data(walls: &[WallConstructionData], mut context: &
                     &cell_construction_data.tree_node_data,
                     &balcony_world_hex_vector,
                     0,
-                    &mut context,
+                    context,
                 );
             }
         }

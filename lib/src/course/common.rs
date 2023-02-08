@@ -111,8 +111,7 @@ impl HexVector {
         let dx = (self.x - to.x).abs();
         let dy = (self.y - to.y).abs();
 
-        let distance = dx + max(0, dy - dx);
-        distance
+        dx + max(0, dy - dx)
     }
 }
 

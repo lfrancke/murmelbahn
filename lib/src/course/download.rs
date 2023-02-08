@@ -18,10 +18,7 @@ impl CourseDownloadResponse {
 }
 
 pub fn download_course(code: &str) -> MurmelbahnResult<CourseDownloadResponse> {
-    let url = format!(
-        "https://gravitrax.link.ravensburger.com/api/download/{}",
-        code
-    );
+    let url = format!("https://gravitrax.link.ravensburger.com/api/download/{code}");
     reqwest::blocking::get(url)
         .context(DownloadFailedSnafu {
             course: code.to_string(),

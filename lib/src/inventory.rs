@@ -31,28 +31,28 @@ impl From<AppBillOfMaterials> for PhysicalBillOfMaterials {
             let entry = elements
                 .entry(SetContentElement::element_for_layerkind(layer_kind))
                 .or_insert(0);
-            *entry += layer_count.clone();
+            *entry += layer_count;
         }
 
         for (wall_kind, wall_count) in bom.walls.iter() {
             let entry = elements
                 .entry(SetContentElement::element_for_wallkind(wall_kind))
                 .or_insert(0);
-            *entry += wall_count.clone();
+            *entry += wall_count;
         }
 
         for (rail_kind, rail_count) in bom.rails.iter() {
             let entry = elements
                 .entry(SetContentElement::element_for_railkind(rail_kind))
                 .or_insert(0);
-            *entry += rail_count.clone();
+            *entry += rail_count;
         }
 
         for (tile_kind, tile_count) in bom.tiles.iter() {
             let converted_element = SetContentElement::elements_for_tilekind(tile_kind);
             for element in converted_element {
                 let entry = elements.entry(element).or_insert(0);
-                *entry += tile_count.clone();
+                *entry += tile_count;
             }
         }
 
@@ -72,7 +72,7 @@ impl PhysicalBillOfMaterials {
             match set_repo.sets.get(set_name) {
                 None => {
                     return Err(MurmelbahnError::MiscError {
-                        msg: format!("Set [{}] is not known, can't summarize", set_name),
+                        msg: format!("Set [{set_name}] is not known, can't summarize"),
                     })
                 }
                 Some(set) => {
@@ -440,6 +440,6 @@ impl PhysicalBillOfMaterials {
 
      */
     pub fn count_of(&self, element: SetContentElement) -> i32 {
-        self.elements.get(&element).unwrap_or(&0).clone()
+        *self.elements.get(&element).unwrap_or(&0)
     }
 }

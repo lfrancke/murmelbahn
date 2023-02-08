@@ -4,8 +4,7 @@
 Please do not contact Ravensburger if you have issues. Open an issue or discussion in this repository instead.
 
 This app can be used to download Gravitrax courses and see information about them, if you know the codes used in the app.
-
-There is a CLI, which is incomplete (and might be removed in the future) and a Web App, which is currently deployed at: https://murmelbahn.fly.dev
+It is a web application, currently deployed at: https://murmelbahn.fly.dev
 
 Some URLs that are supported:
 

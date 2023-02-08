@@ -58,7 +58,7 @@ pub(crate) async fn course_bom(
                         .into_response()
                 }
                 None | Some(BomFormat::Json) => Json(bom).into_response(),
-                Some(BomFormat::Rust) => format!("{:#?}", bom).into_response(),
+                Some(BomFormat::Rust) => format!("{bom:#?}").into_response(),
             })
         }
     };

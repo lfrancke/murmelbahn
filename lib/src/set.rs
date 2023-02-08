@@ -347,6 +347,12 @@ pub struct SetRepo {
     pub sets: HashMap<String, Set>,
 }
 
+impl Default for SetRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SetRepo {
     pub fn new() -> SetRepo {
         SetRepo {
@@ -372,7 +378,7 @@ impl SetRepo {
             if file_path.is_file() {
                 let set = Set::from_path(file_path)?;
                 let set_id = set.id.clone();
-                if let Some(_) = self.sets.insert(set_id.clone(), set) {
+                if self.sets.insert(set_id.clone(), set).is_some() {
                     info!(
                         "Set with ID [{}] occurs twice, will use a random one",
                         set_id
