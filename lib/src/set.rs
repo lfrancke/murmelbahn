@@ -145,7 +145,7 @@ pub enum SetContentElement {
     Turntable,
 
     // Power
-    Controler,
+    Controller,
     DomeStarter,
     Elevator,
     Lever,
