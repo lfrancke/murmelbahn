@@ -173,6 +173,7 @@ fn build_prometheus_extension() -> Extension<PrometheusHandle> {
 async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
     increment_counter!("murmelbahn.static.requests");
     let path = path.trim_start_matches('/');
+    debug!("Static path [{path}] requested");
     let mime_type = mime_guess::from_path(path).first_or_text_plain();
 
     match STATIC_DIR.get_file(path) {

@@ -4,6 +4,7 @@ use crate::set::{SetContentElement, SetRepo};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use tracing::log::trace;
 use ts_rs::TS;
 
 #[derive(Deserialize, Serialize, TS)]
@@ -104,7 +105,7 @@ impl PhysicalBillOfMaterials {
     pub fn any_missing(&self) -> bool {
         for (element, element_count) in self.elements.iter() {
             if element_count < &0 {
-                println!("{:?} is missing {}", element, element_count.abs());
+                trace!("{:?} is missing {}", element, element_count.abs());
                 return true;
             }
         }
