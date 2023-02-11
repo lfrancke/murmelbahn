@@ -103,7 +103,7 @@
     "Splash": 1,
     "StraightTunnel": 2,
     "CurveTunnel": 4,
-    "SwitchTunnel": 3,
+    "SwitchTunnel": 2,
 
     "Carousel": 0,
     "Helix": 0,
@@ -117,7 +117,7 @@
     "Lever": 0,
     "DropdownSwitch": 0,
     "FinishTrigger": 0,
-    "FinishArena": 0,
+    "FinishArena": 1,
     "Trigger": 0,
     "Queue": 0
   }
