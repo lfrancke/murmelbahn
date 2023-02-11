@@ -46,6 +46,6 @@
 <footer class="footer p-10 bg-neutral text-neutral-content">
   <div>
     <p><a href="https://github.com/lfrancke/murmelbahn">Built by Lars Francke | Source and contact information on
-      Github</a></p>
+      Github</a> - <a href="https://github.com/lfrancke/murmelbahn/blob/main/CHANGELOG.md">Changelog</a></p>
   </div>
 </footer>
