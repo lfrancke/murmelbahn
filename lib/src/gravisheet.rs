@@ -295,13 +295,10 @@ fn i32_to_option(value: i32) -> Option<i32> {
 }
 
 fn option_adder_helper(vec: Vec<Option<i32>>) -> Option<i32> {
-    let sum = vec
-        .into_iter()
-        .fold(Some(0), |acc, x| acc.and_then(|acc| x.map(|x| acc + x)));
-
-    if sum == Some(0) {
-        None
-    } else {
-        sum
+    let mut sum = 0;
+    for item in vec {
+        sum += item.unwrap_or(0);
     }
+
+    i32_to_option(sum)
 }
