@@ -12,14 +12,12 @@ use axum::extract::Path;
 use axum::http::{header, HeaderValue, Method, StatusCode};
 use axum::response::{IntoResponse, Redirect, Response};
 use axum::routing::get;
-use axum::{body, Extension, Json, Router};
+use axum::{body, Extension, Router};
 use clap::Parser;
 use include_dir::{include_dir, Dir};
 use metrics::increment_counter;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
-use murmelbahn_lib::error::MurmelbahnError;
-use murmelbahn_lib::set::SetRepo;
-use serde_json::json;
+use murmelbahn_lib::physical::SetRepo;
 use sqlx::postgres::PgPoolOptions;
 use std::net::SocketAddr;
 use std::path::PathBuf;
@@ -40,32 +38,7 @@ pub struct AppState {
     sets_repo: SetRepo,
 }
 
-pub enum AppError {
-    MurmelbahnLibError(MurmelbahnError),
-    ZiplineAdded2019Unsupported,
-    CourseError(course_repo::Error),
-    JsonError(serde_json::Error),
-}
-
-// Makes it possible to use `?`
-impl From<MurmelbahnError> for AppError {
-    fn from(inner: MurmelbahnError) -> Self {
-        AppError::MurmelbahnLibError(inner)
-    }
-}
-
-impl From<course_repo::Error> for AppError {
-    fn from(inner: course_repo::Error) -> Self {
-        AppError::CourseError(inner)
-    }
-}
-
-impl From<serde_json::Error> for AppError {
-    fn from(inner: serde_json::Error) -> Self {
-        AppError::JsonError(inner)
-    }
-}
-
+/*
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
@@ -93,6 +66,8 @@ impl IntoResponse for AppError {
     }
 }
 
+
+ */
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();

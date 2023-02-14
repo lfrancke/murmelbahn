@@ -1,23 +1,20 @@
 use futures::TryStreamExt;
 use metrics::increment_counter;
-use murmelbahn_lib::bom::AppBillOfMaterials;
+
+use murmelbahn_lib::app::course::SavedCourse;
+use murmelbahn_lib::app::BillOfMaterials as AppBillOfMaterials;
 use murmelbahn_lib::common::CourseCode;
-use murmelbahn_lib::course::common::{Course, SavedCourse};
-use murmelbahn_lib::inventory::{Inventory, PhysicalBillOfMaterials};
-use murmelbahn_lib::set::SetRepo;
+use murmelbahn_lib::physical::{BillOfMaterials as PhysicalBillOfMaterials, Inventory, SetRepo};
 use snafu::{ResultExt, Snafu};
 use sqlx::{Pool, Postgres, Row};
-use tokio::task::{spawn_blocking, JoinError};
 use tracing::{debug, info};
 
 #[derive(Debug, Snafu)]
 pub enum Error {
     #[snafu(display("Database error: {}", source))]
-    DatabaseError {
-        source: sqlx::Error,
-    },
+    DatabaseError { source: sqlx::Error },
     DownloadError {
-        source: JoinError,
+        source: murmelbahn_lib::app::download::Error,
     },
 }
 
@@ -80,13 +77,13 @@ impl CourseRepo {
         // Because murmelbahn_lib uses the blocking version, we'll have to wrap it here
         // I'm sure there are better ways to do this
         let code = course_code.clone();
-        match spawn_blocking(move || {
-            murmelbahn_lib::course::download::download_course(&code)
-                .unwrap() // TODO
-                .decode_base64_file()
-        })
-        .await
-        {
+        let foo = murmelbahn_lib::app::download::download_course(&code)
+            .await
+            .unwrap()
+            .unwrap()
+            .decode_base64_file();
+
+        match foo {
             Ok(course) => {
                 debug!("Successfully downloaded {}", course_code);
                 increment_counter!("murmelbahn.course.downloads.success");
@@ -115,7 +112,7 @@ impl CourseRepo {
     ) -> Result<Vec<String>, Error> {
         let mut rows = sqlx::query("SELECT code, serialized_bytes FROM courses").fetch(&self.db);
 
-        let summarized_inventory: PhysicalBillOfMaterials =
+        let summarized_inventory =
             PhysicalBillOfMaterials::from_inventory(&inventory, repo).unwrap();
 
         let mut courses = Vec::new();
@@ -124,14 +121,12 @@ impl CourseRepo {
             let code: &str = row.try_get("code").unwrap();
             let course = SavedCourse::from_bytes(&bytes).unwrap().course;
 
-            if let Course::Power2022(course) | Course::Pro2020(course) = course {
-                let app_bom = AppBillOfMaterials::try_from(course).unwrap();
-                let physical_bom = PhysicalBillOfMaterials::from(app_bom);
+            let app_bom = AppBillOfMaterials::try_from(course).unwrap();
+            let physical_bom = PhysicalBillOfMaterials::try_from(app_bom).unwrap();
 
-                let diff_bom = summarized_inventory.subtract(&physical_bom);
-                if !diff_bom.any_missing() {
-                    courses.push(code.to_string());
-                }
+            let diff_bom = summarized_inventory.subtract(&physical_bom);
+            if !diff_bom.any_missing() {
+                courses.push(code.to_string());
             }
         }
 

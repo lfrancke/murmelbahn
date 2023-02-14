@@ -1,20 +1,25 @@
 use crate::AppState;
 use axum::extract::State;
 use axum::response::IntoResponse;
-use axum::{extract, Json};
+use axum::Json;
 use metrics::increment_counter;
-use murmelbahn_lib::inventory::Inventory;
+use murmelbahn_lib::physical::Inventory;
 use std::sync::Arc;
+use axum::http::StatusCode;
 
 pub async fn buildable(
     State(state): State<Arc<AppState>>,
-    Json(inventory): extract::Json<Inventory>,
+    Json(inventory): Json<Inventory>,
 ) -> impl IntoResponse {
     increment_counter!("murmelbahn.buildable.requests");
     let result = state
         .course_repo
         .process_all(&state.sets_repo, inventory)
-        .await
-        .unwrap();
-    Json(result)
+        .await;
+
+    match result {
+        Ok(result) => Json(result).into_response(),
+        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong").into_response()
+    }
+
 }

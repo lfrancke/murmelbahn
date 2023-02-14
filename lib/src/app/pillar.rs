@@ -1,6 +1,8 @@
-use crate::course::common::HexVector;
+//! Pillars are the things holding up additional layers (e.g. the hexagonal clear plates)
 use deku::prelude::*;
 use serde::Serialize;
+
+use crate::app::course::HexVector;
 
 #[derive(Debug, DekuRead, Serialize)]
 pub struct PillarConstructionData {

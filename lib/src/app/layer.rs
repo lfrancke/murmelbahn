@@ -1,13 +1,15 @@
-use crate::course::common::{CourseSaveDataVersion, HexVector};
 use deku::prelude::*;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
+use crate::app::course::CourseSaveDataVersion;
+use crate::app::course::HexVector;
+
 #[derive(Clone, Debug, Deserialize, Eq, DekuRead, Hash, JsonSchema, PartialEq, Serialize)]
 #[deku(type = "u32")]
 pub enum LayerKind {
-    BaselayerPiece = 0,
-    Baselayer = 1,
+    BaseLayerPiece = 0,
+    BaseLayer = 1,
     LargeLayer = 2,
     LargeGhostLayer = 3,
     SmallLayer = 4,
@@ -24,7 +26,6 @@ pub enum TileKind {
     Drop = 5,
     Hammer = 6,
     Catapult = 7,
-    // Junction
     Cross = 8,
     Threeway = 9,
     TwoWay = 10,
@@ -119,7 +120,7 @@ pub struct LayerConstructionData {
 
     /// This is the absolute position of this layer in the world
     /// For baselayers this is the position of the one green cell in the corner (there is only one)
-    /// For the clear layers it is the cell in the middle
+    /// For the (hexagonal) clear layers it is the cell in the middle
     /// This position is also the reference point (0/0) for the `local_hex_positions` from the `CellConstructionData`.
     pub world_hex_position: HexVector,
 
@@ -135,11 +136,17 @@ pub struct LayerConstructionData {
 #[deku(ctx = "version: CourseSaveDataVersion")]
 pub struct CellConstructionData {
     /// This position is relative to the 0/0 position of the current layer
-    /// To make it absolute those two need to be added together
+    /// To make it absolute this needs to be added to the `world_hex_position` of the layer
     pub local_hex_position: HexVector,
 
     #[deku(ctx = "version")]
     pub tree_node_data: TileTowerTreeNodeData,
+}
+
+impl CellConstructionData {
+    pub fn world_hex_position(&self, layer: &LayerConstructionData) -> HexVector {
+        self.local_hex_position.add(&layer.world_hex_position)
+    }
 }
 
 #[deku_derive(DekuRead)]
@@ -165,14 +172,30 @@ pub struct TileTowerConstructionData {
     pub kind: TileKind,
     pub height_in_small_stacker: i32,
     pub hex_rotation: i32,
-    #[deku(
-        map = "|field: i32| -> Result<_, DekuError> { if field != -2147483647 { Ok(Some(field)) } else { Ok(None) } }"
-    )]
+    #[deku(map = "TileTowerConstructionData::map_retainer_id")]
     pub retainer_id: Option<i32>,
 
     #[deku(cond = "version == CourseSaveDataVersion::Power2022", default = "None")]
-    #[deku(
-        map = "|field: u32| -> Result<_, DekuError> { if field != 2147483648 { Ok(Some(PowerSignalMode::try_from(&field.to_le_bytes().to_vec()[..]).unwrap())) } else { Ok(None) } }"
-    )] // This is horrible!
+    #[deku(map = "TileTowerConstructionData::map_power_signal_mode")]
     pub power_signal_mode: Option<PowerSignalMode>,
+}
+
+impl TileTowerConstructionData {
+    fn map_retainer_id(field: i32) -> Result<Option<i32>, DekuError> {
+        if field != -2147483647 {
+            Ok(Some(field))
+        } else {
+            Ok(None)
+        }
+    }
+
+    fn map_power_signal_mode(field: u32) -> Result<Option<PowerSignalMode>, DekuError> {
+        if field == 2147483648 {
+            Ok(None)
+        } else {
+            let input = field.to_le_bytes();
+            let input2 = input.as_slice();
+            Ok(Some(PowerSignalMode::try_from(input2)?))
+        }
+    }
 }

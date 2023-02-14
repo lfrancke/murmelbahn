@@ -1,22 +1,27 @@
+use std::cmp::max;
+use std::path::{Path, PathBuf};
+use std::{fs, io};
+
 use deku::prelude::*;
 use serde::Serialize;
-use snafu::ResultExt;
-use std::cmp::max;
-use std::fs;
-use std::path::Path;
+use snafu::prelude::*;
 
-use crate::course::{power2022, ziplineadded2019};
-use crate::error::{DeserializeFailedSnafu, MurmelbahnResult};
+use crate::app::{power2022, ziplineadded2019};
 
-pub mod layer;
-pub mod pillar;
-pub mod rail;
-pub mod wall;
+#[derive(Debug, Snafu)]
+pub enum Error {
+    #[snafu(display("Failed to deserialize course"))]
+    DeserializationFailedError { source: DekuError },
+
+    #[snafu(display("Failed to read file [{path:?}]"))]
+    IoError { path: PathBuf, source: io::Error },
+}
 
 #[derive(Clone, Debug, DekuRead, Serialize)]
 #[deku(type = "u32")]
 pub enum CourseKind {
     None = 0,
+    // All tracks downloaded using a code from the app seem to be "Custom" cources
     Custom = 1,
     RegularEditorial = 2,
     Tutorial = 4,
@@ -124,9 +129,7 @@ pub struct CourseMetaData {
     size: u8,
 
     #[deku(count = "size")]
-    #[deku(
-        map = "|field: Vec<u8>| -> Result<_, DekuError> { Ok(std::str::from_utf8(&field).unwrap().to_owned()) }"
-    )] // This is also horrible, maybe someone can tell me a better way to do it
+    #[deku(map = "CourseMetaData::decode_title")]
     pub title: String,
 
     pub order_number: i32,
@@ -134,6 +137,20 @@ pub struct CourseMetaData {
     pub objective_kind: ObjectiveKind,
     pub difficulty: i32,
     pub completed: bool,
+}
+
+impl CourseMetaData {
+    /// This tries to decode the original title that was used by the creator in the App.
+    /// As this should always come from the App directly it _should_ not fail.
+    fn decode_title(bytes: Vec<u8>) -> Result<String, DekuError> {
+        std::str::from_utf8(&bytes)
+            .and_then(|title| Ok(title.to_string()))
+            .map_err(|source| {
+                DekuError::Parse(format!(
+                    "Could not interpret title bytes as valid UTF-8: {source}"
+                ))
+            })
+    }
 }
 
 #[derive(Debug, DekuRead, Serialize)]
@@ -145,28 +162,36 @@ pub struct SavedCourse {
 
 impl SavedCourse {
     /// Reads a serialized course from a `Path`
-    pub fn from_path<P: AsRef<Path>>(path: P) -> SavedCourse {
-        let contents = fs::read(path.as_ref()).expect("Something went wrong reading the file");
-
-        SavedCourse::from_bytes(&contents).unwrap()
+    pub fn from_path<P: AsRef<Path>>(path: P) -> Result<SavedCourse, Error> {
+        let path = path.as_ref();
+        let contents = fs::read(path).context(IoSnafu { path: path.clone() })?;
+        SavedCourse::from_bytes(&contents)
     }
 
     /// Reads a serialized course from the provided bytes.
     ///
     /// Note: This does not take an offset or return the rest as it wasn't required for my use-case.
     /// Such a method could be included easily if needed.
-    pub fn from_bytes(bytes: &[u8]) -> MurmelbahnResult<SavedCourse> {
+    pub fn from_bytes(bytes: &[u8]) -> Result<SavedCourse, Error> {
         Ok(<SavedCourse as DekuContainerRead>::from_bytes((bytes, 0))
-            .context(DeserializeFailedSnafu {})?
+            .context(DeserializationFailedSnafu)?
             .1)
     }
 }
 
+/// A `Course` is the main entry point.
+///
+/// There are multiple versions of courses which have been added over the years.
+/// Anything older than 2019 (`ZiplineAdded2019`) is not currently supported.
+/// Only courses since 2020 (`Pro2020`) have any meaningful support besides showing their contents.
+/// This is because most courses that have been created are 2020 or newer.
 #[derive(Debug, DekuRead, Serialize)]
 #[deku(ctx = "version: CourseSaveDataVersion", id = "version")]
 pub enum Course {
     #[deku(id_pat = "CourseSaveDataVersion::ZiplineAdded2019")]
-    ZiplineAdded2019(ziplineadded2019::Course),
+    ZiplineAdded2019(
+        #[deku(ctx = "CourseSaveDataVersion::ZiplineAdded2019")] ziplineadded2019::Course,
+    ),
 
     #[deku(id_pat = "CourseSaveDataVersion::Power2022")]
     Power2022(#[deku(ctx = "CourseSaveDataVersion::Power2022")] power2022::Course),

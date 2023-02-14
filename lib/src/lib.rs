@@ -1,6 +1,4 @@
-pub mod bom;
+pub mod app;
 pub mod common;
-pub mod course;
-pub mod error;
-pub mod inventory;
-pub mod set;
+pub mod gravisheet;
+pub mod physical;

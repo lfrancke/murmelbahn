@@ -1,12 +1,12 @@
-use crate::course::common::layer::{LayerKind, TileKind};
-use crate::course::common::pillar::PillarConstructionData;
-use crate::course::common::rail::RailKind;
-use crate::course::common::{CourseElementGeneration, CourseMetaData, HexVector};
 use deku::prelude::*;
 use serde::Serialize;
 
-// TODO: TileTowerTreeNodeData FromPreProSaveGameData(PreProTileTowerConstructionData oldData)
-// That would be a fn from_ziplineadded2019_constructiondata(construction_data: CellConstructionDataZiplineAdded2019) -> CellConstructionData but we'd also need on for Course itself...
+use crate::app::course::{
+    CourseElementGeneration, CourseMetaData, CourseSaveDataVersion, HexVector,
+};
+use crate::app::layer::{LayerKind, TileKind};
+use crate::app::pillar::PillarConstructionData;
+use crate::app::rail::RailConstructionData;
 
 #[derive(Debug, DekuRead, Serialize)]
 #[deku(type = "u32")]
@@ -18,6 +18,7 @@ pub enum RopeKind {
 
 #[deku_derive(DekuRead)]
 #[derive(Debug, Serialize)]
+#[deku(ctx = "version: CourseSaveDataVersion")]
 pub struct Course {
     pub meta_data: CourseMetaData,
 
@@ -28,6 +29,7 @@ pub struct Course {
 
     #[deku(temp)]
     rail_construction_data_size: u32,
+    #[deku(ctx = "version")]
     #[deku(count = "rail_construction_data_size")]
     pub rail_construction_data: Vec<RailConstructionData>,
 
@@ -78,19 +80,4 @@ pub struct RopeConstructionData {
     pub end_tile_layer_index: u32,
     pub end_tile_local_hex_pos: HexVector,
     pub rope_kind: RopeKind,
-}
-
-#[derive(Debug, DekuRead, Serialize)]
-pub struct RailConstructionExitIdentifier {
-    pub retainer_id: u32,
-    pub cell_local_hex_pos: HexVector,
-    pub side_hex_rot: u32,
-}
-
-#[derive(Debug, DekuRead, Serialize)]
-pub struct RailConstructionData {
-    pub exit_1_identifier: RailConstructionExitIdentifier,
-    pub exit_2_identifier: RailConstructionExitIdentifier,
-    pub rail_kind: RailKind,
-    pub materialized: bool,
 }

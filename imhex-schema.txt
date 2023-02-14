@@ -218,11 +218,7 @@ struct TileTowerTreeNodeData {
     u32              index;
     u32              children_count;
     TileTowerConstructionData construction_data;
-
-    // This workaround won't be needed anymore in ImHex versions larger than 1.26.2
-    if (children_count > 0) {
-        TileTowerTreeNodeData children[children_count];
-    }
+    TileTowerTreeNodeData children[children_count];
 };
 
 /*

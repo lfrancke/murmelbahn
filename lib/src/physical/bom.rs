@@ -1,79 +1,101 @@
-use crate::bom::AppBillOfMaterials;
-use crate::error::{MurmelbahnError, MurmelbahnResult};
-use crate::set::{SetContentElement, SetRepo};
+use crate::app::layer::LayerKind;
+use crate::app::rail::RailKind;
+use crate::app::BillOfMaterials as AppBillOfMaterials;
+use crate::physical::set::SetRepo;
+use crate::physical::{Element, Inventory};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use snafu::{ResultExt, Snafu};
 use std::collections::HashMap;
-use tracing::log::trace;
-use ts_rs::TS;
+use tracing::trace;
 
-#[derive(Deserialize, Serialize, TS)]
-#[ts(export)]
-pub struct Inventory {
-    #[serde(default)]
-    pub sets: HashMap<String, i32>,
+#[derive(Debug, Snafu)]
+pub enum Error {
+    #[snafu(display("Set [{id}] mentioned in inventory could not be found"))]
+    SetUnknown { id: String },
 
-    #[serde(default)]
-    pub extra_elements: HashMap<SetContentElement, i32>,
+    #[snafu(display(
+        "LayerKind [{layer_kind:?}] could not be converted into an element, this should not happen"
+    ))]
+    UnknownLayerKind {
+        layer_kind: LayerKind,
+        source: crate::physical::element::Error,
+    },
+
+    #[snafu(display(
+        "RailKind [{rail_kind:?}] could not be converted into an element, this should not happen"
+    ))]
+    UnknownRailKind {
+        rail_kind: RailKind,
+        source: crate::physical::element::Error,
+    },
 }
 
-/// This is the physical counterpart to [`AppBillOfMaterials`].
+/// This is the physical counterpart to [`app::bom::BillOfMaterials`].
 /// It contains a list of physical elements that you own or that are needed to build a track.
 #[derive(Clone, Debug, Deserialize, Serialize, JsonSchema)]
-pub struct PhysicalBillOfMaterials {
-    pub elements: HashMap<SetContentElement, i32>,
+pub struct BillOfMaterials {
+    pub elements: HashMap<Element, i32>,
 }
 
-impl From<AppBillOfMaterials> for PhysicalBillOfMaterials {
-    fn from(bom: AppBillOfMaterials) -> Self {
-        let mut elements: HashMap<SetContentElement, i32> = HashMap::new();
+impl TryFrom<AppBillOfMaterials> for BillOfMaterials {
+    type Error = Error;
 
+    fn try_from(bom: AppBillOfMaterials) -> Result<Self, Error> {
+        let mut elements: HashMap<Element, i32> = HashMap::new();
+
+        // Convert all layers to elements
+        // This can, in theory, fail if we don't keep the LayerKind enum in sync with the Element enum
         for (layer_kind, layer_count) in bom.layers.iter() {
             let entry = elements
-                .entry(SetContentElement::element_for_layerkind(layer_kind))
+                .entry(
+                    Element::try_from(layer_kind).context(UnknownLayerKindSnafu {
+                        layer_kind: layer_kind.clone(),
+                    })?,
+                )
                 .or_insert(0);
             *entry += layer_count;
         }
 
         for (wall_kind, wall_count) in bom.walls.iter() {
-            let entry = elements
-                .entry(SetContentElement::element_for_wallkind(wall_kind))
-                .or_insert(0);
+            let entry = elements.entry(Element::from(wall_kind)).or_insert(0);
             *entry += wall_count;
         }
 
         for (rail_kind, rail_count) in bom.rails.iter() {
             let entry = elements
-                .entry(SetContentElement::element_for_railkind(rail_kind))
+                .entry(Element::try_from(rail_kind).context(UnknownRailKindSnafu {
+                    rail_kind: rail_kind.clone(),
+                })?)
                 .or_insert(0);
             *entry += rail_count;
         }
 
         for (tile_kind, tile_count) in bom.tiles.iter() {
-            let converted_element = SetContentElement::elements_for_tilekind(tile_kind);
+            let converted_element = Element::elements_for_tilekind(tile_kind);
             for element in converted_element {
                 let entry = elements.entry(element).or_insert(0);
                 *entry += tile_count;
             }
         }
 
-        PhysicalBillOfMaterials { elements }
+        Ok(BillOfMaterials { elements })
     }
 }
 
-impl PhysicalBillOfMaterials {
+impl BillOfMaterials {
     /// This sums up all elements from an inventory
     pub fn from_inventory(
         inventory: &Inventory,
         set_repo: &SetRepo,
-    ) -> MurmelbahnResult<PhysicalBillOfMaterials> {
+    ) -> Result<BillOfMaterials, Error> {
         let mut elements = HashMap::new();
 
         for (set_name, set_count) in inventory.sets.iter() {
             match set_repo.sets.get(set_name) {
                 None => {
-                    return Err(MurmelbahnError::MiscError {
-                        msg: format!("Set [{set_name}] is not known, can't summarize"),
+                    return Err(Error::SetUnknown {
+                        id: set_name.to_string(),
                     })
                 }
                 Some(set) => {
@@ -90,10 +112,10 @@ impl PhysicalBillOfMaterials {
             *entry += element_count;
         }
 
-        Ok(PhysicalBillOfMaterials { elements })
+        Ok(BillOfMaterials { elements })
     }
 
-    pub fn subtract(&self, other: &PhysicalBillOfMaterials) -> PhysicalBillOfMaterials {
+    pub fn subtract(&self, other: &BillOfMaterials) -> BillOfMaterials {
         let mut inventory = self.clone();
         for (element, element_count) in other.elements.iter() {
             let entry = inventory.elements.entry(element.clone()).or_insert(0);
@@ -439,8 +461,10 @@ impl PhysicalBillOfMaterials {
     }
 
 
-     */
-    pub fn count_of(&self, element: SetContentElement) -> i32 {
+
+    pub fn count_of(&self, element: Element) -> i32 {
         *self.elements.get(&element).unwrap_or(&0)
     }
+
+     */
 }

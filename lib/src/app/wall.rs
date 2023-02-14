@@ -1,8 +1,26 @@
 use deku::prelude::*;
 use serde::Serialize;
 
-use crate::course::common::layer::CellConstructionData;
-use crate::course::common::{CourseSaveDataVersion, HexVector};
+use crate::app::course::{CourseSaveDataVersion, HexVector};
+use crate::app::layer::CellConstructionData;
+
+#[derive(Debug, Eq, Hash, PartialEq, Serialize)]
+pub enum WallKind {
+    StraightSmall,
+    StraightMedium,
+    StraightLarge,
+}
+
+impl WallKind {
+    pub fn straight_of_length(length: i32) -> WallKind {
+        match length {
+            1 => WallKind::StraightSmall,
+            2 => WallKind::StraightMedium,
+            3 => WallKind::StraightLarge,
+            _ => panic!("Unsupported wall length"),
+        }
+    }
+}
 
 #[derive(Debug, DekuRead, Serialize)]
 #[deku(type = "u32")]

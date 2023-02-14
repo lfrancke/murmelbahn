@@ -1,7 +1,8 @@
-use crate::course::common::HexVector;
 use deku::prelude::*;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+
+use crate::app::course::{CourseSaveDataVersion, HexVector};
 
 #[derive(Clone, Debug, Deserialize, Eq, DekuRead, Hash, JsonSchema, PartialEq, Serialize)]
 #[deku(type = "u32")]
@@ -25,16 +26,29 @@ pub enum RailKind {
 }
 
 #[derive(Debug, DekuRead, Serialize)]
+#[deku(ctx = "version: CourseSaveDataVersion")]
 pub struct RailConstructionExitIdentifier {
     pub retainer_id: i32,
     pub cell_local_hex_pos: HexVector,
     pub side_hex_rot: i32,
-    pub exit_local_pos_y: f32,
+    #[deku(
+        cond = "version == CourseSaveDataVersion::Power2022 || version == CourseSaveDataVersion::Pro2020",
+        default = "None"
+    )]
+    pub exit_local_pos_y: Option<f32>,
 }
 
 #[derive(Debug, DekuRead, Serialize)]
+#[deku(ctx = "version: CourseSaveDataVersion")]
 pub struct RailConstructionData {
+    #[deku(ctx = "version")]
     pub exit_1_identifier: RailConstructionExitIdentifier,
+    #[deku(ctx = "version")]
     pub exit_2_identifier: RailConstructionExitIdentifier,
     pub rail_kind: RailKind,
+    #[deku(
+        cond = "version == CourseSaveDataVersion::ZiplineAdded2019",
+        default = "None"
+    )]
+    pub materialized: Option<bool>,
 }

@@ -1,10 +1,11 @@
-use crate::course::common::layer::LayerConstructionData;
-use crate::course::common::pillar::PillarConstructionData;
-use crate::course::common::rail::RailConstructionData;
-use crate::course::common::wall::WallConstructionData;
-use crate::course::common::{CourseElementGeneration, CourseMetaData, CourseSaveDataVersion};
 use deku::prelude::*;
 use serde::Serialize;
+
+use crate::app::course::{CourseElementGeneration, CourseMetaData, CourseSaveDataVersion};
+use crate::app::layer::LayerConstructionData;
+use crate::app::pillar::PillarConstructionData;
+use crate::app::rail::RailConstructionData;
+use crate::app::wall::WallConstructionData;
 
 #[deku_derive(DekuRead)]
 #[derive(Debug, Serialize)]
@@ -20,6 +21,7 @@ pub struct Course {
 
     #[deku(temp)]
     rail_construction_data_size: u32,
+    #[deku(ctx = "version")]
     #[deku(count = "rail_construction_data_size")]
     pub rail_construction_data: Vec<RailConstructionData>,
 
