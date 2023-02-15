@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_dipper",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Dipper"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Dipper"
     }
   ],
   "content": {
@@ -23,7 +23,7 @@
     "MarbleSilver": 0,
     "MarbleGold": 0,
 
-    "Stacker": 0,
+    "Stacker": 4,
     "StackerSmall": 0,
     "StackerAngled": 0,
     "StackerTowerClosed": 0,
@@ -58,7 +58,7 @@
     "Cross": 0,
     "Curve": 0,
     "CurveCrossing": 0,
-    "Dipper": 0,
+    "Dipper": 1,
     "DoubleBigCurve": 0,
     "DoubleSmallCurve": 0,
     "FlexibleTwoInOneA": 0,

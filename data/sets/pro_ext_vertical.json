@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "pro_ext_vertical",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "PRO Expansion Vertical"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "PRO Erweiterung Vertical"
     }
   ],
   "content": {
@@ -26,13 +26,13 @@
     "Stacker": 0,
     "StackerSmall": 0,
     "StackerAngled": 0,
-    "StackerTowerClosed": 0,
-    "StackerTowerOpened": 0,
+    "StackerTowerClosed": 8,
+    "StackerTowerOpened": 4,
 
     "WallSmall": 0,
-    "WallMedium": 0,
-    "WallLarge": 0,
-    "Balcony": 0,
+    "WallMedium": 2,
+    "WallLarge": 2,
+    "Balcony": 18,
     "DoubleBalcony": 0,
 
     "Bernoulli": 0,

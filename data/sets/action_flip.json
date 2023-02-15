@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_flip",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Flip"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Flip"
     }
   ],
   "content": {
@@ -45,9 +45,9 @@
     "FlexTube": 0,
     "Narrow": 0,
     "Slow": 0,
-    "StraightLarge": 0,
-    "StraightMedium": 0,
-    "StraightSmall": 0,
+    "StraightLarge": 1,
+    "StraightMedium": 2,
+    "StraightSmall": 3,
     "UTurn": 0,
 
     "Bridge": 0,
@@ -63,7 +63,7 @@
     "DoubleSmallCurve": 0,
     "FlexibleTwoInOneA": 0,
     "FlexibleTwoInOneB": 0,
-    "Flip": 0,
+    "Flip": 1,
     "GoalRail": 0,
     "Hammer": 0,
     "Jumper": 0,

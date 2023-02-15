@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_flextube",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Flextube"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Flextube"
     }
   ],
   "content": {
@@ -23,7 +23,7 @@
     "MarbleSilver": 0,
     "MarbleGold": 0,
 
-    "Stacker": 0,
+    "Stacker": 4,
     "StackerSmall": 0,
     "StackerAngled": 0,
     "StackerTowerClosed": 0,
@@ -42,7 +42,7 @@
     "Catcher": 0,
     "DropHill": 0,
     "DropValley": 0,
-    "FlexTube": 0,
+    "FlexTube": 4,
     "Narrow": 0,
     "Slow": 0,
     "StraightLarge": 0,

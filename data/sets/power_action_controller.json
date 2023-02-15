@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "power_action_controller",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Power Accessory Controller"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Power Action-Stein Controller"
     }
   ],
   "content": {
@@ -111,7 +111,7 @@
     "Splitter": 0,
     "Turntable": 0,
 
-    "Controller": 0,
+    "Controller": 1,
     "DomeStarter": 0,
     "Elevator": 0,
     "Lever": 0,

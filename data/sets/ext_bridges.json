@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "ext_bridges",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Expansion Bridges"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Erweiterung Brücken"
     }
   ],
   "content": {
@@ -20,7 +20,7 @@
     "MarbleRed": 0,
     "MarbleGreen": 0,
     "MarbleBlue": 0,
-    "MarbleSilver": 0,
+    "MarbleSilver": 6,
     "MarbleGold": 0,
 
     "Stacker": 0,
@@ -43,14 +43,14 @@
     "DropHill": 0,
     "DropValley": 0,
     "FlexTube": 0,
-    "Narrow": 0,
-    "Slow": 0,
-    "StraightLarge": 0,
-    "StraightMedium": 0,
-    "StraightSmall": 0,
+    "Narrow": 2,
+    "Slow": 2,
+    "StraightLarge": 1,
+    "StraightMedium": 2,
+    "StraightSmall": 3,
     "UTurn": 0,
 
-    "Bridge": 0,
+    "Bridge": 3,
     "Cannon": 0,
     "Cascade": 0,
     "Catapult": 0,

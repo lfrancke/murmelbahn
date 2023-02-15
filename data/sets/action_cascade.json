@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_cascade",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Scoop"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Kaskade"
     }
   ],
   "content": {
@@ -45,14 +45,14 @@
     "FlexTube": 0,
     "Narrow": 0,
     "Slow": 0,
-    "StraightLarge": 0,
-    "StraightMedium": 0,
-    "StraightSmall": 0,
+    "StraightLarge": 1,
+    "StraightMedium": 2,
+    "StraightSmall": 3,
     "UTurn": 0,
 
     "Bridge": 0,
     "Cannon": 0,
-    "Cascade": 0,
+    "Cascade": 1,
     "Catapult": 0,
     "ColorSwap": 0,
     "Cross": 0,

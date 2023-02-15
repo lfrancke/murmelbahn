@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "power_action_switchtrigger",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Power Accessory Switch & Trigger"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Power Action-Stein Switch & Trigger"
     }
   ],
   "content": {
@@ -112,13 +112,13 @@
     "Turntable": 0,
 
     "Controller": 0,
-    "DomeStarter": 0,
+    "DomeStarter": 1,
     "Elevator": 0,
     "Lever": 0,
-    "DropdownSwitch": 0,
+    "DropdownSwitch": 1,
     "FinishTrigger": 0,
     "FinishArena": 0,
-    "Trigger": 0,
+    "Trigger": 1,
     "Queue": 0
   }
 }

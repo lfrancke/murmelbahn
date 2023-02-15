@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "power_ext_interaction",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Power Expansion Interaction"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Power Erweiterung Interaction"
     }
   ],
   "content": {
@@ -111,14 +111,14 @@
     "Splitter": 0,
     "Turntable": 0,
 
-    "Controller": 0,
-    "DomeStarter": 0,
-    "Elevator": 0,
-    "Lever": 0,
-    "DropdownSwitch": 0,
-    "FinishTrigger": 0,
-    "FinishArena": 0,
-    "Trigger": 0,
-    "Queue": 0
+    "Controller": 1,
+    "DomeStarter": 1,
+    "Elevator": 1,
+    "Lever": 1,
+    "DropdownSwitch": 1,
+    "FinishTrigger": 1,
+    "FinishArena": 1,
+    "Trigger": 1,
+    "Queue": 2
   }
 }

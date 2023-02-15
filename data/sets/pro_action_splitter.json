@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "pro_action_splitter",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "PRO Accessory Splitter"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "PRO Action-Stein Splitter"
     }
   ],
   "content": {
@@ -108,7 +108,7 @@
     "Carousel": 0,
     "Helix": 0,
     "Mixer": 0,
-    "Splitter": 0,
+    "Splitter": 1,
     "Turntable": 0,
 
     "Controller": 0,

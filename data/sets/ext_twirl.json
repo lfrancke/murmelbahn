@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "ext_twirl",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Expansion Twirl"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Erweiterung Twirl"
     }
   ],
   "content": {
@@ -17,9 +17,9 @@
     "MiniBaseLayer": 0,
     "HalfMiniBaseLayer": 0,
 
-    "MarbleRed": 0,
-    "MarbleGreen": 0,
-    "MarbleBlue": 0,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
     "MarbleSilver": 0,
     "MarbleGold": 0,
 
@@ -42,13 +42,13 @@
     "Catcher": 0,
     "DropHill": 0,
     "DropValley": 0,
-    "FlexTube": 0,
+    "FlexTube": 4,
     "Narrow": 0,
     "Slow": 0,
     "StraightLarge": 0,
     "StraightMedium": 0,
     "StraightSmall": 0,
-    "UTurn": 0,
+    "UTurn": 2,
 
     "Bridge": 0,
     "Cannon": 0,
@@ -64,7 +64,7 @@
     "FlexibleTwoInOneA": 0,
     "FlexibleTwoInOneB": 0,
     "Flip": 0,
-    "GoalRail": 0,
+    "GoalRail": 1,
     "Hammer": 0,
     "Jumper": 0,
     "LiftEntrance": 0,
@@ -74,36 +74,36 @@
     "MultiJunction": 0,
     "RibbonCurve": 0,
     "Spinner": 0,
-    "SpiralBase": 0,
-    "SpiralCurve": 0,
-    "SpiralEntrance": 0,
+    "SpiralBase": 2,
+    "SpiralCurve": 12,
+    "SpiralEntrance": 2,
     "Starter": 0,
     "StraightCurveCrossing": 0,
-    "SwitchInsert": 0,
+    "SwitchInsert": 2,
     "ThreeEntranceFunnel": 0,
-    "ThreeWay": 0,
+    "ThreeWay": 1,
     "TipTube": 0,
     "Trampoline": 0,
     "Transfer": 0,
     "TripleSmallCurve": 0,
-    "TwoEntranceFunnel": 0,
+    "TwoEntranceFunnel": 1,
     "TwoInOneSmallCurveA": 0,
     "TwoInOneSmallCurveB": 0,
-    "TwoWay": 0,
+    "TwoWay": 2,
     "Volcano": 0,
     "Zipline": 0,
 
-    "BasicClosed": 0,
-    "BasicOpen": 0,
-    "BasicStraight": 0,
+    "BasicClosed": 1,
+    "BasicOpen": 9,
+    "BasicStraight": 2,
 
-    "GoalBasin": 0,
-    "Catch": 0,
-    "Drop": 0,
-    "Splash": 0,
-    "StraightTunnel": 0,
-    "CurveTunnel": 0,
-    "SwitchTunnel": 0,
+    "GoalBasin": 1,
+    "Catch": 2,
+    "Drop": 1,
+    "Splash": 1,
+    "StraightTunnel": 2,
+    "CurveTunnel": 4,
+    "SwitchTunnel": 2,
 
     "Carousel": 0,
     "Helix": 0,

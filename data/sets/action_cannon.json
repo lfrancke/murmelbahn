@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_cannon",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Magnetic Cannon"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Gauß-Kanone"
     }
   ],
   "content": {
@@ -17,9 +17,9 @@
     "MiniBaseLayer": 0,
     "HalfMiniBaseLayer": 0,
 
-    "MarbleRed": 0,
-    "MarbleGreen": 0,
-    "MarbleBlue": 0,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
     "MarbleSilver": 0,
     "MarbleGold": 0,
 
@@ -51,7 +51,7 @@
     "UTurn": 0,
 
     "Bridge": 0,
-    "Cannon": 0,
+    "Cannon": 1,
     "Cascade": 0,
     "Catapult": 0,
     "ColorSwap": 0,

@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_hammer",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Hammer"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Hammer"
     }
   ],
   "content": {
@@ -45,9 +45,9 @@
     "FlexTube": 0,
     "Narrow": 0,
     "Slow": 0,
-    "StraightLarge": 0,
-    "StraightMedium": 0,
-    "StraightSmall": 0,
+    "StraightLarge": 1,
+    "StraightMedium": 2,
+    "StraightSmall": 3,
     "UTurn": 0,
 
     "Bridge": 0,
@@ -65,7 +65,7 @@
     "FlexibleTwoInOneB": 0,
     "Flip": 0,
     "GoalRail": 0,
-    "Hammer": 0,
+    "Hammer": 1,
     "Jumper": 0,
     "LiftEntrance": 0,
     "LiftHeightTube": 0,

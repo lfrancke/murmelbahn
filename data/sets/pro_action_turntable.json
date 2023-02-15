@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "pro_action_turntable",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "PRO Accessory Turntable"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "PRO Action-Stein Turntable"
     }
   ],
   "content": {
@@ -109,7 +109,7 @@
     "Helix": 0,
     "Mixer": 0,
     "Splitter": 0,
-    "Turntable": 0,
+    "Turntable": 1,
 
     "Controller": 0,
     "DomeStarter": 0,

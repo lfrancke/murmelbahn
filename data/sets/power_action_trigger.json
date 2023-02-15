@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "power_action_trigger",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Power Accessory Trigger"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Power Action-Stein Trigger"
     }
   ],
   "content": {
@@ -118,7 +118,7 @@
     "DropdownSwitch": 0,
     "FinishTrigger": 0,
     "FinishArena": 0,
-    "Trigger": 0,
+    "Trigger": 1,
     "Queue": 0
   }
 }

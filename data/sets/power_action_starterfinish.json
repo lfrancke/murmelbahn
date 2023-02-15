@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "power_action_starterfinish",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Power Accessory Starter & Finish"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Power Action-Stein Starter & Finish"
     }
   ],
   "content": {
@@ -112,12 +112,12 @@
     "Turntable": 0,
 
     "Controller": 0,
-    "DomeStarter": 0,
+    "DomeStarter": 1,
     "Elevator": 0,
     "Lever": 0,
     "DropdownSwitch": 0,
-    "FinishTrigger": 0,
-    "FinishArena": 0,
+    "FinishTrigger": 1,
+    "FinishArena": 1,
     "Trigger": 0,
     "Queue": 0
   }

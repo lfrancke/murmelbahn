@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_looping",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Looping"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Looping"
     }
   ],
   "content": {
@@ -45,9 +45,9 @@
     "FlexTube": 0,
     "Narrow": 0,
     "Slow": 0,
-    "StraightLarge": 0,
-    "StraightMedium": 0,
-    "StraightSmall": 0,
+    "StraightLarge": 1,
+    "StraightMedium": 2,
+    "StraightSmall": 3,
     "UTurn": 0,
 
     "Bridge": 0,
@@ -70,7 +70,7 @@
     "LiftEntrance": 0,
     "LiftHeightTube": 0,
     "LiftExit": 0,
-    "Loop": 0,
+    "Loop": 1,
     "MultiJunction": 0,
     "RibbonCurve": 0,
     "Spinner": 0,

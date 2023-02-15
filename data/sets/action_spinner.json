@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_spinner",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Balls & Spinner"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Balls & Spinner"
     }
   ],
   "content": {
@@ -17,10 +17,10 @@
     "MiniBaseLayer": 0,
     "HalfMiniBaseLayer": 0,
 
-    "MarbleRed": 0,
-    "MarbleGreen": 0,
-    "MarbleBlue": 0,
-    "MarbleSilver": 0,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "MarbleSilver": 3,
     "MarbleGold": 0,
 
     "Stacker": 0,
@@ -73,7 +73,7 @@
     "Loop": 0,
     "MultiJunction": 0,
     "RibbonCurve": 0,
-    "Spinner": 0,
+    "Spinner": 1,
     "SpiralBase": 0,
     "SpiralCurve": 0,
     "SpiralEntrance": 0,

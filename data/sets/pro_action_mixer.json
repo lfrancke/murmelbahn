@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "pro_action_mixer",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "PRO Accessory Mixer"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "PRO Action-Stein Mixer"
     }
   ],
   "content": {
@@ -80,7 +80,7 @@
     "Starter": 0,
     "StraightCurveCrossing": 0,
     "SwitchInsert": 0,
-    "ThreeEntranceFunnel": 0,
+    "ThreeEntranceFunnel": 1,
     "ThreeWay": 0,
     "TipTube": 0,
     "Trampoline": 0,
@@ -107,7 +107,7 @@
 
     "Carousel": 0,
     "Helix": 0,
-    "Mixer": 0,
+    "Mixer": 1,
     "Splitter": 0,
     "Turntable": 0,
 

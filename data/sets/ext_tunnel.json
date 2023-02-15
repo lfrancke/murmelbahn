@@ -1,17 +1,17 @@
 {
-  "id": "",
+  "id": "ext_tunnel",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Expansion Tunnel"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Erweiterung Tunnel"
     }
   ],
   "content": {
-    "BaseLayer": 0,
+    "BaseLayer": 2,
     "SmallClearLayer": 0,
     "LargeClearLayer": 0,
     "MiniBaseLayer": 0,
@@ -35,20 +35,20 @@
     "Balcony": 0,
     "DoubleBalcony": 0,
 
-    "Bernoulli": 0,
+    "Bernoulli": 2,
     "BernoulliSmallLeft": 0,
     "BernoulliSmallRight": 0,
     "BernoulliSmallStraight": 0,
-    "Catcher": 0,
-    "DropHill": 0,
-    "DropValley": 0,
+    "Catcher": 2,
+    "DropHill": 1,
+    "DropValley": 1,
     "FlexTube": 0,
     "Narrow": 0,
     "Slow": 0,
     "StraightLarge": 0,
     "StraightMedium": 0,
     "StraightSmall": 0,
-    "UTurn": 0,
+    "UTurn": 2,
 
     "Bridge": 0,
     "Cannon": 0,
@@ -94,16 +94,16 @@
     "Zipline": 0,
 
     "BasicClosed": 0,
-    "BasicOpen": 0,
-    "BasicStraight": 0,
+    "BasicOpen": 6,
+    "BasicStraight": 2,
 
     "GoalBasin": 0,
     "Catch": 0,
     "Drop": 0,
     "Splash": 0,
-    "StraightTunnel": 0,
-    "CurveTunnel": 0,
-    "SwitchTunnel": 0,
+    "StraightTunnel": 2,
+    "CurveTunnel": 4,
+    "SwitchTunnel": 2,
 
     "Carousel": 0,
     "Helix": 0,

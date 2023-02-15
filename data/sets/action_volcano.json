@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_volcano",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Volcano"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Vulkan"
     }
   ],
   "content": {
@@ -45,9 +45,9 @@
     "FlexTube": 0,
     "Narrow": 0,
     "Slow": 0,
-    "StraightLarge": 0,
-    "StraightMedium": 0,
-    "StraightSmall": 0,
+    "StraightLarge": 1,
+    "StraightMedium": 2,
+    "StraightSmall": 3,
     "UTurn": 0,
 
     "Bridge": 0,
@@ -90,7 +90,7 @@
     "TwoInOneSmallCurveA": 0,
     "TwoInOneSmallCurveB": 0,
     "TwoWay": 0,
-    "Volcano": 0,
+    "Volcano": 1,
     "Zipline": 0,
 
     "BasicClosed": 0,

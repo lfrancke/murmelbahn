@@ -1,29 +1,29 @@
 {
-  "id": "",
+  "id": "game_impact",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "The Game: Impact"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "The Game: Impact"
     }
   ],
   "content": {
     "BaseLayer": 0,
     "SmallClearLayer": 0,
     "LargeClearLayer": 0,
-    "MiniBaseLayer": 0,
+    "MiniBaseLayer": 3,
     "HalfMiniBaseLayer": 0,
 
-    "MarbleRed": 0,
+    "MarbleRed": 1,
     "MarbleGreen": 0,
     "MarbleBlue": 0,
     "MarbleSilver": 0,
     "MarbleGold": 0,
 
-    "Stacker": 0,
+    "Stacker": 4,
     "StackerSmall": 0,
     "StackerAngled": 0,
     "StackerTowerClosed": 0,
@@ -45,9 +45,9 @@
     "FlexTube": 0,
     "Narrow": 0,
     "Slow": 0,
-    "StraightLarge": 0,
-    "StraightMedium": 0,
-    "StraightSmall": 0,
+    "StraightLarge": 2,
+    "StraightMedium": 2,
+    "StraightSmall": 3,
     "UTurn": 0,
 
     "Bridge": 0,
@@ -55,8 +55,8 @@
     "Cascade": 0,
     "Catapult": 0,
     "ColorSwap": 0,
-    "Cross": 0,
-    "Curve": 0,
+    "Cross": 1,
+    "Curve": 7,
     "CurveCrossing": 0,
     "Dipper": 0,
     "DoubleBigCurve": 0,
@@ -65,7 +65,7 @@
     "FlexibleTwoInOneB": 0,
     "Flip": 0,
     "GoalRail": 0,
-    "Hammer": 0,
+    "Hammer": 1,
     "Jumper": 0,
     "LiftEntrance": 0,
     "LiftHeightTube": 0,
@@ -77,7 +77,7 @@
     "SpiralBase": 0,
     "SpiralCurve": 0,
     "SpiralEntrance": 0,
-    "Starter": 0,
+    "Starter": 1,
     "StraightCurveCrossing": 0,
     "SwitchInsert": 0,
     "ThreeEntranceFunnel": 0,
@@ -93,11 +93,11 @@
     "Volcano": 0,
     "Zipline": 0,
 
-    "BasicClosed": 0,
+    "BasicClosed": 1,
     "BasicOpen": 0,
     "BasicStraight": 0,
 
-    "GoalBasin": 0,
+    "GoalBasin": 1,
     "Catch": 0,
     "Drop": 0,
     "Splash": 0,

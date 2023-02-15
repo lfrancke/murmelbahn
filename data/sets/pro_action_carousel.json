@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "pro_action_carousel",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "PRO Accessory Carousel"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "PRO Action-Stein Carousel"
     }
   ],
   "content": {
@@ -105,7 +105,7 @@
     "CurveTunnel": 0,
     "SwitchTunnel": 0,
 
-    "Carousel": 0,
+    "Carousel": 1,
     "Helix": 0,
     "Mixer": 0,
     "Splitter": 0,

@@ -1,19 +1,19 @@
 {
-  "id": "",
+  "id": "ext_buildings",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Expansion Building"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Erweiterung Bauen"
     }
   ],
   "content": {
-    "BaseLayer": 0,
+    "BaseLayer": 2,
     "SmallClearLayer": 0,
-    "LargeClearLayer": 0,
+    "LargeClearLayer": 1,
     "MiniBaseLayer": 0,
     "HalfMiniBaseLayer": 0,
 
@@ -23,8 +23,8 @@
     "MarbleSilver": 0,
     "MarbleGold": 0,
 
-    "Stacker": 0,
-    "StackerSmall": 0,
+    "Stacker": 8,
+    "StackerSmall": 4,
     "StackerAngled": 0,
     "StackerTowerClosed": 0,
     "StackerTowerOpened": 0,
@@ -64,7 +64,7 @@
     "FlexibleTwoInOneA": 0,
     "FlexibleTwoInOneB": 0,
     "Flip": 0,
-    "GoalRail": 0,
+    "GoalRail": 1,
     "Hammer": 0,
     "Jumper": 0,
     "LiftEntrance": 0,
@@ -79,28 +79,28 @@
     "SpiralEntrance": 0,
     "Starter": 0,
     "StraightCurveCrossing": 0,
-    "SwitchInsert": 0,
+    "SwitchInsert": 2,
     "ThreeEntranceFunnel": 0,
-    "ThreeWay": 0,
+    "ThreeWay": 1,
     "TipTube": 0,
     "Trampoline": 0,
     "Transfer": 0,
     "TripleSmallCurve": 0,
-    "TwoEntranceFunnel": 0,
+    "TwoEntranceFunnel": 1,
     "TwoInOneSmallCurveA": 0,
     "TwoInOneSmallCurveB": 0,
-    "TwoWay": 0,
+    "TwoWay": 2,
     "Volcano": 0,
     "Zipline": 0,
 
-    "BasicClosed": 0,
-    "BasicOpen": 0,
+    "BasicClosed": 1,
+    "BasicOpen": 3,
     "BasicStraight": 0,
 
-    "GoalBasin": 0,
-    "Catch": 0,
-    "Drop": 0,
-    "Splash": 0,
+    "GoalBasin": 1,
+    "Catch": 2,
+    "Drop": 1,
+    "Splash": 1,
     "StraightTunnel": 0,
     "CurveTunnel": 0,
     "SwitchTunnel": 0,

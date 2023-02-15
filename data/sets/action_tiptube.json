@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_tiptube",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Tip Tube"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein TipTube"
     }
   ],
   "content": {
@@ -45,9 +45,9 @@
     "FlexTube": 0,
     "Narrow": 0,
     "Slow": 0,
-    "StraightLarge": 0,
-    "StraightMedium": 0,
-    "StraightSmall": 0,
+    "StraightLarge": 1,
+    "StraightMedium": 2,
+    "StraightSmall": 3,
     "UTurn": 0,
 
     "Bridge": 0,
@@ -82,7 +82,7 @@
     "SwitchInsert": 0,
     "ThreeEntranceFunnel": 0,
     "ThreeWay": 0,
-    "TipTube": 0,
+    "TipTube": 1,
     "Trampoline": 0,
     "Transfer": 0,
     "TripleSmallCurve": 0,

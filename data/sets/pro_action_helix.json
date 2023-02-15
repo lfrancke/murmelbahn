@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "pro_action_helix",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "PRO Accessory Helix"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "PRO Action-Stein Helix"
     }
   ],
   "content": {
@@ -106,7 +106,7 @@
     "SwitchTunnel": 0,
 
     "Carousel": 0,
-    "Helix": 0,
+    "Helix": 1,
     "Mixer": 0,
     "Splitter": 0,
     "Turntable": 0,

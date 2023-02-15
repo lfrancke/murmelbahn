@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "action_spiral",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Accessory Spiral"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Action-Stein Spirale"
     }
   ],
   "content": {
@@ -74,9 +74,9 @@
     "MultiJunction": 0,
     "RibbonCurve": 0,
     "Spinner": 0,
-    "SpiralBase": 0,
-    "SpiralCurve": 0,
-    "SpiralEntrance": 0,
+    "SpiralBase": 2,
+    "SpiralCurve": 12,
+    "SpiralEntrance": 2,
     "Starter": 0,
     "StraightCurveCrossing": 0,
     "SwitchInsert": 0,

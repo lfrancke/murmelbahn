@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "ext_push",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Expansion Push"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Erweiterung Push"
     }
   ],
   "content": {
@@ -17,9 +17,9 @@
     "MiniBaseLayer": 0,
     "HalfMiniBaseLayer": 0,
 
-    "MarbleRed": 0,
-    "MarbleGreen": 0,
-    "MarbleBlue": 0,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
     "MarbleSilver": 0,
     "MarbleGold": 0,
 
@@ -65,7 +65,7 @@
     "FlexibleTwoInOneB": 0,
     "Flip": 0,
     "GoalRail": 0,
-    "Hammer": 0,
+    "Hammer": 1,
     "Jumper": 0,
     "LiftEntrance": 0,
     "LiftHeightTube": 0,
@@ -82,7 +82,7 @@
     "SwitchInsert": 0,
     "ThreeEntranceFunnel": 0,
     "ThreeWay": 0,
-    "TipTube": 0,
+    "TipTube": 1,
     "Trampoline": 0,
     "Transfer": 0,
     "TripleSmallCurve": 0,
@@ -90,7 +90,7 @@
     "TwoInOneSmallCurveA": 0,
     "TwoInOneSmallCurveB": 0,
     "TwoWay": 0,
-    "Volcano": 0,
+    "Volcano": 1,
     "Zipline": 0,
 
     "BasicClosed": 0,

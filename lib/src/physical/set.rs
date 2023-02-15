@@ -15,10 +15,13 @@ pub enum Error {
     #[snafu(display("Failed to read file [{path:?}]"))]
     FileReadError { path: PathBuf, source: io::Error },
 
-    #[snafu(display("Failed to deserialize JSON set file"))]
-    JsonDeserializationError { source: serde_json::Error },
+    #[snafu(display("Failed to deserialize JSON set file: [{path:?}]"))]
+    JsonDeserializationError {
+        path: PathBuf,
+        source: serde_json::Error,
+    },
 
-    #[snafu(display("Failed to deserialize JSON set file"))]
+    #[snafu(display("Path [{path:?}] does not exist, can't load set file"))]
     InvalidPath { path: PathBuf },
 
     #[snafu(display("IO Error while traversing directory [{dir:?}]"))]
@@ -50,7 +53,8 @@ impl Set {
         let file = File::open(path).context(FileReadSnafu { path: path.clone() })?;
         let reader = BufReader::new(file);
 
-        let set: Set = serde_json::from_reader(reader).context(JsonDeserializationSnafu)?;
+        let set: Set =
+            serde_json::from_reader(reader).context(JsonDeserializationSnafu { path })?;
         debug!("Successfully read set [{}] from file [{:?}]", set.id, path);
         Ok(set)
     }

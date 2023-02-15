@@ -1,13 +1,13 @@
 {
-  "id": "",
+  "id": "power_action_lever",
   "names": [
     {
       "language_code": "en",
-      "name": ""
+      "name": "Power Accessory Lever"
     },
     {
       "language_code": "de",
-      "name": ""
+      "name": "Power Action-Stein Lever"
     }
   ],
   "content": {
@@ -114,11 +114,11 @@
     "Controller": 0,
     "DomeStarter": 0,
     "Elevator": 0,
-    "Lever": 0,
+    "Lever": 1,
     "DropdownSwitch": 0,
     "FinishTrigger": 0,
     "FinishArena": 0,
     "Trigger": 0,
-    "Queue": 0
+    "Queue": 1
   }
 }
