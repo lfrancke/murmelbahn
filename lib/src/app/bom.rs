@@ -5,6 +5,7 @@ use crate::app::layer::{
 use crate::app::pillar::PillarConstructionData;
 use crate::app::rail::{RailConstructionData, RailKind};
 use crate::app::wall::{WallConstructionData, WallKind, WallSide};
+use crate::app::ziplineadded2019::LayerConstructionData as ZiplineLayerConstructionData;
 use serde::Serialize;
 use std::collections::HashMap;
 use tracing::{error, trace};
@@ -94,7 +95,10 @@ impl From<Course> for BillOfMaterials {
 
         match value {
             Course::ZiplineAdded2019(course) => {
-                // TODO process_layer_construction_data(&course.layer_construction_data, &mut context)?;
+                process_layer_construction_data_zipline(
+                    &course.layer_construction_data,
+                    &mut context,
+                );
                 process_pillar_construction_data(&course.pillar_construction_data, &mut context);
                 process_rail_construction_data(&course.rail_construction_data, &mut context);
             }
@@ -179,6 +183,23 @@ impl CountContext {
         retainer_height
     }
 
+    fn add_zipline_layer(&mut self, layer: &ZiplineLayerConstructionData) {
+        // Update the count
+        let entry = self.layers.entry(layer.layer_kind.clone()).or_insert(0);
+        *entry += 1;
+
+        // Then update the world position of this layer
+        // The positions at this level are already absolute ones
+        self.retainer_positions
+            .insert(layer.layer_id, layer.hex_vector.clone());
+
+        // Layer height in small stackers
+        let lower_layer_height = (layer.layer_height / TILE_HEIGHT).round() as i32;
+        let retainer_height = RetainerHeight::new(lower_layer_height, lower_layer_height + 1);
+        self.retainer_heights
+            .insert(layer.layer_id, retainer_height.clone());
+    }
+
     fn add_tiletowerconstructiondata(&mut self, tile: &TileTowerConstructionData) {
         let entry = self.tiles.entry(tile.kind.clone()).or_insert(0);
         *entry += 1;
@@ -207,6 +228,31 @@ impl CountContext {
     fn add_rail(&mut self, rail: RailKind) {
         let entry = self.rails.entry(rail).or_insert(0);
         *entry += 1;
+    }
+}
+
+fn process_layer_construction_data_zipline(
+    layers: &[ZiplineLayerConstructionData],
+    context: &mut CountContext,
+) {
+    for layer in layers {
+        trace!(
+            "Processing layer id [{}] of kind [{:?}] and height [{}] at position [{:?}]]",
+            layer.layer_id,
+            layer.layer_kind,
+            layer.layer_height,
+            layer.hex_vector
+        );
+
+        // Process the layer itself
+        context.add_zipline_layer(layer);
+
+        // And now process all tiles which is much easier here because we don't have any retainers
+        for cell in layer.cell_construction_data.iter() {
+            for tile_kind in cell.tile_kinds.iter() {
+                context.add_tile(tile_kind.clone(), 1);
+            }
+        }
     }
 }
 
