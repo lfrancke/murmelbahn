@@ -46,7 +46,10 @@ impl BillOfMaterials {
         self.rails.get(&kind).copied()
     }
 
-    pub fn marbles(&self) -> (i32, i32) {
+    /// This returns a rough estimate on how many marbles are needed.
+    /// It won't be perfect because some tiles can use more than one or none etc.
+    /// Some courses also have self-loading cannons which don't need any extras and so on.
+    pub fn marbles(&self) -> i32 {
         let zipline = self.tile_kind(TileKind::ZiplineStart).unwrap_or(0);
         let cannon = self.tile_kind(TileKind::Cannon).unwrap_or(0);
         let bridge = self.tile_kind(TileKind::Bridge).unwrap_or(0);
@@ -56,35 +59,29 @@ impl BillOfMaterials {
         let lift_large = self.tile_kind(TileKind::LiftLarge).unwrap_or(0);
         // TODO: Tiptube?
 
-        // TODO:
         // TODO: To get better number we should check how many rails/adjacent tiles there are
         // for this next group
-        /*
-        let splash = self.tile_kind(TileKind::Splash);
-        let volcano = self.tile_kind(TileKind::Volcano);
-        let spinner = self.tile_kind(TileKind::Spinner);
+        let splash = self.tile_kind(TileKind::Splash).unwrap_or(0);
+        let volcano = self.tile_kind(TileKind::Volcano).unwrap_or(0);
+        let spinner = self.tile_kind(TileKind::Spinner).unwrap_or(0);
 
-        let dome_starter = self.tile_kind(TileKind::DomeStarter);
-        let starter = self.tile_kind(TileKind::Starter);
-         */
+        let dome_starter = self.tile_kind(TileKind::DomeStarter).unwrap_or(0);
+        let starter = self.tile_kind(TileKind::Starter).unwrap_or(0);
 
-        let min_marbles = cannon * 2
+        let marble_guess = cannon * 2
             + zipline
             + color_change
             + bridge * 2
             + catapult * 4
             + lift_small * 5
-            + lift_large * 8;
+            + lift_large * 8
+            + starter
+            + spinner
+            + splash
+            + volcano
+            + dome_starter;
 
-        let max_marbles = cannon * 2
-            + zipline
-            + color_change
-            + bridge * 2
-            + catapult * 4
-            + lift_small * 5
-            + lift_large * 8;
-
-        (min_marbles, max_marbles)
+        marble_guess
     }
 }
 

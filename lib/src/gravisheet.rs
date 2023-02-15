@@ -150,7 +150,7 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             layer_base_mini_half: None,
             layer_large: bom.layer_kind(LayerKind::LargeLayer),
             layer_small: bom.layer_kind(LayerKind::SmallLayer),
-            marbles: i32_to_option(bom.marbles().1),
+            marbles: i32_to_option(bom.marbles()),
             stacker_small: bom.tile_kind(TileKind::StackerSmall),
             stacker_large: bom.tile_kind(TileKind::Stacker),
             stacker_angled,
