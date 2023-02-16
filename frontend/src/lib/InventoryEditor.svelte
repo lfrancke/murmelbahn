@@ -85,7 +85,7 @@
   <h2>Tracks you can build</h2>
   <ul>
     {#each Object.entries(buildable) as [key, value]}
-      <li><a href="/course/{value}/bom">{value}</a></li>
+      <li><a href="{apiUrl}/course/{value}/bom">{value}</a></li>
     {/each}
   </ul>
 {/if}

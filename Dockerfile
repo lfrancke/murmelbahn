@@ -12,7 +12,6 @@ RUN npm run build
 FROM rust:1.67.1 as rust_builder
 WORKDIR /usr/src/murmelbahn
 COPY . .
-COPY --from=node_builder /app/frontend/dist /usr/src/murmelbahn/frontend/dist
 RUN cargo install --path web
 
 
@@ -21,5 +20,6 @@ FROM debian:bullseye-slim
 EXPOSE 3000
 RUN apt-get update && apt-get install -y libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY --from=rust_builder /usr/local/cargo/bin/murmelbahn-web /usr/local/bin/murmelbahn-web
+COPY --from=node_builder /app/frontend/dist frontend/dist
 COPY data /data
 CMD ["murmelbahn-web"]

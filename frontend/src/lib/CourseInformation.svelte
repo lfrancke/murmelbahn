@@ -14,9 +14,9 @@
   <p>Please enter a course code to get links to detailed information</p>
 {:else}
   <ul>
-    <li><a href="{apiUrl}/api/course/{courseCode}/dump">Course dump (JSON)</a></li>
-    <li><a href="{apiUrl}/api/course/{courseCode}/bom">Bill of Materials (JSON)</a></li>
-    <li><a href="{apiUrl}/api/course/{courseCode}/bom?format=csv" target="_blank">Bill of Materials
+    <li><a href="{apiUrl}/course/{courseCode}/dump">Course dump (JSON)</a></li>
+    <li><a href="{apiUrl}/course/{courseCode}/bom">Bill of Materials (JSON)</a></li>
+    <li><a href="{apiUrl}/course/{courseCode}/bom?format=csv" target="_blank">Bill of Materials
       (Gravisheet CSV)</a></li>
   </ul>
 {/if}
