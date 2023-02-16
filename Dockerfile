@@ -9,7 +9,7 @@ RUN npm run build
 
 
 # Rust part: Backend
-FROM rust:1.66 as rust_builder
+FROM rust:1.67.1 as rust_builder
 WORKDIR /usr/src/murmelbahn
 COPY . .
 COPY --from=node_builder /app/frontend/dist /usr/src/murmelbahn/frontend/dist

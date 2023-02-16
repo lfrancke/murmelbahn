@@ -1,16 +1,17 @@
 <script lang="ts">
   import {onMount} from 'svelte';
-  import {Set} from "./models/Set";
-  import {Inventory} from "./models/Inventory";
+  import {type Set} from "./models/Set";
+  import {type Inventory} from "./models/Inventory";
   import {addMessages, getLocaleFromNavigator, init, _} from 'svelte-i18n';
 
   let data: Record<string, Set> | null = null;
   let buildable = null;
+  let apiUrl = import.meta.env.VITE_API_URL;
 
   // Fetch all sets
   // TODO: I don't know enough about Svelte, does it maybe make sense to pass these into the component instead?
   onMount(async () => {
-    const res = await fetch('/set/list');
+    const res = await fetch(`${apiUrl}/set/list`);
     data = await res.json();
 
     let acc = {};
@@ -52,7 +53,7 @@
   }
 
   async function doPost(data) {
-    const res = await fetch('/buildable', {
+    const res = await fetch(`${apiUrl}/buildable`, {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {

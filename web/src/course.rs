@@ -1,10 +1,10 @@
-use std::string::FromUtf8Error;
 use crate::course::Error::CourseNotFound;
 use crate::AppState;
 use axum::extract::{Path, Query, State};
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
+use csv::Writer;
 use metrics::increment_counter;
 use murmelbahn_lib::app::course::SavedCourse;
 use murmelbahn_lib::app::BillOfMaterials;
@@ -12,8 +12,8 @@ use murmelbahn_lib::common::CourseCode;
 use murmelbahn_lib::gravisheet::GraviSheetOutput;
 use serde::Deserialize;
 use snafu::prelude::*;
+use std::string::FromUtf8Error;
 use std::sync::Arc;
-use csv::Writer;
 use tracing::debug;
 
 #[derive(Debug, Snafu)]
@@ -33,24 +33,17 @@ pub enum Error {
 
     #[snafu(display("Error serializing response to CSV"))]
     #[snafu(context(false))]
-    CsvSerializationError {
-        source: csv::Error
-    },
+    CsvSerializationError { source: csv::Error },
 
     #[snafu(display("Error serializing response to CSV"))]
     #[snafu(context(false))]
     CsvSerializationError2 {
-        source: csv::IntoInnerError<Writer<Vec<u8>>>
+        source: csv::IntoInnerError<Writer<Vec<u8>>>,
     },
 
     #[snafu(display("Could not convert serialized CSV to UTF-8"))]
     #[snafu(context(false))]
-    Utf8Error {
-        source: FromUtf8Error
-    }
-
-
-
+    Utf8Error { source: FromUtf8Error },
 }
 
 impl IntoResponse for Error {
@@ -82,10 +75,7 @@ pub(crate) async fn course_bom(
     let course_code = CourseCode::new(course);
     debug!("Request for BOM for course [{course_code}]");
 
-    let course_bytes = state
-        .course_repo
-        .get_course_bytes(&course_code)
-        .await?;
+    let course_bytes = state.course_repo.get_course_bytes(&course_code).await?;
     let Some(course_bytes) = course_bytes  else {
         return Ok((StatusCode::NOT_FOUND, format!("Course [{}] could not be found", course_code)).into_response());
     };
@@ -123,10 +113,7 @@ pub async fn course_dump(
 
     // Could write a custom Axum extractor at some point
     let course_code = CourseCode::new(course);
-    let course_bytes = state
-        .course_repo
-        .get_course_bytes(&course_code)
-        .await?;
+    let course_bytes = state.course_repo.get_course_bytes(&course_code).await?;
 
     let Some(course_bytes) = course_bytes  else {
         return Err(CourseNotFound {course_code });

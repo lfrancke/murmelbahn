@@ -6,12 +6,10 @@ rust-version = "1.66"
 authors = ["Lars Francke"]
 
 [dependencies]
-anyhow = "1.0"
 axum = { version = "0.6", features = ["query"] }
 clap = { version = "4.1", features = ["derive", "env"] }
 csv = "1.1"
 futures = "0.3"
-include_dir = "0.7"
 metrics = "0.20"
 metrics-exporter-prometheus = "0.11"
 mime_guess = "2.0"
@@ -21,6 +19,6 @@ serde_json = "1.0"
 snafu = "0.7"
 sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "postgres" ] }
 tokio = { version = "1.24", features = ["full"] }
-tower-http = { version = "0.3", features = ["cors"] }
+tower-http = { version = "0.3", features = ["cors", "fs"] }
 tracing = "0.1"
 tracing-subscriber = "0.3"

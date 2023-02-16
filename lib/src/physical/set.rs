@@ -50,7 +50,7 @@ pub struct Set {
 impl Set {
     pub fn from_path<P: AsRef<Path>>(path: P) -> Result<Set, Error> {
         let path = path.as_ref();
-        let file = File::open(path).context(FileReadSnafu { path: path.clone() })?;
+        let file = File::open(path).context(FileReadSnafu { path })?;
         let reader = BufReader::new(file);
 
         let set: Set =

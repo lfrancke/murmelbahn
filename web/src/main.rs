@@ -7,25 +7,21 @@ use crate::buildable::buildable;
 use crate::course::{course_bom, course_dump};
 use crate::course_repo::CourseRepo;
 use crate::set::set_list;
-use axum::body::{Empty, Full};
-use axum::extract::Path;
-use axum::http::{header, HeaderValue, Method, StatusCode};
-use axum::response::{IntoResponse, Redirect, Response};
-use axum::routing::get;
-use axum::{body, Extension, Router};
+use axum::http::{header, Method, StatusCode};
+use axum::response::IntoResponse;
+use axum::routing::{get, get_service, post};
+use axum::{Extension, Router};
 use clap::Parser;
-use include_dir::{include_dir, Dir};
-use metrics::increment_counter;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 use murmelbahn_lib::physical::SetRepo;
 use sqlx::postgres::PgPoolOptions;
+use std::io;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tower_http::cors::{Any, CorsLayer};
+use tower_http::services::{ServeDir, ServeFile};
 use tracing::{debug, info};
-
-static STATIC_DIR: Dir<'_> = include_dir!("$CARGO_MANIFEST_DIR/../frontend/dist");
 
 #[derive(Debug, Parser)]
 pub struct Config {
@@ -38,38 +34,12 @@ pub struct AppState {
     sets_repo: SetRepo,
 }
 
-/*
-impl IntoResponse for AppError {
-    fn into_response(self) -> Response {
-        let (status, error_message) = match self {
-            AppError::MurmelbahnLibError(_murmelbahn_error) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, "Internal Server Error")
-            }
-            AppError::ZiplineAdded2019Unsupported => (
-                StatusCode::BAD_REQUEST,
-                "ZiplineAdded2019 data format is not currently supported",
-            ),
-            AppError::CourseError(_) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error")
-            }
-            AppError::JsonError(_) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "Something went wrong serializing the response to JSON",
-            ),
-        };
-
-        let body = Json(json!({
-            "error": error_message,
-        }));
-
-        (status, body).into_response()
-    }
+async fn handle_error(_err: io::Error) -> impl IntoResponse {
+    (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
 }
 
-
- */
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
 
     let config = Config::parse();
@@ -100,30 +70,42 @@ async fn main() -> anyhow::Result<()> {
         .allow_headers([header::CONTENT_TYPE])
         .allow_origin(Any);
 
+    let serve_assets = ServeDir::new("frontend/dist/assets");
+    let serve_assets = get_service(serve_assets).handle_error(handle_error);
+
+    let serve_index = ServeFile::new("frontend/dist/index.html");
+    let serve_index = get_service(serve_index).handle_error(handle_error);
+
     let course_routes = Router::new()
         .route("/:id/dump", get(course_dump))
         .route("/:id/bom", get(course_bom))
         .with_state(shared_state.clone());
+    let course_routes = Router::new().nest("/course", course_routes);
 
     let set_routes = Router::new()
         .route("/list", get(set_list))
         .with_state(shared_state.clone());
+    let set_routes = Router::new().nest("/set", set_routes);
 
-    let app = Router::new()
-        .route("/metrics", get(metrics).layer(build_prometheus_extension()))
-        .route("/buildable", get(buildable).post(buildable))
-        .layer(cors.clone())
+    let api_routes = Router::new()
+        .route("/buildable", post(buildable))
+        .merge(course_routes)
+        .merge(set_routes);
+
+    let router = Router::new()
+        .nest_service("/assets", serve_assets)
+        .nest("/api", api_routes)
         .with_state(shared_state.clone())
-        .nest("/course", course_routes)
-        .nest("/set", set_routes)
-        .route("/*path", get(static_path))
-        .layer(cors)
-        .route("/", get(|| async { Redirect::permanent("/index.html") }));
+        .route("/metrics", get(metrics).layer(build_prometheus_extension()))
+        .layer(cors.clone())
+        .fallback_service(serve_index);
 
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    println!("{:?}", router);
+
+    let addr = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 0], 3000));
     debug!("listening on {}", addr);
     axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+        .serve(router.into_make_service())
         .await
         .unwrap();
 
@@ -143,26 +125,4 @@ fn build_prometheus_extension() -> Extension<PrometheusHandle> {
         .install_recorder()
         .expect("failed to install recorder");
     Extension(prometheus_handle)
-}
-
-async fn static_path(Path(path): Path<String>) -> impl IntoResponse {
-    increment_counter!("murmelbahn.static.requests");
-    let path = path.trim_start_matches('/');
-    debug!("Static path [{path}] requested");
-    let mime_type = mime_guess::from_path(path).first_or_text_plain();
-
-    match STATIC_DIR.get_file(path) {
-        None => Response::builder()
-            .status(StatusCode::NOT_FOUND)
-            .body(body::boxed(Empty::new()))
-            .unwrap(),
-        Some(file) => Response::builder()
-            .status(StatusCode::OK)
-            .header(
-                header::CONTENT_TYPE,
-                HeaderValue::from_str(mime_type.as_ref()).unwrap(),
-            )
-            .body(body::boxed(Full::from(file.contents())))
-            .unwrap(),
-    }
 }

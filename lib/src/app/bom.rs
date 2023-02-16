@@ -194,7 +194,7 @@ impl CountContext {
         let lower_layer_height = (layer.layer_height / TILE_HEIGHT).round() as i32;
         let retainer_height = RetainerHeight::new(lower_layer_height, lower_layer_height + 1);
         self.retainer_heights
-            .insert(layer.layer_id, retainer_height.clone());
+            .insert(layer.layer_id, retainer_height);
     }
 
     fn add_tiletowerconstructiondata(&mut self, tile: &TileTowerConstructionData) {

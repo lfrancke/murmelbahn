@@ -144,7 +144,7 @@ impl CourseMetaData {
     /// As this should always come from the App directly it _should_ not fail.
     fn decode_title(bytes: Vec<u8>) -> Result<String, DekuError> {
         std::str::from_utf8(&bytes)
-            .and_then(|title| Ok(title.to_string()))
+            .map(|title| title.to_string())
             .map_err(|source| {
                 DekuError::Parse(format!(
                     "Could not interpret title bytes as valid UTF-8: {source}"
@@ -164,7 +164,7 @@ impl SavedCourse {
     /// Reads a serialized course from a `Path`
     pub fn from_path<P: AsRef<Path>>(path: P) -> Result<SavedCourse, Error> {
         let path = path.as_ref();
-        let contents = fs::read(path).context(IoSnafu { path: path.clone() })?;
+        let contents = fs::read(path).context(IoSnafu { path })?;
         SavedCourse::from_bytes(&contents)
     }
 

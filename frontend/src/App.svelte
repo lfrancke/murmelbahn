@@ -17,28 +17,32 @@
 
 </script>
 
-<main class="prose container mx-auto py-4">
+<main class="prose mx-auto max-w-screen-lg">
 
-  <div class="grid grid-cols-2 gap-4">
-    <div class="col-span-2">
-      <h1>Murmelbahn</h1>
-    </div>
+  <div class="flex">
+    <div class="flex flex-col">
+      <div class="bg-white py-4 px-6 mb-4">
+        <h1>Murmelbahn</h1>
+      </div>
 
-    <div>
-      <h2>{$_('title_buildable')}</h2>
-      <div class="alert alert-info shadow-lg">
-        This is experimental!<br/>
-        Some of these courses cannot be built
+      <div class="flex justify-center">
+        <div class="w-5/12 mx-1 p-6">
+          <h2>{$_('title_buildable')}</h2>
+          <div class="alert alert-info shadow-lg">
+            This is experimental!<br/>
+            Some of these courses cannot be built
+          </div>
+          <div class="pt-4">
+            Please enter how many you have of each set and press `Submit`.
+            If there are any tracks in our database that can be built with the parts you have, they will be shown below.
+          </div>
+          <InventoryEditor/>
+        </div>
+        <div class="w-5/12 mx-1 p-6">
+          <h2>{$_('title_course_information')}</h2>
+          <CourseInformation/>
+        </div>
       </div>
-      <div class="pt-4">
-        Please enter how many you have of each set and press `Submit`.
-        If there are any tracks in our database that can be built with the parts you have, they will be shown below.
-      </div>
-      <InventoryEditor/>
-    </div>
-    <div>
-      <h2>{$_('title_course_information')}</h2>
-      <CourseInformation/>
     </div>
   </div>
 
