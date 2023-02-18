@@ -100,8 +100,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .layer(cors.clone())
         .fallback_service(serve_index);
 
-    println!("{:?}", router);
-
     let addr = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 0], 3000));
     debug!("listening on {}", addr);
     axum::Server::bind(&addr)
