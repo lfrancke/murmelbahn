@@ -32,7 +32,9 @@ pub enum SharingCourseType {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CourseDownloadResponse {
+    #[serde(rename = "courseType")]
     pub course_type: SharingCourseType,
+    #[serde(rename = "courseFile")]
     pub course_bytes: String,
 }
 
