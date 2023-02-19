@@ -447,19 +447,29 @@ fn process_wall_construction_data(walls: &[WallConstructionData], context: &mut 
 }
 
 fn process_rail_construction_data(rails: &[RailConstructionData], context: &mut CountContext) {
-    for rail_construction_datum in rails.iter() {
+    for rail in rails.iter() {
+
+        // This flag is only used for ZiplineAdded2019 tracks
+        // The course files sometimes contain _a lot_ of additional rails for some reason
+        // But they are set to "materialized = false", I don't know why
+        // For the BOM we have to ignore all those pieces set to false
+        // Example course: 4NPZ3WLJQF
+        if matches!(rail.materialized, Some(false)) {
+            continue;
+        }
+
         // As far as I know `Straight` rails are the only ones that come in different length but are only
         // encoded as a single enum variant.
-        if rail_construction_datum.rail_kind == RailKind::Straight {
+        if rail.rail_kind == RailKind::Straight {
             // A rail has two ends/exits, both are located on a layer,
             // the layer in question is found in the `retainer_id` field
             let exit_1_world_pos = context.local_to_world_hex_vector(
-                &rail_construction_datum.exit_1_identifier.cell_local_hex_pos,
-                rail_construction_datum.exit_1_identifier.retainer_id,
+                &rail.exit_1_identifier.cell_local_hex_pos,
+                rail.exit_1_identifier.retainer_id,
             );
             let exit_2_world_pos = context.local_to_world_hex_vector(
-                &rail_construction_datum.exit_2_identifier.cell_local_hex_pos,
-                rail_construction_datum.exit_2_identifier.retainer_id,
+                &rail.exit_2_identifier.cell_local_hex_pos,
+                rail.exit_2_identifier.retainer_id,
             );
 
             let distance = exit_1_world_pos.distance(&exit_2_world_pos) - 1;
@@ -474,7 +484,7 @@ fn process_rail_construction_data(rails: &[RailConstructionData], context: &mut 
                 }
             }
         } else {
-            context.add_rail(rail_construction_datum.rail_kind.clone());
+            context.add_rail(rail.rail_kind.clone());
         };
     }
 }
