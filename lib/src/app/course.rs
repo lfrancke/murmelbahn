@@ -187,6 +187,7 @@ impl SavedCourse {
 /// This is because most courses that have been created are 2020 or newer.
 #[derive(Debug, DekuRead, Serialize)]
 #[deku(ctx = "version: CourseSaveDataVersion", id = "version")]
+ #[serde(untagged)]
 pub enum Course {
     #[deku(id_pat = "CourseSaveDataVersion::ZiplineAdded2019")]
     ZiplineAdded2019(
