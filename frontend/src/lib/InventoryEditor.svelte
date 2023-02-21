@@ -1,12 +1,17 @@
 <script lang="ts">
   import {onMount} from 'svelte';
   import {type Set} from "./models/Set";
-  import {type Inventory} from "./models/Inventory";
-  import {addMessages, getLocaleFromNavigator, init, _} from 'svelte-i18n';
+  import {InventoryData} from "./models/Inventory";
+  import {_, addMessages, getLocaleFromNavigator, init} from 'svelte-i18n';
+
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const storageKey = "inventory";
 
   let sets: Record<string, Set> | null = null;
   let buildable = null;
-  let apiUrl = import.meta.env.VITE_API_URL;
+
+  const jsonInventory: String = localStorage.getItem(storageKey);
+  let inventory: InventoryData = jsonInventory ? JSON.parse(jsonInventory) : new InventoryData();
 
   // Fetch all sets
   // TODO: I don't know enough about Svelte, does it maybe make sense to pass these into the component instead?
@@ -36,18 +41,10 @@
     });
   });
 
-  function onSubmit(e) {
-    const formData: FormData = new FormData(e.target);
-
-    const data: Inventory = {
-      extra_elements: undefined,
-      sets: {}
-    };
-    for (let field of formData) {
-      const [key, value] = field;
-      data.sets[key] = Number(value);
-    }
-    doPost(data);
+  function onSubmit() {
+    localStorage.setItem(storageKey, JSON.stringify(inventory));
+    buildable = null;
+    doPost(inventory);
   }
 
   async function doPost(data) {
@@ -61,6 +58,11 @@
 
     buildable = await res.json();
   }
+
+  function resetInventory() {
+    localStorage.removeItem(storageKey);
+    inventory = new InventoryData();
+  }
 </script>
 
 {#if sets === null}
@@ -70,17 +72,26 @@
     <ul>
       {#each Object.entries(sets) as [key, value]}
         <li>
-          <input class="input input-sm input-bordered w-24" type="number" value="0" name="{key}" id="set-{key}"/>
+          <input
+              class="input input-sm input-bordered w-24"
+              type="number"
+              min="0"
+              max="1000"
+              placeholder="0"
+              bind:value="{inventory.sets[key]}"
+              name="{key}"
+              id="set-{key}"/>
           <label for="set-{key}">{$_(value.id)}</label>
         </li>
       {/each}
     </ul>
     <button class="btn" type="submit">Submit</button>
+    <button class="btn" type="reset" on:click={resetInventory}>Reset</button>
   </form>
 {/if}
 
 {#if buildable !== null}
-  <h2>Tracks you can build</h2>
+  <h2>{$_('buildable_results')}</h2>
   <ul>
     {#each Object.entries(buildable) as [key, value]}
       <li><a href="{apiUrl}/course/{value}/bom">{value}</a></li>
