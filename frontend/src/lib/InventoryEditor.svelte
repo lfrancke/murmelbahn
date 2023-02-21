@@ -4,7 +4,7 @@
   import {type Inventory} from "./models/Inventory";
   import {addMessages, getLocaleFromNavigator, init, _} from 'svelte-i18n';
 
-  let data: Record<string, Set> | null = null;
+  let sets: Record<string, Set> | null = null;
   let buildable = null;
   let apiUrl = import.meta.env.VITE_API_URL;
 
@@ -12,11 +12,11 @@
   // TODO: I don't know enough about Svelte, does it maybe make sense to pass these into the component instead?
   onMount(async () => {
     const res = await fetch(`${apiUrl}/set/list`);
-    data = await res.json();
+    sets = await res.json();
 
     let acc = {};
-    for (const key in data) {
-      const value = data[key];
+    for (const key in sets) {
+      const value = sets[key];
       value.names.forEach(({language_code, name}) => {
         if (!acc[language_code]) {
           acc[language_code] = {};
@@ -34,8 +34,6 @@
       fallbackLocale: 'en',
       initialLocale: getLocaleFromNavigator(),
     });
-
-    console.log(acc);
   });
 
   function onSubmit(e) {
@@ -65,12 +63,12 @@
   }
 </script>
 
-{#if data === null}
-  <p>Loading...</p>
+{#if sets === null}
+  <p>Loading set data...</p>
 {:else}
   <form on:submit|preventDefault={onSubmit}>
     <ul>
-      {#each Object.entries(data) as [key, value]}
+      {#each Object.entries(sets) as [key, value]}
         <li>
           <input class="input input-sm input-bordered w-24" type="number" value="0" name="{key}" id="set-{key}"/>
           <label for="set-{key}">{$_(value.id)}</label>
