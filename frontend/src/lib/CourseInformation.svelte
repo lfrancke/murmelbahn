@@ -4,10 +4,10 @@
 </script>
 
 <div class="form-control w-full max-w-xs">
-  <label class="label">
+  <label class="label" for="courseCode">
     <span class="label-text">What is the course code?</span>
   </label>
-  <input type="text" placeholder="Enter the course code here" class="input input-bordered input-primary w-full max-w-xs" bind:value={courseCode} />
+  <input id="courseCode" type="text" placeholder="Enter the course code here" class="input input-bordered input-primary w-full max-w-xs" bind:value={courseCode} />
 </div>
 
 {#if courseCode === null}
