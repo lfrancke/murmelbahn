@@ -110,7 +110,7 @@ impl CourseRepo {
         repo: &SetRepo,
         inventory: Inventory,
     ) -> Result<Vec<String>, Error> {
-        let mut rows = sqlx::query("SELECT code, serialized_bytes FROM courses").fetch(&self.db);
+        let mut rows = sqlx::query("SELECT code, serialized_bytes FROM courses ORDER BY created_at").fetch(&self.db);
 
         let summarized_inventory =
             PhysicalBillOfMaterials::from_inventory(&inventory, repo).unwrap();
