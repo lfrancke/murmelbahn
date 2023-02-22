@@ -1,4 +1,9 @@
 # Murmelbahn Changelog
+ 
+## 2023-02-21
+
+- [#9](https://github.com/lfrancke/murmelbahn/issues/9): Store inventory in localStorage
+- Return buildable courses ordered by creation date (in the database), this means that newly added courses will always appear at the end of the list
 
 ## 2023-02-15
 
