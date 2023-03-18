@@ -105,18 +105,26 @@ pub struct GraviSheetOutput {
     pub tile_carousel: Option<i32>,
     pub tile_helix: Option<i32>,
     pub tile_mixer: Option<i32>,
+    pub empty_releaser: Option<i32>,
     pub tile_splitter: Option<i32>,
     pub tile_turntable: Option<i32>,
 
+    pub empty_connect: Option<i32>,
     pub tile_controller: Option<i32>,
     pub tile_dome_starter: Option<i32>,
-    pub tile_elevator: Option<i32>,
-    pub tile_lever: Option<i32>,
     pub tile_dropdown_switch: Option<i32>,
-    pub tile_finish_trigger: Option<i32>,
+    pub tile_elevator: Option<i32>,
     pub tile_finish_arena: Option<i32>,
-    pub tile_trigger: Option<i32>,
+    pub tile_finish_trigger: Option<i32>,
+    pub tile_lever: Option<i32>,
+    pub empty_lightbase: Option<i32>,
     pub tile_queue: Option<i32>,
+    pub empty_sound: Option<i32>,
+    pub tile_trigger: Option<i32>,
+
+    pub empty_ballbox: Option<i32>,
+    pub empty_magneticstick: Option<i32>
+
 }
 
 impl From<BillOfMaterials> for GraviSheetOutput {
@@ -268,8 +276,10 @@ impl From<BillOfMaterials> for GraviSheetOutput {
                 bom.tile_kind(TileKind::MixerSameExits),
                 bom.tile_kind(TileKind::MixerOffsetExits),
             ]),
+            empty_releaser: None,
             tile_splitter: bom.tile_kind(TileKind::Splitter),
             tile_turntable: bom.tile_kind(TileKind::Turntable),
+            empty_connect: None,
             tile_controller: None, // Leaving out for now, hard to give a good number
             tile_dome_starter: bom.tile_kind(TileKind::DomeStarter),
             tile_elevator: bom.tile_kind(TileKind::Elevator),
@@ -281,7 +291,11 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             tile_finish_trigger: bom.tile_kind(TileKind::FinishTrigger),
             tile_finish_arena: bom.tile_kind(TileKind::FinishArena),
             tile_trigger: bom.tile_kind(TileKind::Trigger),
+            empty_ballbox: None,
             tile_queue: bom.tile_kind(TileKind::Queue),
+            empty_lightbase: None,
+            empty_sound: None,
+            empty_magneticstick: None,
         }
     }
 }
