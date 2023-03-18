@@ -1,5 +1,9 @@
 # Murmelbahn Changelog
- 
+   
+## 2023-03-18
+
+- [#17](https://github.com/lfrancke/murmelbahn/issues/17): The buildable courses now return a table with links to the app and other things instead of just a list
+
 ## 2023-02-21
 
 - [#9](https://github.com/lfrancke/murmelbahn/issues/9): Store inventory in localStorage

@@ -92,9 +92,24 @@
 
 {#if buildable !== null}
   <h2>{$_('buildable_results')}</h2>
-  <ul>
+  <table>
+    <thead>
+    <tr>
+      <th>Code</th>
+      <th>Ravensburger</th>
+      <th>Details</th>
+      <th>BOM</th>
+    </tr>
+    </thead>
+    <tbody>
     {#each Object.entries(buildable) as [key, value]}
-      <li><a href="{apiUrl}/course/{value}/bom">{value}</a></li>
+      <tr>
+        <td>{value}</td>
+        <td><a href="https://gravitrax.link.ravensburger.com/code/{value}">Link</a></td>
+        <td><a href="{apiUrl}/course/{value}/dump">Link</a></td>
+        <td><a href="{apiUrl}/course/{value}/bom">Link</a></td>
+      </tr>
     {/each}
-  </ul>
+    </tbody>
+  </table>
 {/if}

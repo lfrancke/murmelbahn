@@ -7,7 +7,8 @@
   <label class="label" for="courseCode">
     <span class="label-text">What is the course code?</span>
   </label>
-  <input id="courseCode" type="text" placeholder="Enter the course code here" class="input input-bordered input-primary w-full max-w-xs" bind:value={courseCode} />
+  <input id="courseCode" type="text" placeholder="Enter the course code here"
+         class="input input-bordered input-primary w-full max-w-xs" bind:value={courseCode}/>
 </div>
 
 {#if courseCode === null}
@@ -18,5 +19,6 @@
     <li><a href="{apiUrl}/course/{courseCode}/bom">Bill of Materials (JSON)</a></li>
     <li><a href="{apiUrl}/course/{courseCode}/bom?format=csv" target="_blank">Bill of Materials
       (Gravisheet CSV)</a></li>
+    <li><a href="https://gravitrax.link.ravensburger.com/code/{courseCode}">Ravensburger App Link</a></li>
   </ul>
 {/if}

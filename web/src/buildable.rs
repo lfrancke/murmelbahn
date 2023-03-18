@@ -7,6 +7,8 @@ use metrics::increment_counter;
 use murmelbahn_lib::physical::Inventory;
 use std::sync::Arc;
 
+/// This returns a list of all codes that are buildable with the inventory that is passed in.
+/// At the moment, this returns only a list of strings
 pub async fn buildable(
     State(state): State<Arc<AppState>>,
     Json(inventory): Json<Inventory>,
