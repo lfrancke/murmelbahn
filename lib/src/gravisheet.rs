@@ -21,6 +21,8 @@ pub struct GraviSheetOutput {
 
     pub stacker_small: Option<i32>,
     pub stacker_large: Option<i32>,
+    pub empty_lightstacker_small: Option<i32>,
+    pub empty_lightstacker_large: Option<i32>,
     pub stacker_angled: Option<i32>,
     pub stacker_tower_closed: Option<i32>,
     pub stacker_tower_opened: Option<i32>,
@@ -161,6 +163,8 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             marbles: i32_to_option(bom.marbles()),
             stacker_small: bom.tile_kind(TileKind::StackerSmall),
             stacker_large: bom.tile_kind(TileKind::Stacker),
+            empty_lightstacker_small: None,
+            empty_lightstacker_large: None,
             stacker_angled,
             stacker_tower_closed: bom.tile_kind(TileKind::StackerTowerClosed),
             stacker_tower_opened: bom.tile_kind(TileKind::StackerTowerOpened),
