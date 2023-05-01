@@ -1,5 +1,7 @@
+ use chrono::NaiveDateTime;
 use futures::TryStreamExt;
 use metrics::increment_counter;
+use serde::Serialize;
 
 use murmelbahn_lib::app::course::SavedCourse;
 use murmelbahn_lib::app::BillOfMaterials as AppBillOfMaterials;
@@ -20,6 +22,18 @@ pub enum Error {
 
 pub struct CourseRepo {
     db: Pool<Postgres>,
+}
+
+#[derive(Serialize)]
+pub struct StoredCourseMetadata {
+
+    pub date_added_to_db: NaiveDateTime,
+    /// This is extracted from the metadata of the file itself
+    pub creation_timestamp: NaiveDateTime,
+    /// This is extracted from the metadata of the file itself
+    pub title: String,
+    pub course_code: String
+
 }
 
 impl CourseRepo {
@@ -105,12 +119,14 @@ impl CourseRepo {
         }
     }
 
+    /// This checks all courses in the database against the inventory provided and returns all those
+    /// that can be built with the inventory.
     pub async fn process_all(
         &self,
         repo: &SetRepo,
         inventory: Inventory,
-    ) -> Result<Vec<String>, Error> {
-        let mut rows = sqlx::query("SELECT code, serialized_bytes FROM courses ORDER BY created_at").fetch(&self.db);
+    ) -> Result<Vec<StoredCourseMetadata>, Error> {
+        let mut rows = sqlx::query("SELECT code, serialized_bytes, created_at FROM courses ORDER BY created_at").fetch(&self.db);
 
         let summarized_inventory =
             PhysicalBillOfMaterials::from_inventory(&inventory, repo).unwrap();
@@ -121,12 +137,21 @@ impl CourseRepo {
             let code: &str = row.try_get("code").unwrap();
             let course = SavedCourse::from_bytes(&bytes).unwrap().course;
 
+            let metadata = course.meta_data().clone();
             let app_bom = AppBillOfMaterials::try_from(course).unwrap();
             let physical_bom = PhysicalBillOfMaterials::try_from(app_bom).unwrap();
 
             let diff_bom = summarized_inventory.subtract(&physical_bom);
             if !diff_bom.any_missing() {
-                courses.push(code.to_string());
+
+                let course = StoredCourseMetadata {
+                    date_added_to_db: row.try_get("created_at").unwrap(),
+                    creation_timestamp: NaiveDateTime::from_timestamp_millis(metadata.creation_timestamp as i64).unwrap(),
+                    title: metadata.title,
+                    course_code: code.to_string(),
+                };
+
+                courses.push(course);
             }
         }
 

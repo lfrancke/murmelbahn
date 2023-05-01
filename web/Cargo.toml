@@ -7,17 +7,18 @@ authors = ["Lars Francke"]
 
 [dependencies]
 axum = { version = "0.6", features = ["query"] }
+chrono = { version = "0.4", features = ["serde"] }
 clap = { version = "4.1", features = ["derive", "env"] }
 csv = "1.1"
 futures = "0.3"
-metrics = "0.20"
-metrics-exporter-prometheus = "0.11"
+metrics = "0.21"
+metrics-exporter-prometheus = "0.12"
 mime_guess = "2.0"
 murmelbahn-lib = { path = "../lib" }
 serde = "1.0"
 serde_json = "1.0"
 snafu = "0.7"
-sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "postgres" ] }
+sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "postgres", "chrono" ] }
 tokio = { version = "1.24", features = ["full"] }
 tower-http = { version = "0.3", features = ["cors", "fs"] }
 tracing = "0.1"

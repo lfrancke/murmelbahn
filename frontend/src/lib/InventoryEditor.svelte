@@ -95,7 +95,10 @@
   <table>
     <thead>
     <tr>
+      <th>Title</th>
       <th>Code</th>
+      <th>Added to DB</th>
+      <th>Created</th>
       <th>Ravensburger</th>
       <th>Details</th>
       <th>BOM</th>
@@ -104,10 +107,13 @@
     <tbody>
     {#each Object.entries(buildable) as [key, value]}
       <tr>
-        <td>{value}</td>
-        <td><a href="https://gravitrax.link.ravensburger.com/code/{value}">Link</a></td>
-        <td><a href="{apiUrl}/course/{value}/dump">Link</a></td>
-        <td><a href="{apiUrl}/course/{value}/bom">Link</a></td>
+        <td>{value.title}</td>
+        <td>{value.course_code}</td>
+        <td>{value.date_added_to_db}</td>
+        <td>{value.creation_timestamp}</td>
+        <td><a href="https://gravitrax.link.ravensburger.com/code/{value.course_code}">Link</a></td>
+        <td><a href="{apiUrl}/course/{value.course_code}/dump">Link</a></td>
+        <td><a href="{apiUrl}/course/{value.course_code}/bom">Link</a></td>
       </tr>
     {/each}
     </tbody>

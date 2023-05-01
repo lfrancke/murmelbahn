@@ -1,4 +1,8 @@
 # Murmelbahn Changelog
+
+## 2023-05-01
+
+- [#24](https://github.com/lfrancke/murmelbahn/issues/24): Show more details for buildable courses
    
 ## 2023-03-18
 
