@@ -136,6 +136,8 @@ pub enum Element {
     FinishArena,
     Trigger,
     Queue,
+
+    // Light 2023 TODO
 }
 
 impl Element {
@@ -249,6 +251,14 @@ impl Element {
             TileKind::DropdownSwitchLeft => vec![Element::DropdownSwitch],
             TileKind::DropdownSwitchRight => vec![Element::DropdownSwitch],
             TileKind::None => Vec::new(),
+            TileKind::LightBase => Vec::new(),
+            TileKind::LightStacker => Vec::new(),
+            TileKind::LightStackerSmall => Vec::new(),
+            TileKind::LightStackerBatch => Vec::new(),
+            TileKind::Releaser1 => Vec::new(),
+            TileKind::Releaser2 => Vec::new(),
+            TileKind::Releaser3 => Vec::new(),
+            TileKind::Releaser4 => Vec::new(),
         }
     }
 }

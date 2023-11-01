@@ -32,7 +32,7 @@ pub struct RailConstructionExitIdentifier {
     pub cell_local_hex_pos: HexVector,
     pub side_hex_rot: i32,
     #[deku(
-        cond = "version == CourseSaveDataVersion::Power2022 || version == CourseSaveDataVersion::Pro2020",
+        cond = "version == CourseSaveDataVersion::Power2022 || version == CourseSaveDataVersion::Pro2020 || version == CourseSaveDataVersion::LightStones2023",
         default = "None"
     )]
     pub exit_local_pos_y: Option<f32>,

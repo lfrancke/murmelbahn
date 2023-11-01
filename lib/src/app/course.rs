@@ -21,7 +21,7 @@ pub enum Error {
 #[deku(type = "u32")]
 pub enum CourseKind {
     None = 0,
-    // All tracks downloaded using a code from the app seem to be "Custom" cources
+    // All tracks downloaded using a code from the app seem to be "Custom" courses
     Custom = 1,
     RegularEditorial = 2,
     Tutorial = 4,
@@ -51,6 +51,7 @@ pub enum CourseElementGeneration {
     Fall2021 = 6,
     Spring2022 = 7,
     Power = 8,
+    Autumn2023 = 9
 }
 
 #[derive(Debug, PartialEq)]
@@ -183,7 +184,7 @@ impl SavedCourse {
 ///
 /// There are multiple versions of courses which have been added over the years.
 /// Anything older than 2019 (`ZiplineAdded2019`) is not currently supported.
-/// Only courses since 2020 (`Pro2020`) have any meaningful support besides showing their contents.
+/// Only courses since 2020 (`Pro2020` and `LightStones2023`) have any meaningful support besides showing their contents.
 /// This is because most courses that have been created are 2020 or newer.
 #[derive(Debug, DekuRead, Serialize)]
 #[deku(ctx = "version: CourseSaveDataVersion", id = "version")]
@@ -199,6 +200,9 @@ pub enum Course {
 
     #[deku(id_pat = "CourseSaveDataVersion::Pro2020")]
     Pro2020(#[deku(ctx = "CourseSaveDataVersion::Pro2020")] power2022::Course),
+
+    #[deku(id_pat = "CourseSaveDataVersion::LightStones2023")]
+    LightStones2023(#[deku(ctx = "CourseSaveDataVersion::LightStones2023")] power2022::Course)
 }
 
 impl Course {
@@ -206,6 +210,7 @@ impl Course {
         match self {
             Course::ZiplineAdded2019(course) => course.meta_data.clone(),
             Course::Power2022(course) | Course::Pro2020(course) => course.meta_data.clone(),
+            Course::LightStones2023(course) => course.meta_data.clone()
         }
     }
 }
@@ -226,4 +231,5 @@ pub enum CourseSaveDataVersion {
     ZiplineAdded2019 = 2,
     Pro2020 = 3,
     Power2022 = 4,
+    LightStones2023 = 5
 }

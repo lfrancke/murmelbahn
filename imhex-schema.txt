@@ -91,8 +91,15 @@ enum TileKind : u32 {
   DropdownSwitchRight = 73,
   Queue = 74,
   Lever = 75,
-  Elevator = 77
-
+  Elevator = 77,
+  LightBase = 78,
+  LightStacker = 79,
+  LightStackerSmall = 80,
+  LightStackerBatch = 81,
+  Releaser1 = 82,
+  Releaser2 = 83,
+  Releaser3 = 84,
+  Releaser4 = 85
 };
 
 enum LayerKind : u32 {
@@ -104,12 +111,24 @@ enum LayerKind : u32 {
 };
 
 enum PowerSignalMode : u32 {
+  None = 2147483648,
   Off = 0,
   Red = 1,
   Green = 2,
   Blue = 3,
   Automatic = 4
 };
+
+enum LightStoneColorMode : u32 {
+  None = 2147483648,
+  Off = 0,
+  Alternating = 1,
+  Red = 2,
+  Green = 3,
+  Blue = 4,
+  White = 5,
+};
+
 
 enum CourseElementGeneration : u32 {
   InitialLaunch = 0,
@@ -120,7 +139,8 @@ enum CourseElementGeneration : u32 {
   Pro = 5,
   Fall2021 = 6,
   Spring2022 = 7,
-  Power = 8
+  Power = 8,
+  Autumn2023 = 9
 };
 
 enum CourseSaveDataVersion : u32 {
@@ -129,7 +149,8 @@ enum CourseSaveDataVersion : u32 {
     PersistenceRefactor2019 = 1,
     ZiplineAdded2019 = 2,
     Pro2020 = 3,
-    Power2022 = 4
+    Power2022 = 4,
+    LightStones2023 = 5
 };
 
 CourseSaveDataVersion current_save_data_version;
@@ -205,8 +226,11 @@ struct TileTowerConstructionData {
     u32             height_in_small_stacker;
     u32             hex_rotation;
     s32             retainer_id;
-    if (current_save_data_version == CourseSaveDataVersion::Power2022) {
+    if (current_save_data_version == CourseSaveDataVersion::Power2022 || current_save_data_version == CourseSaveDataVersion::LightStones2023) {
         PowerSignalMode power_signal_mode;
+    }
+    if (current_save_data_version == CourseSaveDataVersion::LightStones2023) {
+        LightStoneColorMode light_stone_color_mode;
     }
 };
 

@@ -95,6 +95,14 @@ pub enum TileKind {
     Queue = 74,
     Lever = 75,
     Elevator = 77,
+    LightBase = 78,
+    LightStacker = 79,
+    LightStackerSmall = 80,
+    LightStackerBatch = 81,
+    Releaser1 = 82,
+    Releaser2 = 83,
+    Releaser3 = 84,
+    Releaser4 = 85
 }
 
 #[derive(Debug, DekuRead, Serialize)]
@@ -106,6 +114,18 @@ pub enum PowerSignalMode {
     Blue = 3,
     Automatic = 4,
 }
+
+#[derive(Debug, DekuRead, Serialize)]
+#[deku(type = "u32")]
+pub enum LightStoneColorMode {
+    Off = 0,
+    Alternating = 1,
+    Red = 2,
+    Green = 3,
+    Blue = 4,
+    White = 5,
+}
+
 
 #[deku_derive(DekuRead)]
 #[derive(Debug, Serialize)]
@@ -175,17 +195,21 @@ pub struct TileTowerConstructionData {
     #[deku(map = "TileTowerConstructionData::map_retainer_id")]
     pub retainer_id: Option<i32>,
 
-    #[deku(cond = "version == CourseSaveDataVersion::Power2022", default = "None")]
+    #[deku(cond = "version == CourseSaveDataVersion::Power2022 || version == CourseSaveDataVersion::LightStones2023", default = "None")]
     #[deku(map = "TileTowerConstructionData::map_power_signal_mode")]
     pub power_signal_mode: Option<PowerSignalMode>,
+
+    #[deku(cond = "version == CourseSaveDataVersion::LightStones2023", default = "None")]
+    #[deku(map = "TileTowerConstructionData::map_light_stone_color_mode")]
+    pub light_stone_color_mode: Option<LightStoneColorMode>
 }
 
 impl TileTowerConstructionData {
     fn map_retainer_id(field: i32) -> Result<Option<i32>, DekuError> {
-        if field != -2147483647 {
-            Ok(Some(field))
-        } else {
+        if field == -2147483647 {
             Ok(None)
+        } else {
+            Ok(Some(field))
         }
     }
 
@@ -198,4 +222,16 @@ impl TileTowerConstructionData {
             Ok(Some(PowerSignalMode::try_from(input2)?))
         }
     }
+
+
+    fn map_light_stone_color_mode(field: u32) -> Result<Option<LightStoneColorMode>, DekuError> {
+        if field == 2147483648 {
+            Ok(None)
+        } else {
+            let input = field.to_le_bytes();
+            let input2 = input.as_slice();
+            Ok(Some(LightStoneColorMode::try_from(input2)?))
+        }
+    }
+
 }

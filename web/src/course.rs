@@ -48,6 +48,7 @@ pub enum Error {
 
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
+        println!("{:?}", self);
         todo!()
     }
 }

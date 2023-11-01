@@ -99,7 +99,7 @@ impl From<Course> for BillOfMaterials {
                 process_pillar_construction_data(&course.pillar_construction_data, &mut context);
                 process_rail_construction_data(&course.rail_construction_data, &mut context);
             }
-            Course::Power2022(course) | Course::Pro2020(course) => {
+            Course::Power2022(course) | Course::Pro2020(course) | Course::LightStones2023(course) => {
                 process_layer_construction_data(&course.layer_construction_data, &mut context);
                 process_pillar_construction_data(&course.pillar_construction_data, &mut context);
                 process_wall_construction_data(&course.wall_construction_data, &mut context);
