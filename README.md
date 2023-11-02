@@ -19,7 +19,7 @@ I used the [ImHex](https://github.com/WerWolv/ImHex) editor to reverse engineer 
 I did include the schema so you can look at files yourself if you like.
 It can be found in the file `imhex-schema.txt` in this repository.
 Ravensburger changed the file format multiple times.
-This app can only process the latest two formats (anything after 2020, the introduction of "Pro").
+This app can only process the latest three formats (anything after 2020, the introduction of "Pro").
 Earlier versions could - in theory - be supported but I didn't find many tracks with those formats out there with the exception of courses between 2019 and 2020, I might add support for this later.
 
 ## Acknowledgements

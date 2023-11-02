@@ -9,14 +9,14 @@ RUN npm run build
 
 
 # Rust part: Backend
-FROM rust:1.68 as rust_builder
+FROM rust:1.73 as rust_builder
 WORKDIR /usr/src/murmelbahn
 COPY . .
 RUN cargo install --path web
 
 
 # Final image
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 EXPOSE 3000
 RUN apt-get update && apt-get install -y libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY --from=rust_builder /usr/local/cargo/bin/murmelbahn-web /usr/local/bin/murmelbahn-web
