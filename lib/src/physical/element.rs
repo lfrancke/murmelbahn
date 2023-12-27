@@ -137,7 +137,11 @@ pub enum Element {
     Trigger,
     Queue,
 
-    // Light 2023 TODO
+    // Light 2023
+    LightStacker,
+    LightStackerSmall,
+    LightBase,
+    Releaser
 }
 
 impl Element {
@@ -251,14 +255,14 @@ impl Element {
             TileKind::DropdownSwitchLeft => vec![Element::DropdownSwitch],
             TileKind::DropdownSwitchRight => vec![Element::DropdownSwitch],
             TileKind::None => Vec::new(),
-            TileKind::LightBase => Vec::new(),
-            TileKind::LightStacker => Vec::new(),
-            TileKind::LightStackerSmall => Vec::new(),
+            TileKind::LightBase => vec![Element::LightBase],
+            TileKind::LightStacker => vec![Element::LightStacker],
+            TileKind::LightStackerSmall => vec![Element::StackerSmall],
             TileKind::LightStackerBatch => Vec::new(),
-            TileKind::Releaser1 => Vec::new(),
-            TileKind::Releaser2 => Vec::new(),
-            TileKind::Releaser3 => Vec::new(),
-            TileKind::Releaser4 => Vec::new(),
+            TileKind::Releaser1 => vec![Element::Releaser],
+            TileKind::Releaser2 => vec![Element::Releaser],
+            TileKind::Releaser3 => vec![Element::Releaser],
+            TileKind::Releaser4 => vec![Element::Releaser],
         }
     }
 }
