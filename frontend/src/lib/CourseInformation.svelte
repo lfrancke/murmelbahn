@@ -13,6 +13,8 @@
 
 {#if courseCode === null}
   <p>Please enter a course code to get links to detailed information</p>
+  <p>This is mostly useless unless you are interested in technical details, BUT it is currently the only way to add a new course to the database.</p>
+  <p>So, if you want to add a course, enter the code above and click any of the links that appear. You can close the tab immediately. At some point this will be made nicer...</p>
 {:else}
   <ul>
     <li><a href="{apiUrl}/course/{courseCode}/dump">Course dump (JSON)</a></li>

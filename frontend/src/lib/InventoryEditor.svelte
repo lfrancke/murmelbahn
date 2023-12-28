@@ -8,6 +8,7 @@
   const storageKey = "inventory";
 
   let sets: Record<string, Set> | null = null;
+  let sortedKeys = [];
   let buildable = null;
 
   const jsonInventory: String = localStorage.getItem(storageKey);
@@ -35,11 +36,24 @@
       addMessages(lang, acc[lang]);
     }
 
+    sortedKeys = Object.keys(sets).sort((keyA, keyB) => {
+      const nameA = getNameInLanguage(sets[keyA].names, 'en');
+      const nameB = getNameInLanguage(sets[keyB].names, 'en');
+      return nameA.localeCompare(nameB);
+    });
+
     init({
       fallbackLocale: 'en',
       initialLocale: getLocaleFromNavigator(),
     });
   });
+
+  // Function to get name in a specific language
+  function getNameInLanguage(namesArray, languageCode) {
+    const nameEntry = namesArray.find(name => name.language_code === languageCode);
+    return nameEntry ? nameEntry.name : 'Unknown'; // Fallback to 'Unknown' if name in the specific language is not found
+  }
+
 
   function onSubmit() {
     localStorage.setItem(storageKey, JSON.stringify(inventory));
@@ -70,7 +84,7 @@
 {:else}
   <form on:submit|preventDefault={onSubmit}>
     <ul>
-      {#each Object.entries(sets) as [key, value]}
+      {#each sortedKeys as key}
         <li>
           <input
               class="input input-sm input-bordered w-24"
@@ -81,7 +95,7 @@
               bind:value="{inventory.sets[key]}"
               name="{key}"
               id="set-{key}"/>
-          <label for="set-{key}">{$_(value.id)}</label>
+          <label for="set-{key}">{$_(sets[key].id)}</label>
         </li>
       {/each}
     </ul>

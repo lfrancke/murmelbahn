@@ -1,4 +1,17 @@
 # Murmelbahn Changelog
+                                                             
+## 2023-12-28
+
+- Better support for the 2023 update, but it's probably not finished yet.
+  I assume calculating heights/rails etc. with releasers won't yet work properly.
+- Added Balance Starter Set
+- Sets are now ordered alphabetically in the "Buildable" section
+- Add a disclaimer at the top, including contact information
+- Add docs for how to add a course
+
+## 2023-11-02
+
+- Initial support for the 2023 Gravitrax Update (Lightstones)
 
 ## 2023-05-01
 
