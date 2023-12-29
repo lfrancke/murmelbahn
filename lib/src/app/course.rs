@@ -51,7 +51,7 @@ pub enum CourseElementGeneration {
     Fall2021 = 6,
     Spring2022 = 7,
     Power = 8,
-    Autumn2023 = 9
+    Autumn2023 = 9,
 }
 
 #[derive(Debug, PartialEq)]
@@ -188,7 +188,7 @@ impl SavedCourse {
 /// This is because most courses that have been created are 2020 or newer.
 #[derive(Debug, DekuRead, Serialize)]
 #[deku(ctx = "version: CourseSaveDataVersion", id = "version")]
- #[serde(untagged)]
+#[serde(untagged)]
 pub enum Course {
     #[deku(id_pat = "CourseSaveDataVersion::ZiplineAdded2019")]
     ZiplineAdded2019(
@@ -202,7 +202,7 @@ pub enum Course {
     Pro2020(#[deku(ctx = "CourseSaveDataVersion::Pro2020")] power2022::Course),
 
     #[deku(id_pat = "CourseSaveDataVersion::LightStones2023")]
-    LightStones2023(#[deku(ctx = "CourseSaveDataVersion::LightStones2023")] power2022::Course)
+    LightStones2023(#[deku(ctx = "CourseSaveDataVersion::LightStones2023")] power2022::Course),
 }
 
 impl Course {
@@ -210,7 +210,7 @@ impl Course {
         match self {
             Course::ZiplineAdded2019(course) => course.meta_data.clone(),
             Course::Power2022(course) | Course::Pro2020(course) => course.meta_data.clone(),
-            Course::LightStones2023(course) => course.meta_data.clone()
+            Course::LightStones2023(course) => course.meta_data.clone(),
         }
     }
 }
@@ -231,5 +231,5 @@ pub enum CourseSaveDataVersion {
     ZiplineAdded2019 = 2,
     Pro2020 = 3,
     Power2022 = 4,
-    LightStones2023 = 5
+    LightStones2023 = 5,
 }

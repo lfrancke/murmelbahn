@@ -99,7 +99,9 @@ impl From<Course> for BillOfMaterials {
                 process_pillar_construction_data(&course.pillar_construction_data, &mut context);
                 process_rail_construction_data(&course.rail_construction_data, &mut context);
             }
-            Course::Power2022(course) | Course::Pro2020(course) | Course::LightStones2023(course) => {
+            Course::Power2022(course)
+            | Course::Pro2020(course)
+            | Course::LightStones2023(course) => {
                 process_layer_construction_data(&course.layer_construction_data, &mut context);
                 process_pillar_construction_data(&course.pillar_construction_data, &mut context);
                 process_wall_construction_data(&course.wall_construction_data, &mut context);
@@ -448,7 +450,6 @@ fn process_wall_construction_data(walls: &[WallConstructionData], context: &mut 
 
 fn process_rail_construction_data(rails: &[RailConstructionData], context: &mut CountContext) {
     for rail in rails.iter() {
-
         // This flag is only used for ZiplineAdded2019 tracks
         // The course files sometimes contain _a lot_ of additional rails for some reason
         // But they are set to "materialized = false", I don't know why

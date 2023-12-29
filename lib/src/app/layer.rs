@@ -102,7 +102,7 @@ pub enum TileKind {
     Releaser1 = 82,
     Releaser2 = 83,
     Releaser3 = 84,
-    Releaser4 = 85
+    Releaser4 = 85,
 }
 
 #[derive(Debug, DekuRead, Serialize)]
@@ -125,7 +125,6 @@ pub enum LightStoneColorMode {
     Blue = 4,
     White = 5,
 }
-
 
 #[deku_derive(DekuRead)]
 #[derive(Debug, Serialize)]
@@ -195,13 +194,19 @@ pub struct TileTowerConstructionData {
     #[deku(map = "TileTowerConstructionData::map_retainer_id")]
     pub retainer_id: Option<i32>,
 
-    #[deku(cond = "version == CourseSaveDataVersion::Power2022 || version == CourseSaveDataVersion::LightStones2023", default = "None")]
+    #[deku(
+        cond = "version == CourseSaveDataVersion::Power2022 || version == CourseSaveDataVersion::LightStones2023",
+        default = "None"
+    )]
     #[deku(map = "TileTowerConstructionData::map_power_signal_mode")]
     pub power_signal_mode: Option<PowerSignalMode>,
 
-    #[deku(cond = "version == CourseSaveDataVersion::LightStones2023", default = "None")]
+    #[deku(
+        cond = "version == CourseSaveDataVersion::LightStones2023",
+        default = "None"
+    )]
     #[deku(map = "TileTowerConstructionData::map_light_stone_color_mode")]
-    pub light_stone_color_mode: Option<LightStoneColorMode>
+    pub light_stone_color_mode: Option<LightStoneColorMode>,
 }
 
 impl TileTowerConstructionData {
@@ -223,7 +228,6 @@ impl TileTowerConstructionData {
         }
     }
 
-
     fn map_light_stone_color_mode(field: u32) -> Result<Option<LightStoneColorMode>, DekuError> {
         if field == 2147483648 {
             Ok(None)
@@ -233,5 +237,4 @@ impl TileTowerConstructionData {
             Ok(Some(LightStoneColorMode::try_from(input2)?))
         }
     }
-
 }

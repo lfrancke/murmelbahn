@@ -141,7 +141,7 @@ pub enum Element {
     LightStacker,
     LightStackerSmall,
     LightBase,
-    Releaser
+    Releaser,
 }
 
 impl Element {

@@ -12,6 +12,8 @@ Some URLs that are supported:
 - Bill of Material (BOM): https://murmelbahn.fly.dev/course/GDZJZA3J3T/bom
   - This one takes a query parameter called`format` with values of `csv`, `rust` or `json` (the default)
   - `csv` output is compatible with the GraviSheet
+- Raw data: https://murmelbahn.fly.dev/course/GDZJZA3J3T/raw
+  - This is the data as it comes from the Ravensburger API (only base64 decoded)
                    
 ## Course format
 
@@ -21,6 +23,21 @@ It can be found in the file `imhex-schema.txt` in this repository.
 Ravensburger changed the file format multiple times.
 This app can only process the latest three formats (anything after 2020, the introduction of "Pro").
 Earlier versions could - in theory - be supported but I didn't find many tracks with those formats out there with the exception of courses between 2019 and 2020, I might add support for this later.
+
+## Building & Running
+  
+Environment Variables:
+```
+DATABASE_URL=postgres://<user>:<password>:15432/murmelbahn;RUST_LOG=murmelbahn_web=debug,murmelbahn_lib=debug,warn;SETS_DIRECTORY=data/sets
+```
+
+```
+flyctl proxy 15432:5433 -a murmelbahn-db -s
+npm run build
+cargo run --package murmelbahn-web --bin murmelbahn-web
+```
+
+Deploy: `flyctl deploy`
 
 ## Acknowledgements
 

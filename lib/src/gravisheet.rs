@@ -126,8 +126,7 @@ pub struct GraviSheetOutput {
     pub tile_trigger: Option<i32>,
 
     pub empty_ballbox: Option<i32>,
-    pub empty_magneticstick: Option<i32>
-
+    pub empty_magneticstick: Option<i32>,
 }
 
 impl From<BillOfMaterials> for GraviSheetOutput {

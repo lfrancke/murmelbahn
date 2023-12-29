@@ -4,7 +4,7 @@ mod course_repo;
 mod set;
 
 use crate::buildable::buildable;
-use crate::course::{course_bom, course_dump};
+use crate::course::{course_bom, course_dump, course_raw_download};
 use crate::course_repo::CourseRepo;
 use crate::set::set_list;
 use axum::http::{header, Method, StatusCode};
@@ -79,6 +79,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let course_routes = Router::new()
         .route("/:id/dump", get(course_dump))
         .route("/:id/bom", get(course_bom))
+        .route("/:id/raw", get(course_raw_download))
         .with_state(shared_state.clone());
     let course_routes = Router::new().nest("/course", course_routes);
 

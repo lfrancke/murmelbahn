@@ -133,5 +133,4 @@ impl BillOfMaterials {
         }
         false
     }
-
 }

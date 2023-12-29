@@ -1,10 +1,6 @@
-use csv::ReaderBuilder;
 use murmelbahn_lib::common::GraviSheetOutput;
 use murmelbahn_lib::course::common::Course;
 use serde::Deserialize;
-use std::collections::HashMap;
-use std::fs;
-use std::path::PathBuf;
 
 #[derive(Debug, Deserialize)]
 pub struct GraviSheetInput {

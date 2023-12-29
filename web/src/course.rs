@@ -77,8 +77,12 @@ pub(crate) async fn course_bom(
     debug!("Request for BOM for course [{course_code}]");
 
     let course_bytes = state.course_repo.get_course_bytes(&course_code).await?;
-    let Some(course_bytes) = course_bytes  else {
-        return Ok((StatusCode::NOT_FOUND, format!("Course [{}] could not be found", course_code)).into_response());
+    let Some(course_bytes) = course_bytes else {
+        return Ok((
+            StatusCode::NOT_FOUND,
+            format!("Course [{}] could not be found", course_code),
+        )
+            .into_response());
     };
     let course = SavedCourse::from_bytes(&course_bytes)
         .context(DeserializationFailedSnafu {
@@ -116,11 +120,30 @@ pub async fn course_dump(
     let course_code = CourseCode::new(course);
     let course_bytes = state.course_repo.get_course_bytes(&course_code).await?;
 
-    let Some(course_bytes) = course_bytes  else {
-        return Err(CourseNotFound {course_code });
+    let Some(course_bytes) = course_bytes else {
+        return Err(CourseNotFound { course_code });
     };
 
     let course = SavedCourse::from_bytes(&course_bytes)
         .context(DeserializationFailedSnafu { course_code })?;
     Ok(Json(course))
+}
+
+/// Dumps the raw course data as they come from Ravensburger
+/// The only thing we do is to decode base64
+pub async fn course_raw_download(
+    Path(course): Path<String>,
+    State(state): State<Arc<AppState>>,
+) -> Result<Vec<u8>, Error> {
+    increment_counter!("murmelbahn.raw_download.requests");
+
+    // Could write a custom Axum extractor at some point
+    let course_code = CourseCode::new(course);
+    let course_bytes = state.course_repo.get_course_bytes(&course_code).await?;
+
+    let Some(course_bytes) = course_bytes else {
+        return Err(CourseNotFound { course_code });
+    };
+
+    Ok(course_bytes)
 }

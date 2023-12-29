@@ -1,4 +1,5 @@
- use chrono::NaiveDateTime;
+
+use chrono::NaiveDateTime;
 use futures::TryStreamExt;
 use metrics::increment_counter;
 use serde::Serialize;
@@ -26,14 +27,12 @@ pub struct CourseRepo {
 
 #[derive(Serialize)]
 pub struct StoredCourseMetadata {
-
     pub date_added_to_db: NaiveDateTime,
     /// This is extracted from the metadata of the file itself
     pub creation_timestamp: NaiveDateTime,
     /// This is extracted from the metadata of the file itself
     pub title: String,
-    pub course_code: String
-
+    pub course_code: String,
 }
 
 impl CourseRepo {
@@ -126,7 +125,10 @@ impl CourseRepo {
         repo: &SetRepo,
         inventory: Inventory,
     ) -> Result<Vec<StoredCourseMetadata>, Error> {
-        let mut rows = sqlx::query("SELECT code, serialized_bytes, created_at FROM courses ORDER BY created_at").fetch(&self.db);
+        let mut rows = sqlx::query(
+            "SELECT code, serialized_bytes, created_at FROM courses ORDER BY created_at",
+        )
+        .fetch(&self.db);
 
         let summarized_inventory =
             PhysicalBillOfMaterials::from_inventory(&inventory, repo).unwrap();
@@ -143,10 +145,12 @@ impl CourseRepo {
 
             let diff_bom = summarized_inventory.subtract(&physical_bom);
             if !diff_bom.any_missing() {
-
                 let course = StoredCourseMetadata {
                     date_added_to_db: row.try_get("created_at").unwrap(),
-                    creation_timestamp: NaiveDateTime::from_timestamp_millis(metadata.creation_timestamp as i64).unwrap(),
+                    creation_timestamp: NaiveDateTime::from_timestamp_millis(
+                        metadata.creation_timestamp as i64,
+                    )
+                    .unwrap(),
                     title: metadata.title,
                     course_code: code.to_string(),
                 };
