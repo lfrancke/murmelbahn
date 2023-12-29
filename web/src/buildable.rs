@@ -3,7 +3,7 @@ use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
-use metrics::increment_counter;
+use metrics::counter;
 use murmelbahn_lib::physical::Inventory;
 use std::sync::Arc;
 
@@ -13,7 +13,7 @@ pub async fn buildable(
     State(state): State<Arc<AppState>>,
     Json(inventory): Json<Inventory>,
 ) -> impl IntoResponse {
-    increment_counter!("murmelbahn.buildable.requests");
+    counter!("murmelbahn.buildable.requests").increment(1);
     let result = state
         .course_repo
         .process_all(&state.sets_repo, inventory)

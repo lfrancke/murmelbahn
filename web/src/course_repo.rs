@@ -1,7 +1,6 @@
-
 use chrono::NaiveDateTime;
 use futures::TryStreamExt;
-use metrics::increment_counter;
+use metrics::counter;
 use serde::Serialize;
 
 use murmelbahn_lib::app::course::SavedCourse;
@@ -56,13 +55,13 @@ impl CourseRepo {
         match course {
             None => {
                 info!("{} not found in cache, downloading", course_code);
-                increment_counter!("murmelbahn.course.cache.miss");
+                counter!("murmelbahn.course.cache.miss").increment(1);
 
                 Ok(Some(self.download_and_cache_course(course_code).await?))
             }
             Some(course) => {
                 debug!("Serving {} from cache", course_code);
-                increment_counter!("murmelbahn.course.cache.hit");
+                counter!("murmelbahn.course.cache.hit").increment(1);
                 Ok(Some(course))
             }
         }
@@ -99,7 +98,7 @@ impl CourseRepo {
         match foo {
             Ok(course) => {
                 debug!("Successfully downloaded {}", course_code);
-                increment_counter!("murmelbahn.course.downloads.success");
+                counter!("murmelbahn.course.downloads.success").increment(1);
 
                 sqlx::query("INSERT INTO courses (code, serialized_bytes) VALUES ($1, $2)")
                     .bind(&course_code.to_string())
@@ -112,7 +111,7 @@ impl CourseRepo {
             }
             Err(err) => {
                 info!("Download not successful for {}", course_code);
-                increment_counter!("murmelbahn.course.downloads.error");
+                counter!("murmelbahn.course.downloads.error").increment(1);
                 Err(err).context(DownloadSnafu)?
             }
         }

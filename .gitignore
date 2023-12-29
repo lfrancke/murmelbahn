@@ -1,5 +1,4 @@
 .envrc
 /target
-/Cargo.lock
 
 lib/tests/test-data

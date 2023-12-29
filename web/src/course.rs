@@ -5,7 +5,7 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
 use csv::Writer;
-use metrics::increment_counter;
+use metrics::counter;
 use murmelbahn_lib::app::course::SavedCourse;
 use murmelbahn_lib::app::BillOfMaterials;
 use murmelbahn_lib::common::CourseCode;
@@ -72,7 +72,7 @@ pub(crate) async fn course_bom(
     Query(BomParams { format }): Query<BomParams>,
     State(state): State<Arc<AppState>>,
 ) -> Result<Response, Error> {
-    increment_counter!("murmelbahn.bom.requests");
+    counter!("murmelbahn.bom.requests").increment(1);
     let course_code = CourseCode::new(course);
     debug!("Request for BOM for course [{course_code}]");
 
@@ -114,7 +114,7 @@ pub async fn course_dump(
     Path(course): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> Result<Json<SavedCourse>, Error> {
-    increment_counter!("murmelbahn.dump.requests");
+    counter!("murmelbahn.dump.requests").increment(1);
 
     // Could write a custom Axum extractor at some point
     let course_code = CourseCode::new(course);
@@ -135,7 +135,7 @@ pub async fn course_raw_download(
     Path(course): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> Result<Vec<u8>, Error> {
-    increment_counter!("murmelbahn.raw_download.requests");
+    counter!("murmelbahn.raw_download.requests").increment(1);
 
     // Could write a custom Axum extractor at some point
     let course_code = CourseCode::new(course);
