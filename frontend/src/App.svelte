@@ -28,6 +28,7 @@
 
     <div class="mx-1 p-1">
       <h2>{$_('title_about')}</h2>
+      <b>Note: Courses with light stackers or releases will currently probably not work!</b>
       <ul>
         <li>This site was <a href="https://www.linkedin.com/in/larsfrancke/">built by Lars Francke</a>.
         It is in no way affiliated with Ravensburger, please do not contact them if you have issues or questions about this site.</li>
