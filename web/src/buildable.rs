@@ -23,7 +23,7 @@ pub async fn buildable(
     match result {
         Ok(result) => Json(result).into_response(),
         Err(e) => {
-            info!("Error assembling 'buildable' request", e);
+            info!("Error assembling 'buildable' request: {}", e);
             (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong").into_response()
         },
     }
