@@ -6,7 +6,7 @@ use crate::app::course::CourseSaveDataVersion;
 use crate::app::course::HexVector;
 
 #[derive(Clone, Debug, Deserialize, Eq, DekuRead, Hash, JsonSchema, PartialEq, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum LayerKind {
     BaseLayerPiece = 0,
     BaseLayer = 1,
@@ -16,7 +16,7 @@ pub enum LayerKind {
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, DekuRead, Hash, JsonSchema, PartialEq, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum TileKind {
     None = 0,
     Starter = 1,
@@ -106,7 +106,7 @@ pub enum TileKind {
 }
 
 #[derive(Debug, DekuRead, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum PowerSignalMode {
     Off = 0,
     Red = 1,
@@ -116,7 +116,7 @@ pub enum PowerSignalMode {
 }
 
 #[derive(Debug, DekuRead, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum LightStoneColorMode {
     Off = 0,
     Alternating = 1,

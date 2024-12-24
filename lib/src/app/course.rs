@@ -18,7 +18,7 @@ pub enum Error {
 }
 
 #[derive(Clone, Debug, DekuRead, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum CourseKind {
     None = 0,
     // All tracks downloaded using a code from the app seem to be "Custom" courses
@@ -34,13 +34,13 @@ pub enum CourseKind {
 }
 
 #[derive(Clone, Debug, DekuRead, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum ObjectiveKind {
     None = 0,
 }
 
 #[derive(Debug, DekuRead, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum CourseElementGeneration {
     InitialLaunch = 0,
     Christmas2018 = 1,
@@ -149,7 +149,7 @@ impl CourseMetaData {
             .map_err(|source| {
                 DekuError::Parse(format!(
                     "Could not interpret title bytes as valid UTF-8: {source}"
-                ))
+                ).into())
             })
     }
 }
@@ -223,7 +223,7 @@ pub struct SaveDataHeader {
 
 // Copy needed for deku magic
 #[derive(Clone, Copy, Debug, DekuRead, PartialEq, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum CourseSaveDataVersion {
     InitialLaunch = 100101,
     RailRework2018 = 100201,

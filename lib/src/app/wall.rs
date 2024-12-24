@@ -23,7 +23,7 @@ impl WallKind {
 }
 
 #[derive(Debug, DekuRead, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum WallSide {
     West = 0,
     East = 1,

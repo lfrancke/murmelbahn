@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::app::course::{CourseSaveDataVersion, HexVector};
 
 #[derive(Clone, Debug, Deserialize, Eq, DekuRead, Hash, JsonSchema, PartialEq, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum RailKind {
     Straight = 0,
     Bernoulli = 1,

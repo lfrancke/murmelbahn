@@ -9,7 +9,7 @@ use crate::app::pillar::PillarConstructionData;
 use crate::app::rail::RailConstructionData;
 
 #[derive(Debug, DekuRead, Serialize)]
-#[deku(type = "u32")]
+#[deku(id_type = "u32")]
 pub enum RopeKind {
     None = 0,
     Straight = 1,
