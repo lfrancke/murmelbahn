@@ -9,7 +9,7 @@ RUN npm run build
 
 
 # Rust part: Backend
-FROM rust:1.73 as rust_builder
+FROM rust:1.83 as rust_builder
 WORKDIR /usr/src/murmelbahn
 COPY . .
 RUN cargo install --path web
