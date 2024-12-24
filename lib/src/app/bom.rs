@@ -142,7 +142,7 @@ struct CountContext {
     retainer_positions: HashMap<i32, HexVector>,
 
     /// A 'retainer' is anything that can "hold" or "retain" other tiles or items.
-    /// Base layers for example but also balconies and other things
+    /// Base layers for example but also balconies, light bases and other things
     /// Each of those has a height which is measured in small stackers.
     /// We record the lower and the upper height here
     retainer_heights: HashMap<i32, RetainerHeight>,
@@ -305,34 +305,46 @@ fn process_tree_node_data(
 
     // Check if this current tile at this cell is a retainer
     // and add it to the retainer_positions and retainer_heights if it is
-    // A retainer here can be a double balcony, a stacker tower and ...not sure  what else
+    // A retainer here can be a double balcony, a stacker tower, a light base and ...not sure  what else
     if let Some(retainer_id) = data.construction_data.retainer_id {
         context
             .retainer_positions
             .insert(retainer_id, world_cell_position.clone());
 
-        if matches!(
-            data.construction_data.kind,
-            TileKind::StackerTowerOpened | TileKind::StackerTowerClosed
-        ) {
-            context.retainer_heights.insert(
-                retainer_id,
-                RetainerHeight::new(
-                    current_height,
-                    current_height + 14 + data.construction_data.height_in_small_stacker,
-                ), // TODO: Maybe this 14 needs to be a 13 for reasons I don't understand
-            );
-            current_height += 14 + data.construction_data.height_in_small_stacker;
-        } else {
-            // All other things are 1 high I believe (i.e. DoubleBalcony)
-            context.retainer_heights.insert(
-                retainer_id,
-                RetainerHeight::new(
-                    current_height,
-                    data.construction_data.height_in_small_stacker + current_height + 1,
-                ),
-            );
-            current_height += data.construction_data.height_in_small_stacker;
+        match data.construction_data.kind {
+            TileKind::StackerTowerOpened | TileKind::StackerTowerClosed => {
+                context.retainer_heights.insert(
+                    retainer_id,
+                    RetainerHeight::new(
+                        current_height,
+                        current_height + data.construction_data.height_in_small_stacker + 14,
+                    ), // TODO: Maybe this 14 needs to be a 13 for reasons I don't understand
+                );
+                current_height += data.construction_data.height_in_small_stacker + 14;
+            }
+            TileKind::LightBase => {
+                context.retainer_heights.insert(
+                    retainer_id,
+                    RetainerHeight::new(
+                        current_height,
+                        current_height + data.construction_data.height_in_small_stacker + 4,
+                    )
+                );
+                current_height += data.construction_data.height_in_small_stacker + 4;
+                // TODO: I'm really not sure anymore how this works and if 4 is correct!
+            }
+            _ => {
+                // All other things are 1 high I believe (i.e. DoubleBalcony)
+                context.retainer_heights.insert(
+                    retainer_id,
+                    RetainerHeight::new(
+                        current_height,
+                        current_height + data.construction_data.height_in_small_stacker + 1,
+                    ),
+                );
+                // TODO: Does this need to have a + 1?
+                current_height += data.construction_data.height_in_small_stacker;
+            }
         }
     }
 

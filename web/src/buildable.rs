@@ -6,6 +6,7 @@ use axum::Json;
 use metrics::counter;
 use murmelbahn_lib::physical::Inventory;
 use std::sync::Arc;
+use tracing::info;
 
 /// This returns a list of all codes that are buildable with the inventory that is passed in.
 /// At the moment, this returns only a list of strings
@@ -21,6 +22,9 @@ pub async fn buildable(
 
     match result {
         Ok(result) => Json(result).into_response(),
-        Err(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong").into_response(),
+        Err(e) => {
+            info!("Error assembling 'buildable' request", e);
+            (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong").into_response()
+        },
     }
 }

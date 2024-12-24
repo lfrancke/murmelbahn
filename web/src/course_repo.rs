@@ -18,6 +18,11 @@ pub enum Error {
     DownloadError {
         source: murmelbahn_lib::app::download::Error,
     },
+    #[snafu(display("Deserialization failed for course with code '{}': {}", code, source))]
+    DeserializationError {
+        code: String,
+        source: murmelbahn_lib::app::course::Error,
+    },
 }
 
 pub struct CourseRepo {
@@ -89,13 +94,13 @@ impl CourseRepo {
         // Because murmelbahn_lib uses the blocking version, we'll have to wrap it here
         // I'm sure there are better ways to do this
         let code = course_code.clone();
-        let foo = murmelbahn_lib::app::download::download_course(&code)
+        let course_bytes = murmelbahn_lib::app::download::download_course(&code)
             .await
             .unwrap()
             .unwrap()
             .decode_base64_file();
 
-        match foo {
+        match course_bytes {
             Ok(course) => {
                 debug!("Successfully downloaded {}", course_code);
                 counter!("murmelbahn.course.downloads.success").increment(1);
@@ -136,7 +141,10 @@ impl CourseRepo {
         while let Some(row) = rows.try_next().await.unwrap() {
             let bytes: Vec<u8> = row.try_get("serialized_bytes").unwrap();
             let code: &str = row.try_get("code").unwrap();
-            let course = SavedCourse::from_bytes(&bytes).unwrap().course;
+
+            let course = SavedCourse::from_bytes(&bytes)
+                .context(DeserializationSnafu { code })?
+                .course;
 
             let metadata = course.meta_data().clone();
             let app_bom = AppBillOfMaterials::try_from(course).unwrap();

@@ -33,7 +33,9 @@ DATABASE_URL=postgres://<user>:<password>:15432/murmelbahn;RUST_LOG=murmelbahn_w
 
 ```
 flyctl proxy 15432:5433 -a murmelbahn-db -s
+cd frontend
 npm run build
+cd ..
 cargo run --package murmelbahn-web --bin murmelbahn-web
 ```
 
