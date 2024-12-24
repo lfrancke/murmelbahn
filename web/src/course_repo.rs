@@ -23,6 +23,8 @@ pub enum Error {
         code: String,
         source: murmelbahn_lib::app::course::Error,
     },
+    #[snafu(display("Invalid course metadata: {}", message))]
+    InvalidMetadata { message: String },
 }
 
 pub struct CourseRepo {
@@ -138,31 +140,68 @@ impl CourseRepo {
             PhysicalBillOfMaterials::from_inventory(&inventory, repo).unwrap();
 
         let mut courses = Vec::new();
-        while let Some(row) = rows.try_next().await.unwrap() {
-            let bytes: Vec<u8> = row.try_get("serialized_bytes").unwrap();
-            let code: &str = row.try_get("code").unwrap();
+        while let Ok(Some(row)) = rows.try_next().await {
+            let code: String = match row.try_get("code") {
+                Ok(c) => c,
+                Err(e) => {
+                    info!("Failed to get 'code', skipping: {}", e);
+                    continue;
+                }
+            };
 
-            let course = SavedCourse::from_bytes(&bytes)
-                .context(DeserializationSnafu { code })?
-                .course;
 
-            let metadata = course.meta_data().clone();
-            let app_bom = AppBillOfMaterials::try_from(course).unwrap();
-            let physical_bom = PhysicalBillOfMaterials::try_from(app_bom).unwrap();
+            let bytes: Vec<u8> = match row.try_get("serialized_bytes") {
+                Ok(b) => b,
+                Err(e) => {
+                    info!("Failed to get 'serialized_bytes' for code '{}', skipping: {}", code, e);
+                    continue;
+                }
+            };
 
-            let diff_bom = summarized_inventory.subtract(&physical_bom);
-            if !diff_bom.any_missing() {
-                let course = StoredCourseMetadata {
-                    date_added_to_db: row.try_get("created_at").unwrap(),
-                    creation_timestamp: NaiveDateTime::from_timestamp_millis(
-                        metadata.creation_timestamp as i64,
-                    )
-                    .unwrap(),
-                    title: metadata.title,
-                    course_code: code.to_string(),
-                };
 
-                courses.push(course);
+            let created_at: NaiveDateTime = match row.try_get("created_at") {
+                Ok(c) => c,
+                Err(e) => {
+                    info!("Failed to get 'created_at' for code '{}', skipping: {}", code, e);
+                    continue;
+                }
+            };
+
+            match SavedCourse::from_bytes(&bytes)
+                .context(DeserializationSnafu { code: code.clone() })
+                .and_then(|saved_course| {
+                    let course = saved_course.course;
+                    let metadata = course.meta_data().clone();
+                    let app_bom = AppBillOfMaterials::try_from(course)
+                        .map_err(|_| Error::InvalidMetadata {
+                            message: "Invalid AppBillOfMaterials".to_string(),
+                        })?;
+                    let physical_bom = PhysicalBillOfMaterials::try_from(app_bom)
+                        .map_err(|_| Error::InvalidMetadata {
+                            message: "Invalid PhysicalBillOfMaterials".to_string(),
+                        })?;
+                    Ok((metadata, physical_bom))
+                }) {
+                Ok((metadata, physical_bom)) => {
+                    let diff_bom = summarized_inventory.subtract(&physical_bom);
+                    if !diff_bom.any_missing() {
+                        courses.push(StoredCourseMetadata {
+                            date_added_to_db: created_at,
+                            creation_timestamp: NaiveDateTime::from_timestamp_millis(
+                                metadata.creation_timestamp as i64,
+                            )
+                            .unwrap_or_else(|| {
+                                info!("Invalid timestamp for course code {}", code);
+                                NaiveDateTime::from_timestamp_opt(0, 0).unwrap()
+                            }),
+                            title: metadata.title,
+                            course_code: code,
+                        });
+                    }
+                }
+                Err(e) => {
+                    info!("Failed to process course '{}': {}", code, e);
+                }
             }
         }
 
