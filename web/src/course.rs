@@ -18,7 +18,7 @@ use tracing::debug;
 
 #[derive(Debug, Snafu)]
 pub enum Error {
-    #[snafu(display("Failed to deserialize course [{course_code}]"))]
+    #[snafu(display("Failed to deserialize course [{course_code}]: {source}"))]
     DeserializationFailedError {
         course_code: CourseCode,
         source: murmelbahn_lib::app::course::Error,

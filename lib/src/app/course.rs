@@ -10,7 +10,7 @@ use crate::app::{power2022, ziplineadded2019};
 
 #[derive(Debug, Snafu)]
 pub enum Error {
-    #[snafu(display("Failed to deserialize course"))]
+    #[snafu(display("Failed to deserialize course: {source}"))]
     DeserializationFailedError { source: DekuError },
 
     #[snafu(display("Failed to read file [{path:?}]"))]
@@ -52,6 +52,7 @@ pub enum CourseElementGeneration {
     Spring2022 = 7,
     Power = 8,
     Autumn2023 = 9,
+    Temp2024 = 10
 }
 
 #[derive(Debug, PartialEq)]

@@ -263,6 +263,7 @@ impl Element {
             TileKind::Releaser2 => vec![Element::Releaser],
             TileKind::Releaser3 => vec![Element::Releaser],
             TileKind::Releaser4 => vec![Element::Releaser],
+            TileKind::Temp2024Nr1 => vec![]
         }
     }
 }

@@ -103,6 +103,7 @@ pub enum TileKind {
     Releaser2 = 83,
     Releaser3 = 84,
     Releaser4 = 85,
+    Temp2024Nr1 = 86,
 }
 
 #[derive(Debug, DekuRead, Serialize)]
