@@ -52,7 +52,7 @@ pub enum CourseElementGeneration {
     Spring2022 = 7,
     Power = 8,
     Autumn2023 = 9,
-    Temp2024 = 10
+    Autumn2024 = 10
 }
 
 #[derive(Debug, PartialEq)]
