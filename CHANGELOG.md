@@ -1,4 +1,11 @@
 # Murmelbahn Changelog
+
+## 2025-01-01
+
+- Tracks from Gravitrax Autumn 2024 update should now be readable or at least not cause failures anymore
+  - New tiles are not fully supported yet though (in height calculation etc.): Space Tube and Vertical Cannon
+  - The same still goes for the "releasers" from Autumn of 2023
+- GraviSheet output has been adjusted 
                                                              
 ## 2023-12-28
 

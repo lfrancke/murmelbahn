@@ -142,6 +142,10 @@ pub enum Element {
     LightStackerSmall,
     LightBase,
     Releaser,
+
+    // Autumn 2024
+    VerticalCannon,
+    SpaceTube
 }
 
 impl Element {
@@ -263,7 +267,14 @@ impl Element {
             TileKind::Releaser2 => vec![Element::Releaser],
             TileKind::Releaser3 => vec![Element::Releaser],
             TileKind::Releaser4 => vec![Element::Releaser],
-            TileKind::Temp2024Nr1 => vec![]
+            TileKind::VerticalCannon0 => vec![Element::VerticalCannon],
+            TileKind::VerticalCannon60 => vec![Element::VerticalCannon],
+            TileKind::VerticalCannon120 => vec![Element::VerticalCannon],
+            TileKind::VerticalCannon180 => vec![Element::VerticalCannon],
+            TileKind::VerticalCannon240 => vec![Element::VerticalCannon],
+            TileKind::VerticalCannon300 => vec![Element::VerticalCannon],
+            TileKind::SpaceTubeAligned => vec![Element::SpaceTube],
+            TileKind::SpaceTubeUnaligned => vec![Element::SpaceTube],
         }
     }
 }

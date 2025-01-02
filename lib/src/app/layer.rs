@@ -103,7 +103,14 @@ pub enum TileKind {
     Releaser2 = 83,
     Releaser3 = 84,
     Releaser4 = 85,
-    Temp2024Nr1 = 86,
+    VerticalCannon0 = 86,
+    VerticalCannon60 = 87,
+    VerticalCannon120 = 88,
+    VerticalCannon180 = 89,
+    VerticalCannon240 = 90,
+    VerticalCannon300 = 91,
+    SpaceTubeAligned = 92,
+    SpaceTubeUnaligned = 93
 }
 
 #[derive(Debug, DekuRead, Serialize)]

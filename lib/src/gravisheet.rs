@@ -1,3 +1,5 @@
+//! This is the model used to output information in the GraviSheet format
+//! This struct is serialized so it can be imported easily into GraviSheet and therefore may contain some "dummy" columns
 use crate::app::layer::{LayerKind, TileKind};
 use crate::app::rail::RailKind;
 use crate::app::wall::WallKind;
@@ -72,6 +74,7 @@ pub struct GraviSheetOutput {
     /// Called "Spiral" in the app
     pub tile_two_entrance_funnel: Option<i32>,
     pub tile_three_entrance_funnel: Option<i32>,
+    pub tile_space_tube: Option<i32>,
     pub tile_basic: Option<i32>,
     pub tile_drop: Option<i32>,
     pub tile_catch: Option<i32>,
@@ -93,6 +96,7 @@ pub struct GraviSheetOutput {
     pub tile_jumper: Option<i32>,
     pub tile_loop: Option<i32>,
     pub tile_cannon: Option<i32>,
+    pub tile_vertical_cannon: Option<i32>,
     /// Kaskade / Cascade
     pub tile_scoop: Option<i32>,
     pub tile_spinner: Option<i32>,
@@ -220,6 +224,10 @@ impl From<BillOfMaterials> for GraviSheetOutput {
                 bom.tile_kind(TileKind::MixerSameExits),
                 bom.tile_kind(TileKind::MixerOffsetExits),
             ]),
+            tile_space_tube: option_adder_helper(vec![
+                bom.tile_kind(TileKind::SpaceTubeAligned),
+                bom.tile_kind(TileKind::SpaceTubeUnaligned),
+            ]),
             tile_basic: option_adder_helper(vec![
                 bom.tile_kind(TileKind::Drop),
                 bom.tile_kind(TileKind::Catch),
@@ -262,6 +270,14 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             tile_jumper: bom.tile_kind(TileKind::Jumper),
             tile_loop: bom.tile_kind(TileKind::Loop),
             tile_cannon: bom.tile_kind(TileKind::Cannon),
+            tile_vertical_cannon: option_adder_helper(vec![
+                bom.tile_kind(TileKind::VerticalCannon0),
+                bom.tile_kind(TileKind::VerticalCannon60),
+                bom.tile_kind(TileKind::VerticalCannon120),
+                bom.tile_kind(TileKind::VerticalCannon180),
+                bom.tile_kind(TileKind::VerticalCannon240),
+                bom.tile_kind(TileKind::VerticalCannon300),
+            ]),
             tile_scoop: bom.tile_kind(TileKind::Cascade),
             tile_spinner: bom.tile_kind(TileKind::Spinner),
             tile_spiral_base: total_spirals,
