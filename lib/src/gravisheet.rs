@@ -1,5 +1,7 @@
-//! This is the model used to output information in the GraviSheet format
-//! This struct is serialized so it can be imported easily into GraviSheet and therefore may contain some "dummy" columns
+//! Model used to output a course's piece counts in the column order of the
+//! GraviSheet "Tracks to Build" tab, so the result can be pasted into the sheet.
+//! Field order must match that tab's columns exactly (the value row is what gets
+//! pasted). A few columns the app cannot fill are emitted empty as spacers.
 use crate::app::BillOfMaterials;
 use crate::app::layer::{LayerKind, TileKind};
 use crate::app::rail::RailKind;
@@ -8,15 +10,22 @@ use serde::Serialize;
 
 #[derive(Debug, Serialize)]
 pub struct GraviSheetOutput {
+    // Leading columns. Paste starts at the Title column (D); the spacers line up
+    // with Video, Launch, Notes, PRO, POWER and the "buildable" column.
     pub title: String,
-    pub empty_1: Option<i32>,
+    pub empty_video: Option<i32>,
     pub course_code: String,
-    pub empty_2: Option<i32>,
-    pub empty_3: Option<i32>,
+    pub empty_launch: Option<i32>,
+    pub empty_notes: Option<i32>,
+    pub empty_pro: Option<i32>,
+    pub empty_power: Option<i32>,
+    pub empty_buildable: Option<i32>,
+
+    // Platforms
     pub layer_base: Option<i32>,
     pub layer_base_mini: Option<i32>,
     pub layer_base_mini_half: Option<i32>,
-    pub empty_placeholder_micro: Option<i32>,
+    pub layer_base_micro: Option<i32>,
     pub layer_large: Option<i32>,
     pub layer_small: Option<i32>,
 
@@ -64,13 +73,23 @@ pub struct GraviSheetOutput {
     pub tile_flexible_two_in_one_b: Option<i32>,
     pub tile_curve_small_two_in_one_a: Option<i32>,
     pub tile_curve_small_two_in_one_b: Option<i32>,
+
+    // Advent slope tiles (BE..BL in the sheet).
+    pub slope_2in1: Option<i32>,
+    pub slope_3in1: Option<i32>,
+    pub slope_curve_1: Option<i32>,
+    pub slope_curve_2: Option<i32>,
+    pub slope_double_curve: Option<i32>,
+    pub slope_triple_curve: Option<i32>,
+    pub slope_crossing: Option<i32>,
+    pub slope_jump_crossing: Option<i32>,
+
     pub tile_basic_closed: Option<i32>,
     pub tile_goal_basin: Option<i32>,
     pub tile_cross: Option<i32>,
     pub tile_three_way: Option<i32>,
     pub tile_two_way: Option<i32>,
     pub tile_switch_insert: Option<i32>,
-
     /// Called "Spiral" in the app
     pub tile_two_entrance_funnel: Option<i32>,
     pub tile_three_entrance_funnel: Option<i32>,
@@ -84,7 +103,6 @@ pub struct GraviSheetOutput {
     pub tile_tunnel_curve: Option<i32>,
     pub tile_tunnel_switch: Option<i32>,
     pub rail_uturn: Option<i32>,
-
     pub tile_bridge: Option<i32>,
     pub tile_lift: Option<i32>,
     pub tile_catapult: Option<i32>,
@@ -120,6 +138,7 @@ pub struct GraviSheetOutput {
     pub tile_controller: Option<i32>,
     pub tile_dome_starter: Option<i32>,
     pub tile_dropdown_switch: Option<i32>,
+    pub tile_electric_cannon: Option<i32>,
     pub tile_elevator: Option<i32>,
     pub tile_finish_arena: Option<i32>,
     pub tile_finish_trigger: Option<i32>,
@@ -129,8 +148,32 @@ pub struct GraviSheetOutput {
     pub empty_sound: Option<i32>,
     pub tile_trigger: Option<i32>,
 
-    pub empty_ballbox: Option<i32>,
-    pub empty_magneticstick: Option<i32>,
+    // SkyTrax tiles (DT..EQ), then the connector (ER), in app nomenclature order.
+    pub skytrax_2in1_left: Option<i32>,
+    pub skytrax_2in1_right: Option<i32>,
+    pub skytrax_120_catch_drop_60_left: Option<i32>,
+    pub skytrax_120_catch_drop_60_right: Option<i32>,
+    pub skytrax_180_catch_60_60: Option<i32>,
+    pub skytrax_crossing_catch_drop: Option<i32>,
+    pub skytrax_curve_catch: Option<i32>,
+    pub skytrax_curve_drop: Option<i32>,
+    pub skytrax_finish: Option<i32>,
+    pub skytrax_gt_drop: Option<i32>,
+    pub skytrax_hs5: Option<i32>,
+    pub skytrax_hs20: Option<i32>,
+    pub skytrax_multi_catch_drop: Option<i32>,
+    pub skytrax_multi_catcher: Option<i32>,
+    pub skytrax_spiral_120_catch_left: Option<i32>,
+    pub skytrax_spiral_120_catch_right: Option<i32>,
+    pub skytrax_spiral_180_catch_left: Option<i32>,
+    pub skytrax_spiral_180_catch_right: Option<i32>,
+    pub skytrax_spiral_240_catch_left: Option<i32>,
+    pub skytrax_spiral_240_catch_right: Option<i32>,
+    pub skytrax_spiral_300_left: Option<i32>,
+    pub skytrax_spiral_300_right: Option<i32>,
+    pub skytrax_starter: Option<i32>,
+    pub skytrax_3in1: Option<i32>,
+    pub skytrax_connector: Option<i32>,
 }
 
 impl From<BillOfMaterials> for GraviSheetOutput {
@@ -140,11 +183,7 @@ impl From<BillOfMaterials> for GraviSheetOutput {
         let trampolin_2 = bom.tile_kind(TileKind::Trampolin2);
         let total_trampolin = option_adder_helper(vec![trampolin_0, trampolin_1, trampolin_2]);
         let stacker_angled = trampolin_1.unwrap_or(0) + (2 * trampolin_2.unwrap_or(0));
-        let stacker_angled = if stacker_angled == 0 {
-            None
-        } else {
-            Some(stacker_angled)
-        };
+        let stacker_angled = i32_to_option(stacker_angled);
 
         let spiral_small = bom.tile_kind(TileKind::ScrewSmall);
         let spiral_medium = bom.tile_kind(TileKind::ScrewMedium);
@@ -156,13 +195,17 @@ impl From<BillOfMaterials> for GraviSheetOutput {
         GraviSheetOutput {
             title: "PLACEHOLDER".to_string(),
             course_code: "PLACEHOLDER".to_string(),
-            empty_1: None,
-            empty_2: None,
-            empty_3: None,
+            empty_video: None,
+            empty_launch: None,
+            empty_notes: None,
+            empty_pro: None,
+            empty_power: None,
+            empty_buildable: None,
+
             layer_base: bom.layer_kind(LayerKind::BaseLayerPiece),
             layer_base_mini: None,
             layer_base_mini_half: None,
-            empty_placeholder_micro: None,
+            layer_base_micro: None,
             layer_large: bom.layer_kind(LayerKind::LargeLayer),
             layer_small: bom.layer_kind(LayerKind::SmallLayer),
             marbles: i32_to_option(bom.marbles()),
@@ -205,6 +248,16 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             tile_flexible_two_in_one_b: bom.tile_kind(TileKind::FlexibleTwoInOneB),
             tile_curve_small_two_in_one_a: bom.tile_kind(TileKind::TwoInOneSmallCurveA),
             tile_curve_small_two_in_one_b: bom.tile_kind(TileKind::TwoInOneSmallCurveB),
+
+            slope_2in1: bom.tile_kind(TileKind::K2In1Slope),
+            slope_3in1: bom.tile_kind(TileKind::K3In1Slope),
+            slope_curve_1: bom.tile_kind(TileKind::KCurveSlope1),
+            slope_curve_2: bom.tile_kind(TileKind::KCurveSlope2),
+            slope_double_curve: bom.tile_kind(TileKind::K120DoubleCurveSlope),
+            slope_triple_curve: bom.tile_kind(TileKind::KBoomerangSlope),
+            slope_crossing: bom.tile_kind(TileKind::KCrossingSlope),
+            slope_jump_crossing: bom.tile_kind(TileKind::KJumpCrossingSlope),
+
             tile_basic_closed: bom.tile_kind(TileKind::GoalBasin),
             tile_goal_basin: bom.tile_kind(TileKind::GoalBasin),
             tile_cross: bom.tile_kind(TileKind::Cross),
@@ -287,7 +340,7 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             tile_trampoline: total_trampolin,
             tile_transfer: bom.tile_kind(TileKind::Transfer),
             tile_volcano: bom.tile_kind(TileKind::Volcano),
-            tile_zipline: bom.tile_kind(TileKind::ZiplineStart), // TODO: Warn if imbalanced
+            tile_zipline: bom.tile_kind(TileKind::ZiplineStart),
             tile_carousel: option_adder_helper(vec![
                 bom.tile_kind(TileKind::CarouselSameExits),
                 bom.tile_kind(TileKind::CarouselOffsetExits),
@@ -308,20 +361,45 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             empty_connect: None,
             tile_controller: None, // Leaving out for now, hard to give a good number
             tile_dome_starter: bom.tile_kind(TileKind::DomeStarter),
-            tile_elevator: bom.tile_kind(TileKind::Elevator),
-            tile_lever: bom.tile_kind(TileKind::Lever),
             tile_dropdown_switch: option_adder_helper(vec![
                 bom.tile_kind(TileKind::DropdownSwitchRight),
                 bom.tile_kind(TileKind::DropdownSwitchLeft),
             ]),
-            tile_finish_trigger: bom.tile_kind(TileKind::FinishTrigger),
+            tile_electric_cannon: bom.tile_kind(TileKind::ElectricCannon),
+            tile_elevator: bom.tile_kind(TileKind::Elevator),
             tile_finish_arena: bom.tile_kind(TileKind::FinishArena),
-            tile_trigger: bom.tile_kind(TileKind::Trigger),
-            empty_ballbox: None,
-            tile_queue: bom.tile_kind(TileKind::Queue),
+            tile_finish_trigger: bom.tile_kind(TileKind::FinishTrigger),
+            tile_lever: bom.tile_kind(TileKind::Lever),
             lightbase: bom.tile_kind(TileKind::LightBase),
+            tile_queue: bom.tile_kind(TileKind::Queue),
             empty_sound: None,
-            empty_magneticstick: None,
+            tile_trigger: bom.tile_kind(TileKind::Trigger),
+
+            skytrax_2in1_left: bom.tile_kind(TileKind::Kst2In1L),
+            skytrax_2in1_right: bom.tile_kind(TileKind::Kst2In1R),
+            skytrax_120_catch_drop_60_left: bom.tile_kind(TileKind::Kst120CatchDrop60L),
+            skytrax_120_catch_drop_60_right: bom.tile_kind(TileKind::Kst120CatchDrop60R),
+            skytrax_180_catch_60_60: bom.tile_kind(TileKind::Kst180Catch6060),
+            skytrax_crossing_catch_drop: bom.tile_kind(TileKind::KstCrossingCatchDrop),
+            skytrax_curve_catch: bom.tile_kind(TileKind::KstCurveCatch),
+            skytrax_curve_drop: bom.tile_kind(TileKind::KstCurveDrop),
+            skytrax_finish: bom.tile_kind(TileKind::KstFinish),
+            skytrax_gt_drop: bom.tile_kind(TileKind::KstGtDrop),
+            skytrax_hs5: bom.tile_kind(TileKind::KstHs5),
+            skytrax_hs20: bom.tile_kind(TileKind::KstHs20),
+            skytrax_multi_catch_drop: bom.tile_kind(TileKind::KstMultiCatchDrop),
+            skytrax_multi_catcher: bom.tile_kind(TileKind::KstMultiCatcher),
+            skytrax_spiral_120_catch_left: bom.tile_kind(TileKind::KstSpiral120CatchDropCatchL),
+            skytrax_spiral_120_catch_right: bom.tile_kind(TileKind::KstSpiral120CatchDropCatchR),
+            skytrax_spiral_180_catch_left: bom.tile_kind(TileKind::KstSpiral180CatchDropL),
+            skytrax_spiral_180_catch_right: bom.tile_kind(TileKind::KstSpiral180CatchDropR),
+            skytrax_spiral_240_catch_left: bom.tile_kind(TileKind::KstSpiral240CatchL),
+            skytrax_spiral_240_catch_right: bom.tile_kind(TileKind::KstSpiral240CatchR),
+            skytrax_spiral_300_left: bom.tile_kind(TileKind::KstSpiral300L),
+            skytrax_spiral_300_right: bom.tile_kind(TileKind::KstSpiral300R),
+            skytrax_starter: bom.tile_kind(TileKind::KstStarter),
+            skytrax_3in1: bom.tile_kind(TileKind::Kst3In1),
+            skytrax_connector: i32_to_option(bom.connectors),
         }
     }
 }
