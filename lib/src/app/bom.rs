@@ -4,6 +4,7 @@ use crate::app::layer::{
 };
 use crate::app::pillar::PillarConstructionData;
 use crate::app::rail::{RailConstructionData, RailKind};
+use crate::app::skytrax;
 use crate::app::wall::{WallConstructionData, WallKind, WallSide};
 use crate::app::ziplineadded2019::LayerConstructionData as ZiplineLayerConstructionData;
 use serde::Serialize;
@@ -27,6 +28,8 @@ pub struct BillOfMaterials {
     pub rails_small: i32,
     pub rails_medium: i32,
     pub rails_large: i32,
+    /// SkyTrax connectors (the small joining piece). Zero for older formats.
+    pub connectors: i32,
 }
 
 impl BillOfMaterials {
@@ -105,9 +108,12 @@ impl From<Course> for BillOfMaterials {
                 process_wall_construction_data(&course.wall_construction_data, &mut context);
                 process_rail_construction_data(&course.rail_construction_data, &mut context);
             }
-            Course::SkyTrax(_course) => {
-                // SkyTrax bill of materials is not implemented; the course
-                // parses but contributes no element counts.
+            Course::SkyTrax(course) => {
+                process_skytrax_layers(&course.layers, &mut context);
+                process_pillar_construction_data(&course.pillars, &mut context);
+                process_wall_construction_data(&course.walls, &mut context);
+                process_rail_construction_data(&course.rails, &mut context);
+                context.connectors = course.connectors.len() as i32;
             }
         }
 
@@ -120,6 +126,7 @@ impl From<Course> for BillOfMaterials {
             rails_small: context.rail_small,
             rails_medium: context.rail_medium,
             rails_large: context.rail_large,
+            connectors: context.connectors,
         }
     }
 }
@@ -157,6 +164,7 @@ struct CountContext {
     pub rail_small: i32,
     pub rail_medium: i32,
     pub rail_large: i32,
+    pub connectors: i32,
 }
 
 impl CountContext {
@@ -346,6 +354,35 @@ fn process_tree_node_data(
 
     for child in data.children.iter() {
         process_tree_node_data(child, world_cell_position, current_height, context);
+    }
+}
+
+fn process_skytrax_layers(layers: &[skytrax::Layer], context: &mut CountContext) {
+    for layer in layers.iter() {
+        // Count the layer itself.
+        *context.layers.entry(layer.layer_kind.clone()).or_insert(0) += 1;
+
+        // Register the layer's world position and height so rails, walls, and
+        // stacked tiles resolve against it. SkyTrax stores the height directly
+        // as a small-stacker count rather than a float.
+        context
+            .retainer_positions
+            .insert(layer.layer_id, HexVector::new(layer.pos_x, layer.pos_y));
+        let lower = layer.small_stacker_height;
+        context
+            .retainer_heights
+            .insert(layer.layer_id, RetainerHeight::new(lower, lower + 1));
+
+        for cell in layer.cells.iter() {
+            let world_cell_position =
+                context.local_to_world_hex_vector(&cell.local_hex_position, layer.layer_id);
+            process_tree_node_data(
+                &cell.tree_node_data,
+                &world_cell_position,
+                lower + 1,
+                context,
+            );
+        }
     }
 }
 

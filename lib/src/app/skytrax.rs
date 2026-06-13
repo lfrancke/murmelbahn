@@ -106,4 +106,22 @@ mod tests {
             rest.len()
         );
     }
+
+    /// The bill of materials for a SkyTrax course counts its tiles and its 10
+    /// connectors, and resolves rail/retainer positions without panicking.
+    #[test]
+    fn skytrax_course_produces_bill_of_materials() {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("tests/test-data/SV46HTJVFS.course");
+        let bytes = std::fs::read(&path).expect("read fixture");
+
+        let course = SavedCourse::from_bytes(&bytes).expect("parses");
+        let bom = crate::app::BillOfMaterials::from(course.course);
+
+        assert_eq!(bom.connectors, 10, "connector count");
+        assert!(
+            bom.tiles.values().sum::<i32>() > 0,
+            "course has counted tiles"
+        );
+    }
 }
