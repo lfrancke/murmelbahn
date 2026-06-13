@@ -1,6 +1,6 @@
+use crate::app::BillOfMaterials as AppBillOfMaterials;
 use crate::app::layer::LayerKind;
 use crate::app::rail::RailKind;
-use crate::app::BillOfMaterials as AppBillOfMaterials;
 use crate::physical::set::SetRepo;
 use crate::physical::{Element, Inventory};
 use schemars::JsonSchema;
@@ -96,7 +96,7 @@ impl BillOfMaterials {
                 None => {
                     return Err(Error::SetUnknown {
                         id: set_name.to_string(),
-                    })
+                    });
                 }
                 Some(set) => {
                     for (element, element_count) in set.content.iter() {

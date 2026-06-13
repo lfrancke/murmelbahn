@@ -1,7 +1,7 @@
 //! This module can be used to download courses from the Ravensburger API.
 //! The response is a JSON file which mostly just includes a base64 encoded binary file which itself contains the course data.
 use crate::common::CourseCode;
-use base64::{engine::general_purpose, Engine as _};
+use base64::{Engine as _, engine::general_purpose};
 use serde::Deserialize;
 use snafu::prelude::*;
 

@@ -13,10 +13,10 @@ use ts_rs::TS;
 #[derive(Debug, Snafu)]
 pub enum Error {
     #[snafu(display("Failed to read file [{path:?}]"))]
-    FileReadError { path: PathBuf, source: io::Error },
+    FileRead { path: PathBuf, source: io::Error },
 
     #[snafu(display("Failed to deserialize JSON set file: [{path:?}]"))]
-    JsonDeserializationError {
+    JsonDeserialization {
         path: PathBuf,
         source: serde_json::Error,
     },
@@ -25,7 +25,7 @@ pub enum Error {
     InvalidPath { path: PathBuf },
 
     #[snafu(display("IO Error while traversing directory [{dir:?}]"))]
-    IoError { dir: PathBuf, source: io::Error },
+    Io { dir: PathBuf, source: io::Error },
 }
 
 #[derive(Clone, Serialize, Deserialize, JsonSchema, TS)]

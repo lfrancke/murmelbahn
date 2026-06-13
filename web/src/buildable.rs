@@ -1,8 +1,8 @@
 use crate::AppState;
+use axum::Json;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use axum::Json;
 use metrics::counter;
 use murmelbahn_lib::physical::Inventory;
 use std::sync::Arc;
@@ -25,6 +25,6 @@ pub async fn buildable(
         Err(e) => {
             info!("Error assembling 'buildable' request: {}", e);
             (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong").into_response()
-        },
+        }
     }
 }

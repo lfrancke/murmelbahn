@@ -8,109 +8,285 @@ use crate::app::course::HexVector;
 #[derive(Clone, Debug, Deserialize, Eq, DekuRead, Hash, JsonSchema, PartialEq, Serialize)]
 #[deku(id_type = "u32")]
 pub enum LayerKind {
-    BaseLayerPiece = 0,
-    BaseLayer = 1,
-    LargeLayer = 2,
-    LargeGhostLayer = 3,
-    SmallLayer = 4,
+    #[deku(id = "0")]
+    BaseLayerPiece,
+    #[deku(id = "1")]
+    BaseLayer,
+    #[deku(id = "2")]
+    LargeLayer,
+    #[deku(id = "3")]
+    LargeGhostLayer,
+    #[deku(id = "4")]
+    SmallLayer,
+
+    /// A discriminant this parser version does not define, for example one
+    /// introduced by a newer app release. Keeping the raw value consumes the
+    /// fixed four-byte tag so the rest of the course still parses.
+    #[deku(id_pat = "_")]
+    Unknown(u32),
 }
 
 #[derive(Clone, Debug, Deserialize, Eq, DekuRead, Hash, JsonSchema, PartialEq, Serialize)]
 #[deku(id_type = "u32")]
 pub enum TileKind {
-    None = 0,
-    Starter = 1,
-    Curve = 2,
-    Catch = 3,
-    GoalBasin = 4,
-    Drop = 5,
-    Hammer = 6,
-    Catapult = 7,
-    Cross = 8,
-    Threeway = 9,
-    TwoWay = 10,
-    Spiral = 11,
-    Splash = 12,
-    Loop = 13,
-    Cannon = 14,
-    Stacker = 15,
-    StackerSmall = 16,
-    SwitchLeft = 17,
-    SwitchRight = 18,
-    GoalRail = 19,
-    StackerBatch = 20,
-    Cascade = 21,
-    StraightTunnel = 22,
-    CurveTunnel = 23,
-    SwitchTunnel = 24,
-    Trampolin0 = 25,
-    Trampolin1 = 26,
-    Trampolin2 = 27,
-    LiftSmall = 28,
-    LiftLarge = 29,
-    Flip = 30,
-    TipTube = 31,
-    Volcano = 32,
-    Jumper = 33,
-    Transfer = 34,
-    ZiplineStart = 35,
-    ZiplineEnd = 36,
-    Bridge = 37,
-    ScrewSmall = 38,
-    ScrewMedium = 39,
-    ScrewLarge = 40,
-    MixerOffsetExits = 41,
-    Splitter = 42,
-    StackerTowerClosed = 43,
-    StackerTowerOpened = 44,
-    DoubleBalcony = 45,
-    MixerSameExits = 46,
-    DipperLeft = 47,
-    DipperRight = 48,
-    Helix = 49,
-    Turntable = 50,
-    Spinner = 51,
-    TwoInOneSmallCurveA = 52,
-    TwoInOneSmallCurveB = 53,
-    FlexibleTwoInOneB = 54,
-    RibbonCurve = 55,
-    ThreeEntranceFunnel = 56,
-    CurveCrossing = 57,
-    DoubleBigCurve = 58,
-    DoubleSmallCurve = 59,
-    MultiJunction = 60,
-    StraightCurveCrossing = 61,
-    TripleSmallCurve = 62,
-    FlexibleTwoInOneA = 63,
-    ColorSwapEmpty = 64,
-    ColorSwapPreloaded = 65,
-    CarouselSameExits = 66,
-    CarouselOffsetExits = 67,
-    DomeStarter = 68,
-    FinishTrigger = 69,
-    FinishArena = 70,
-    Trigger = 71,
-    DropdownSwitchLeft = 72,
-    DropdownSwitchRight = 73,
-    Queue = 74,
-    Lever = 75,
-    Elevator = 77,
-    LightBase = 78,
-    LightStacker = 79,
-    LightStackerSmall = 80,
-    LightStackerBatch = 81,
-    Releaser1 = 82,
-    Releaser2 = 83,
-    Releaser3 = 84,
-    Releaser4 = 85,
-    VerticalCannon0 = 86,
-    VerticalCannon60 = 87,
-    VerticalCannon120 = 88,
-    VerticalCannon180 = 89,
-    VerticalCannon240 = 90,
-    VerticalCannon300 = 91,
-    SpaceTubeAligned = 92,
-    SpaceTubeUnaligned = 93
+    #[deku(id = "0")]
+    None,
+    #[deku(id = "1")]
+    Starter,
+    #[deku(id = "2")]
+    Curve,
+    #[deku(id = "3")]
+    Catch,
+    #[deku(id = "4")]
+    GoalBasin,
+    #[deku(id = "5")]
+    Drop,
+    #[deku(id = "6")]
+    Hammer,
+    #[deku(id = "7")]
+    Catapult,
+    #[deku(id = "8")]
+    Cross,
+    #[deku(id = "9")]
+    Threeway,
+    #[deku(id = "10")]
+    TwoWay,
+    #[deku(id = "11")]
+    Spiral,
+    #[deku(id = "12")]
+    Splash,
+    #[deku(id = "13")]
+    Loop,
+    #[deku(id = "14")]
+    Cannon,
+    #[deku(id = "15")]
+    Stacker,
+    #[deku(id = "16")]
+    StackerSmall,
+    #[deku(id = "17")]
+    SwitchLeft,
+    #[deku(id = "18")]
+    SwitchRight,
+    #[deku(id = "19")]
+    GoalRail,
+    #[deku(id = "20")]
+    StackerBatch,
+    #[deku(id = "21")]
+    Cascade,
+    #[deku(id = "22")]
+    StraightTunnel,
+    #[deku(id = "23")]
+    CurveTunnel,
+    #[deku(id = "24")]
+    SwitchTunnel,
+    #[deku(id = "25")]
+    Trampolin0,
+    #[deku(id = "26")]
+    Trampolin1,
+    #[deku(id = "27")]
+    Trampolin2,
+    #[deku(id = "28")]
+    LiftSmall,
+    #[deku(id = "29")]
+    LiftLarge,
+    #[deku(id = "30")]
+    Flip,
+    #[deku(id = "31")]
+    TipTube,
+    #[deku(id = "32")]
+    Volcano,
+    #[deku(id = "33")]
+    Jumper,
+    #[deku(id = "34")]
+    Transfer,
+    #[deku(id = "35")]
+    ZiplineStart,
+    #[deku(id = "36")]
+    ZiplineEnd,
+    #[deku(id = "37")]
+    Bridge,
+    #[deku(id = "38")]
+    ScrewSmall,
+    #[deku(id = "39")]
+    ScrewMedium,
+    #[deku(id = "40")]
+    ScrewLarge,
+    #[deku(id = "41")]
+    MixerOffsetExits,
+    #[deku(id = "42")]
+    Splitter,
+    #[deku(id = "43")]
+    StackerTowerClosed,
+    #[deku(id = "44")]
+    StackerTowerOpened,
+    #[deku(id = "45")]
+    DoubleBalcony,
+    #[deku(id = "46")]
+    MixerSameExits,
+    #[deku(id = "47")]
+    DipperLeft,
+    #[deku(id = "48")]
+    DipperRight,
+    #[deku(id = "49")]
+    Helix,
+    #[deku(id = "50")]
+    Turntable,
+    #[deku(id = "51")]
+    Spinner,
+    #[deku(id = "52")]
+    TwoInOneSmallCurveA,
+    #[deku(id = "53")]
+    TwoInOneSmallCurveB,
+    #[deku(id = "54")]
+    FlexibleTwoInOneB,
+    #[deku(id = "55")]
+    RibbonCurve,
+    #[deku(id = "56")]
+    ThreeEntranceFunnel,
+    #[deku(id = "57")]
+    CurveCrossing,
+    #[deku(id = "58")]
+    DoubleBigCurve,
+    #[deku(id = "59")]
+    DoubleSmallCurve,
+    #[deku(id = "60")]
+    MultiJunction,
+    #[deku(id = "61")]
+    StraightCurveCrossing,
+    #[deku(id = "62")]
+    TripleSmallCurve,
+    #[deku(id = "63")]
+    FlexibleTwoInOneA,
+    #[deku(id = "64")]
+    ColorSwapEmpty,
+    #[deku(id = "65")]
+    ColorSwapPreloaded,
+    #[deku(id = "66")]
+    CarouselSameExits,
+    #[deku(id = "67")]
+    CarouselOffsetExits,
+    #[deku(id = "68")]
+    DomeStarter,
+    #[deku(id = "69")]
+    FinishTrigger,
+    #[deku(id = "70")]
+    FinishArena,
+    #[deku(id = "71")]
+    Trigger,
+    #[deku(id = "72")]
+    DropdownSwitchLeft,
+    #[deku(id = "73")]
+    DropdownSwitchRight,
+    #[deku(id = "74")]
+    Queue,
+    #[deku(id = "75")]
+    Lever,
+    #[deku(id = "77")]
+    Elevator,
+    #[deku(id = "78")]
+    LightBase,
+    #[deku(id = "79")]
+    LightStacker,
+    #[deku(id = "80")]
+    LightStackerSmall,
+    #[deku(id = "81")]
+    LightStackerBatch,
+    #[deku(id = "82")]
+    Releaser1,
+    #[deku(id = "83")]
+    Releaser2,
+    #[deku(id = "84")]
+    Releaser3,
+    #[deku(id = "85")]
+    Releaser4,
+    #[deku(id = "86")]
+    VerticalCannon0,
+    #[deku(id = "87")]
+    VerticalCannon60,
+    #[deku(id = "88")]
+    VerticalCannon120,
+    #[deku(id = "89")]
+    VerticalCannon180,
+    #[deku(id = "90")]
+    VerticalCannon240,
+    #[deku(id = "91")]
+    VerticalCannon300,
+    #[deku(id = "92")]
+    SpaceTubeAligned,
+    #[deku(id = "93")]
+    SpaceTubeUnaligned,
+    #[deku(id = "94")]
+    ElectricCannon,
+    #[deku(id = "95")]
+    K2In1Slope,
+    #[deku(id = "96")]
+    K3In1Slope,
+    #[deku(id = "97")]
+    K120DoubleCurveSlope,
+    #[deku(id = "98")]
+    KBoomerangSlope,
+    #[deku(id = "99")]
+    KCrossingSlope,
+    #[deku(id = "100")]
+    KCurveSlope1,
+    #[deku(id = "101")]
+    KCurveSlope2,
+    #[deku(id = "102")]
+    KJumpCrossingSlope,
+    #[deku(id = "103")]
+    Kst2In1L,
+    #[deku(id = "104")]
+    Kst2In1R,
+    #[deku(id = "105")]
+    Kst120CatchDrop60L,
+    #[deku(id = "106")]
+    Kst120CatchDrop60R,
+    #[deku(id = "107")]
+    Kst180Catch6060,
+    #[deku(id = "108")]
+    KstCrossingCatchDrop,
+    #[deku(id = "109")]
+    KstCurveCatch,
+    #[deku(id = "110")]
+    KstCurveDrop,
+    #[deku(id = "111")]
+    KstFinish,
+    #[deku(id = "112")]
+    KstGtDrop,
+    #[deku(id = "113")]
+    KstHs5,
+    #[deku(id = "114")]
+    KstHs20,
+    #[deku(id = "115")]
+    KstMultiCatchDrop,
+    #[deku(id = "116")]
+    KstMultiCatcher,
+    #[deku(id = "117")]
+    KstSpiral120CatchDropCatchL,
+    #[deku(id = "118")]
+    KstSpiral120CatchDropCatchR,
+    #[deku(id = "119")]
+    KstSpiral180CatchDropL,
+    #[deku(id = "120")]
+    KstSpiral180CatchDropR,
+    #[deku(id = "121")]
+    KstSpiral240CatchL,
+    #[deku(id = "122")]
+    KstSpiral240CatchR,
+    #[deku(id = "123")]
+    KstSpiral300L,
+    #[deku(id = "124")]
+    KstSpiral300R,
+    #[deku(id = "125")]
+    KstStarter,
+    #[deku(id = "126")]
+    Kst3In1,
+
+    /// A discriminant this parser version does not define, for example one
+    /// introduced by a newer app release. Keeping the raw value consumes the
+    /// fixed four-byte tag so the rest of the course still parses.
+    #[deku(id_pat = "_")]
+    Unknown(u32),
 }
 
 #[derive(Debug, DekuRead, Serialize)]
@@ -203,14 +379,14 @@ pub struct TileTowerConstructionData {
     pub retainer_id: Option<i32>,
 
     #[deku(
-        cond = "version == CourseSaveDataVersion::Power2022 || version == CourseSaveDataVersion::LightStones2023",
+        cond = "version == CourseSaveDataVersion::Power2022 || version == CourseSaveDataVersion::LightStones2023 || version == CourseSaveDataVersion::SkyTrax",
         default = "None"
     )]
     #[deku(map = "TileTowerConstructionData::map_power_signal_mode")]
     pub power_signal_mode: Option<PowerSignalMode>,
 
     #[deku(
-        cond = "version == CourseSaveDataVersion::LightStones2023",
+        cond = "version == CourseSaveDataVersion::LightStones2023 || version == CourseSaveDataVersion::SkyTrax",
         default = "None"
     )]
     #[deku(map = "TileTowerConstructionData::map_light_stone_color_mode")]
@@ -244,5 +420,45 @@ impl TileTowerConstructionData {
             let input2 = input.as_slice();
             Ok(Some(LightStoneColorMode::try_from(input2)?))
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// An unrecognised `TileKind` discriminant (a value from a newer app
+    /// release) parses and consumes its fixed four bytes, so the rest of the
+    /// course still parses.
+    #[test]
+    fn unknown_tile_kind_value_parses_and_consumes_four_bytes() {
+        // 1337 little-endian; not a known TileKind discriminant.
+        let bytes = [0x39u8, 0x05, 0x00, 0x00];
+        let ((rest, _bit), kind) =
+            TileKind::from_bytes((&bytes, 0)).expect("unknown TileKind should parse");
+        assert_eq!(kind, TileKind::Unknown(1337), "raw discriminant preserved");
+        assert!(
+            rest.is_empty(),
+            "should consume exactly 4 bytes, {} byte(s) left",
+            rest.len()
+        );
+
+        // A known discriminant must still parse to its named variant.
+        let known = [0x01u8, 0x00, 0x00, 0x00];
+        let (_, kind) = TileKind::from_bytes((&known, 0)).unwrap();
+        assert_eq!(kind, TileKind::Starter);
+    }
+
+    /// Discriminants 94 to 126 are the SkyTrax tile kinds and parse to their
+    /// named variants.
+    #[test]
+    fn skytrax_tile_kinds_parse_to_their_variant() {
+        let bytes = 94u32.to_le_bytes();
+        let (_, kind) = TileKind::from_bytes((&bytes, 0)).unwrap();
+        assert_eq!(kind, TileKind::ElectricCannon);
+
+        let bytes = 126u32.to_le_bytes();
+        let (_, kind) = TileKind::from_bytes((&bytes, 0)).unwrap();
+        assert_eq!(kind, TileKind::Kst3In1);
     }
 }

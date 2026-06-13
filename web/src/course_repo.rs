@@ -3,8 +3,8 @@ use futures::TryStreamExt;
 use metrics::counter;
 use serde::Serialize;
 
-use murmelbahn_lib::app::course::SavedCourse;
 use murmelbahn_lib::app::BillOfMaterials as AppBillOfMaterials;
+use murmelbahn_lib::app::course::SavedCourse;
 use murmelbahn_lib::common::CourseCode;
 use murmelbahn_lib::physical::{BillOfMaterials as PhysicalBillOfMaterials, Inventory, SetRepo};
 use snafu::{ResultExt, Snafu};
@@ -149,20 +149,24 @@ impl CourseRepo {
                 }
             };
 
-
             let bytes: Vec<u8> = match row.try_get("serialized_bytes") {
                 Ok(b) => b,
                 Err(e) => {
-                    info!("Failed to get 'serialized_bytes' for code '{}', skipping: {}", code, e);
+                    info!(
+                        "Failed to get 'serialized_bytes' for code '{}', skipping: {}",
+                        code, e
+                    );
                     continue;
                 }
             };
 
-
             let created_at: NaiveDateTime = match row.try_get("created_at") {
                 Ok(c) => c,
                 Err(e) => {
-                    info!("Failed to get 'created_at' for code '{}', skipping: {}", code, e);
+                    info!(
+                        "Failed to get 'created_at' for code '{}', skipping: {}",
+                        code, e
+                    );
                     continue;
                 }
             };
@@ -172,13 +176,16 @@ impl CourseRepo {
                 .and_then(|saved_course| {
                     let course = saved_course.course;
                     let metadata = course.meta_data().clone();
-                    let app_bom = AppBillOfMaterials::try_from(course)
-                        .map_err(|_| Error::InvalidMetadata {
+                    let app_bom = AppBillOfMaterials::try_from(course).map_err(|_| {
+                        Error::InvalidMetadata {
                             message: "Invalid AppBillOfMaterials".to_string(),
-                        })?;
-                    let physical_bom = PhysicalBillOfMaterials::try_from(app_bom)
-                        .map_err(|_| Error::InvalidMetadata {
-                            message: "Invalid PhysicalBillOfMaterials".to_string(),
+                        }
+                    })?;
+                    let physical_bom =
+                        PhysicalBillOfMaterials::try_from(app_bom).map_err(|_| {
+                            Error::InvalidMetadata {
+                                message: "Invalid PhysicalBillOfMaterials".to_string(),
+                            }
                         })?;
                     Ok((metadata, physical_bom))
                 }) {

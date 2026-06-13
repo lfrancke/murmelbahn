@@ -145,7 +145,7 @@ pub enum Element {
 
     // Autumn 2024
     VerticalCannon,
-    SpaceTube
+    SpaceTube,
 }
 
 impl Element {
@@ -275,6 +275,45 @@ impl Element {
             TileKind::VerticalCannon300 => vec![Element::VerticalCannon],
             TileKind::SpaceTubeAligned => vec![Element::SpaceTube],
             TileKind::SpaceTubeUnaligned => vec![Element::SpaceTube],
+            // SkyTrax and ElectricCannon tile kinds. Their physical inventory
+            // is not modelled, so they contribute nothing to the bill of
+            // materials.
+            TileKind::ElectricCannon
+            | TileKind::K2In1Slope
+            | TileKind::K3In1Slope
+            | TileKind::K120DoubleCurveSlope
+            | TileKind::KBoomerangSlope
+            | TileKind::KCrossingSlope
+            | TileKind::KCurveSlope1
+            | TileKind::KCurveSlope2
+            | TileKind::KJumpCrossingSlope
+            | TileKind::Kst2In1L
+            | TileKind::Kst2In1R
+            | TileKind::Kst120CatchDrop60L
+            | TileKind::Kst120CatchDrop60R
+            | TileKind::Kst180Catch6060
+            | TileKind::KstCrossingCatchDrop
+            | TileKind::KstCurveCatch
+            | TileKind::KstCurveDrop
+            | TileKind::KstFinish
+            | TileKind::KstGtDrop
+            | TileKind::KstHs5
+            | TileKind::KstHs20
+            | TileKind::KstMultiCatchDrop
+            | TileKind::KstMultiCatcher
+            | TileKind::KstSpiral120CatchDropCatchL
+            | TileKind::KstSpiral120CatchDropCatchR
+            | TileKind::KstSpiral180CatchDropL
+            | TileKind::KstSpiral180CatchDropR
+            | TileKind::KstSpiral240CatchL
+            | TileKind::KstSpiral240CatchR
+            | TileKind::KstSpiral300L
+            | TileKind::KstSpiral300R
+            | TileKind::KstStarter
+            | TileKind::Kst3In1 => Vec::new(),
+            // A tile kind with no known physical element, so it adds nothing
+            // to the bill of materials.
+            TileKind::Unknown(_) => Vec::new(),
         }
     }
 }
@@ -287,7 +326,9 @@ impl TryFrom<&LayerKind> for Element {
             LayerKind::BaseLayerPiece => Element::BaseLayer,
             LayerKind::LargeLayer => Element::LargeClearLayer,
             LayerKind::SmallLayer => Element::SmallClearLayer,
-            _ => panic!(""), // TODO error
+            // A layer kind with no physical-element mapping yet. Return an error
+            // so the caller can report it, rather than crashing the conversion.
+            _ => return Err(Error::UnknownElement),
         })
     }
 }
@@ -323,6 +364,26 @@ impl TryFrom<&RailKind> for Element {
             RailKind::FlexTube180 => Element::FlexTube,
             RailKind::FlexTube240 => Element::FlexTube,
             RailKind::FlexTube300 => Element::FlexTube,
+            RailKind::KstBernoulliL
+            | RailKind::KstBernoulliR
+            | RailKind::KstSlide60L
+            | RailKind::KstSlide60R
+            | RailKind::KstSlide120L
+            | RailKind::KstSlide120R => return Err(Error::UnknownElement),
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// An unmapped layer kind returns an error rather than panicking, so the
+    /// physical bill-of-materials conversion can surface it instead of crashing.
+    #[test]
+    fn unmapped_layer_kind_returns_error() {
+        assert!(Element::try_from(&LayerKind::BaseLayer).is_err());
+        assert!(Element::try_from(&LayerKind::LargeGhostLayer).is_err());
+        assert!(Element::try_from(&LayerKind::BaseLayerPiece).is_ok());
     }
 }

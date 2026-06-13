@@ -10,6 +10,7 @@ pub mod layer;
 pub mod pillar;
 pub mod power2022;
 pub mod rail;
+pub mod skytrax;
 pub mod wall;
 pub mod ziplineadded2019;
 

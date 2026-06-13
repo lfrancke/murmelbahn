@@ -4,11 +4,12 @@ use crate::app::layer::{
 };
 use crate::app::pillar::PillarConstructionData;
 use crate::app::rail::{RailConstructionData, RailKind};
+use crate::app::skytrax;
 use crate::app::wall::{WallConstructionData, WallKind, WallSide};
 use crate::app::ziplineadded2019::LayerConstructionData as ZiplineLayerConstructionData;
 use serde::Serialize;
 use std::collections::HashMap;
-use tracing::{error, trace};
+use tracing::{trace, warn};
 
 // 0.36 is a magic number and it represents the height of a small stacker (in the App at least)
 const TILE_HEIGHT: f32 = 0.36;
@@ -27,6 +28,8 @@ pub struct BillOfMaterials {
     pub rails_small: i32,
     pub rails_medium: i32,
     pub rails_large: i32,
+    /// SkyTrax connectors (the small joining piece). Zero for older formats.
+    pub connectors: i32,
 }
 
 impl BillOfMaterials {
@@ -68,7 +71,7 @@ impl BillOfMaterials {
         let dome_starter = self.tile_kind(TileKind::DomeStarter).unwrap_or(0);
         let starter = self.tile_kind(TileKind::Starter).unwrap_or(0);
 
-        let marble_guess = cannon * 2
+        cannon * 2
             + zipline
             + color_change
             + bridge * 2
@@ -79,9 +82,7 @@ impl BillOfMaterials {
             + spinner
             + splash
             + volcano
-            + dome_starter;
-
-        marble_guess
+            + dome_starter
     }
 }
 
@@ -107,6 +108,13 @@ impl From<Course> for BillOfMaterials {
                 process_wall_construction_data(&course.wall_construction_data, &mut context);
                 process_rail_construction_data(&course.rail_construction_data, &mut context);
             }
+            Course::SkyTrax(course) => {
+                process_skytrax_layers(&course.layers, &mut context);
+                process_pillar_construction_data(&course.pillars, &mut context);
+                process_wall_construction_data(&course.walls, &mut context);
+                process_rail_construction_data(&course.rails, &mut context);
+                context.connectors = course.connectors.len() as i32;
+            }
         }
 
         BillOfMaterials {
@@ -118,6 +126,7 @@ impl From<Course> for BillOfMaterials {
             rails_small: context.rail_small,
             rails_medium: context.rail_medium,
             rails_large: context.rail_large,
+            connectors: context.connectors,
         }
     }
 }
@@ -155,6 +164,7 @@ struct CountContext {
     pub rail_small: i32,
     pub rail_medium: i32,
     pub rail_large: i32,
+    pub connectors: i32,
 }
 
 impl CountContext {
@@ -237,10 +247,7 @@ fn process_layer_construction_data_zipline(
     for layer in layers {
         trace!(
             "Processing layer id [{}] of kind [{:?}] and height [{}] at position [{:?}]]",
-            layer.layer_id,
-            layer.layer_kind,
-            layer.layer_height,
-            layer.hex_vector
+            layer.layer_id, layer.layer_kind, layer.layer_height, layer.hex_vector
         );
 
         // Process the layer itself
@@ -264,10 +271,7 @@ fn process_layer_construction_data(layers: &[LayerConstructionData], context: &m
     for layer in layers.iter() {
         trace!(
             "Processing layer id [{}] of kind [{:?}] and height [{}] at position [{:?}]]",
-            layer.layer_id,
-            layer.layer_kind,
-            layer.layer_height,
-            layer.world_hex_position
+            layer.layer_id, layer.layer_kind, layer.layer_height, layer.world_hex_position
         );
 
         // Process the layer itself
@@ -328,7 +332,7 @@ fn process_tree_node_data(
                     RetainerHeight::new(
                         current_height,
                         current_height + data.construction_data.height_in_small_stacker + 4,
-                    )
+                    ),
                 );
                 current_height += data.construction_data.height_in_small_stacker + 4;
                 // TODO: I'm really not sure anymore how this works and if 4 is correct!
@@ -350,6 +354,35 @@ fn process_tree_node_data(
 
     for child in data.children.iter() {
         process_tree_node_data(child, world_cell_position, current_height, context);
+    }
+}
+
+fn process_skytrax_layers(layers: &[skytrax::Layer], context: &mut CountContext) {
+    for layer in layers.iter() {
+        // Count the layer itself.
+        *context.layers.entry(layer.layer_kind.clone()).or_insert(0) += 1;
+
+        // Register the layer's world position and height so rails, walls, and
+        // stacked tiles resolve against it. SkyTrax stores the height directly
+        // as a small-stacker count rather than a float.
+        context
+            .retainer_positions
+            .insert(layer.layer_id, HexVector::new(layer.pos_x, layer.pos_y));
+        let lower = layer.small_stacker_height;
+        context
+            .retainer_heights
+            .insert(layer.layer_id, RetainerHeight::new(lower, lower + 1));
+
+        for cell in layer.cells.iter() {
+            let world_cell_position =
+                context.local_to_world_hex_vector(&cell.local_hex_position, layer.layer_id);
+            process_tree_node_data(
+                &cell.tree_node_data,
+                &world_cell_position,
+                lower + 1,
+                context,
+            );
+        }
     }
 }
 
@@ -421,8 +454,7 @@ fn process_wall_construction_data(walls: &[WallConstructionData], context: &mut 
         trace!("Wall:\n{:#?}", wall);
         trace!(
             "Distance between walls: {}, wall direction: {:?}",
-            distance,
-            wall_direction
+            distance, wall_direction
         );
 
         // Process balconies as they can all be retainers and we need to know the exact positions
@@ -488,12 +520,16 @@ fn process_rail_construction_data(rails: &[RailConstructionData], context: &mut 
             let distance = exit_1_world_pos.distance(&exit_2_world_pos) - 1;
 
             match distance {
+                // Exits are adjacent: the tiles connect directly, no rail piece.
+                0 => {}
                 1 => context.rail_small += 1,
                 2 => context.rail_medium += 1,
                 3 => context.rail_large += 1,
-                _ => {
-                    error!("Unrecognized length for small rail: {}", distance); // TODO: Abort?
-                    panic!("No no no");
+                other => {
+                    // GraviTrax has no straight rail longer than large. An
+                    // unexpected span is not worth crashing the whole bill of
+                    // materials over: skip it and leave a trace for diagnosis.
+                    warn!("ignoring straight rail with unexpected span {other}");
                 }
             }
         } else {
