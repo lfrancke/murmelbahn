@@ -1,9 +1,9 @@
 //! This is the model used to output information in the GraviSheet format
 //! This struct is serialized so it can be imported easily into GraviSheet and therefore may contain some "dummy" columns
+use crate::app::BillOfMaterials;
 use crate::app::layer::{LayerKind, TileKind};
 use crate::app::rail::RailKind;
 use crate::app::wall::WallKind;
-use crate::app::BillOfMaterials;
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
@@ -327,11 +327,7 @@ impl From<BillOfMaterials> for GraviSheetOutput {
 }
 
 fn i32_to_option(value: i32) -> Option<i32> {
-    if value == 0 {
-        None
-    } else {
-        Some(value)
-    }
+    if value == 0 { None } else { Some(value) }
 }
 
 fn option_adder_helper(vec: Vec<Option<i32>>) -> Option<i32> {
