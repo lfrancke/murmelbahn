@@ -1,5 +1,15 @@
 # Murmelbahn Changelog
 
+## 2026-06-13
+
+- Support for the GraviTrax 2.8 "SkyTrax" update
+  - SkyTrax courses (save format version 7) now parse
+  - The bill of materials and GraviSheet output include the SkyTrax tiles and the connector piece
+- GraviSheet output now matches the current "Tracks to Build" columns, including the 2025 Advent Calendar slope tiles and the Electric Cannon
+- Courses using the 2023 Light Stones pieces (light stackers, light bases, releasers) no longer risk a crash, and the warning that they might not work has been removed
+- The parser now tolerates unknown tile and enum values from future app updates instead of failing to read the whole course
+- Updated to Rust edition 2024 and refreshed dependencies
+
 ## 2025-01-01
 
 - Tracks from Gravitrax Autumn 2024 update should now be readable or at least not cause failures anymore
