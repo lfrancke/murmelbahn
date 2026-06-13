@@ -326,7 +326,9 @@ impl TryFrom<&LayerKind> for Element {
             LayerKind::BaseLayerPiece => Element::BaseLayer,
             LayerKind::LargeLayer => Element::LargeClearLayer,
             LayerKind::SmallLayer => Element::SmallClearLayer,
-            _ => panic!(""), // TODO error
+            // A layer kind with no physical-element mapping yet. Return an error
+            // so the caller can report it, rather than crashing the conversion.
+            _ => return Err(Error::UnknownElement),
         })
     }
 }
@@ -369,5 +371,19 @@ impl TryFrom<&RailKind> for Element {
             | RailKind::KstSlide120L
             | RailKind::KstSlide120R => return Err(Error::UnknownElement),
         })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// An unmapped layer kind returns an error rather than panicking, so the
+    /// physical bill-of-materials conversion can surface it instead of crashing.
+    #[test]
+    fn unmapped_layer_kind_returns_error() {
+        assert!(Element::try_from(&LayerKind::BaseLayer).is_err());
+        assert!(Element::try_from(&LayerKind::LargeGhostLayer).is_err());
+        assert!(Element::try_from(&LayerKind::BaseLayerPiece).is_ok());
     }
 }
