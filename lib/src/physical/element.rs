@@ -275,8 +275,6 @@ impl Element {
             TileKind::VerticalCannon300 => vec![Element::VerticalCannon],
             TileKind::SpaceTubeAligned => vec![Element::SpaceTube],
             TileKind::SpaceTubeUnaligned => vec![Element::SpaceTube],
-            // A tile kind with no known physical element, so it adds nothing
-            // to the bill of materials.
             // SkyTrax and ElectricCannon tile kinds. Their physical inventory
             // is not modelled, so they contribute nothing to the bill of
             // materials.
@@ -313,6 +311,8 @@ impl Element {
             | TileKind::KstSpiral300R
             | TileKind::KstStarter
             | TileKind::Kst3In1 => Vec::new(),
+            // A tile kind with no known physical element, so it adds nothing
+            // to the bill of materials.
             TileKind::Unknown(_) => Vec::new(),
         }
     }
