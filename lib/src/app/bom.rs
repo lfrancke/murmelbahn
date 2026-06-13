@@ -68,7 +68,7 @@ impl BillOfMaterials {
         let dome_starter = self.tile_kind(TileKind::DomeStarter).unwrap_or(0);
         let starter = self.tile_kind(TileKind::Starter).unwrap_or(0);
 
-        let marble_guess = cannon * 2
+        cannon * 2
             + zipline
             + color_change
             + bridge * 2
@@ -79,9 +79,7 @@ impl BillOfMaterials {
             + spinner
             + splash
             + volcano
-            + dome_starter;
-
-        marble_guess
+            + dome_starter
     }
 }
 
@@ -106,6 +104,10 @@ impl From<Course> for BillOfMaterials {
                 process_pillar_construction_data(&course.pillar_construction_data, &mut context);
                 process_wall_construction_data(&course.wall_construction_data, &mut context);
                 process_rail_construction_data(&course.rail_construction_data, &mut context);
+            }
+            Course::SkyTrax(_course) => {
+                // SkyTrax bill of materials is not implemented; the course
+                // parses but contributes no element counts.
             }
         }
 
@@ -237,10 +239,7 @@ fn process_layer_construction_data_zipline(
     for layer in layers {
         trace!(
             "Processing layer id [{}] of kind [{:?}] and height [{}] at position [{:?}]]",
-            layer.layer_id,
-            layer.layer_kind,
-            layer.layer_height,
-            layer.hex_vector
+            layer.layer_id, layer.layer_kind, layer.layer_height, layer.hex_vector
         );
 
         // Process the layer itself
@@ -264,10 +263,7 @@ fn process_layer_construction_data(layers: &[LayerConstructionData], context: &m
     for layer in layers.iter() {
         trace!(
             "Processing layer id [{}] of kind [{:?}] and height [{}] at position [{:?}]]",
-            layer.layer_id,
-            layer.layer_kind,
-            layer.layer_height,
-            layer.world_hex_position
+            layer.layer_id, layer.layer_kind, layer.layer_height, layer.world_hex_position
         );
 
         // Process the layer itself
@@ -328,7 +324,7 @@ fn process_tree_node_data(
                     RetainerHeight::new(
                         current_height,
                         current_height + data.construction_data.height_in_small_stacker + 4,
-                    )
+                    ),
                 );
                 current_height += data.construction_data.height_in_small_stacker + 4;
                 // TODO: I'm really not sure anymore how this works and if 4 is correct!
@@ -421,8 +417,7 @@ fn process_wall_construction_data(walls: &[WallConstructionData], context: &mut 
         trace!("Wall:\n{:#?}", wall);
         trace!(
             "Distance between walls: {}, wall direction: {:?}",
-            distance,
-            wall_direction
+            distance, wall_direction
         );
 
         // Process balconies as they can all be retainers and we need to know the exact positions

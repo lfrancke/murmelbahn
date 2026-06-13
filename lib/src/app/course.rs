@@ -6,7 +6,7 @@ use deku::prelude::*;
 use serde::Serialize;
 use snafu::prelude::*;
 
-use crate::app::{power2022, ziplineadded2019};
+use crate::app::{power2022, skytrax, ziplineadded2019};
 
 #[derive(Debug, Snafu)]
 pub enum Error {
@@ -36,23 +36,53 @@ pub enum CourseKind {
 #[derive(Clone, Debug, DekuRead, Serialize)]
 #[deku(id_type = "u32")]
 pub enum ObjectiveKind {
-    None = 0,
+    #[deku(id = "0")]
+    None,
+
+    /// A discriminant this parser version does not define, for example one
+    /// introduced by a newer app release. Keeping the raw value consumes the
+    /// fixed four-byte tag so the rest of the course still parses.
+    #[deku(id_pat = "_")]
+    Unknown(u32),
 }
 
 #[derive(Debug, DekuRead, Serialize)]
 #[deku(id_type = "u32")]
 pub enum CourseElementGeneration {
-    InitialLaunch = 0,
-    Christmas2018 = 1,
-    Easter2019 = 2,
-    Autumn2019 = 3,
-    Easter2020 = 4,
-    Pro = 5,
-    Fall2021 = 6,
-    Spring2022 = 7,
-    Power = 8,
-    Autumn2023 = 9,
-    Autumn2024 = 10
+    #[deku(id = "0")]
+    InitialLaunch,
+    #[deku(id = "1")]
+    Christmas2018,
+    #[deku(id = "2")]
+    Easter2019,
+    #[deku(id = "3")]
+    Autumn2019,
+    #[deku(id = "4")]
+    Easter2020,
+    #[deku(id = "5")]
+    Pro,
+    #[deku(id = "6")]
+    Fall2021,
+    #[deku(id = "7")]
+    Spring2022,
+    #[deku(id = "8")]
+    Power,
+    #[deku(id = "9")]
+    Autumn2023,
+    #[deku(id = "10")]
+    Autumn2024,
+    #[deku(id = "11")]
+    Spring2025,
+    #[deku(id = "12")]
+    Advent2025,
+    #[deku(id = "13")]
+    SkyTrax,
+
+    /// A discriminant this parser version does not define, for example one
+    /// introduced by a newer app release. Keeping the raw value consumes the
+    /// fixed four-byte tag so the rest of the course still parses.
+    #[deku(id_pat = "_")]
+    Unknown(u32),
 }
 
 #[derive(Debug, PartialEq)]
@@ -148,9 +178,9 @@ impl CourseMetaData {
         std::str::from_utf8(&bytes)
             .map(|title| title.to_string())
             .map_err(|source| {
-                DekuError::Parse(format!(
-                    "Could not interpret title bytes as valid UTF-8: {source}"
-                ).into())
+                DekuError::Parse(
+                    format!("Could not interpret title bytes as valid UTF-8: {source}").into(),
+                )
             })
     }
 }
@@ -204,6 +234,9 @@ pub enum Course {
 
     #[deku(id_pat = "CourseSaveDataVersion::LightStones2023")]
     LightStones2023(#[deku(ctx = "CourseSaveDataVersion::LightStones2023")] power2022::Course),
+
+    #[deku(id_pat = "CourseSaveDataVersion::SkyTrax")]
+    SkyTrax(#[deku(ctx = "CourseSaveDataVersion::SkyTrax")] skytrax::Course),
 }
 
 impl Course {
@@ -212,6 +245,7 @@ impl Course {
             Course::ZiplineAdded2019(course) => course.meta_data.clone(),
             Course::Power2022(course) | Course::Pro2020(course) => course.meta_data.clone(),
             Course::LightStones2023(course) => course.meta_data.clone(),
+            Course::SkyTrax(course) => course.meta_data.clone(),
         }
     }
 }
@@ -220,6 +254,18 @@ impl Course {
 pub struct SaveDataHeader {
     pub guid: u128,
     pub version: CourseSaveDataVersion,
+}
+
+impl SaveDataHeader {
+    /// Reads only the version field from a course's raw bytes, without parsing
+    /// the (possibly newer, unparseable) body. The version is a little-endian
+    /// `u32` right after the 16-byte guid. Returns the raw value even if it
+    /// isn't a known [`CourseSaveDataVersion`], so a course whose body layout
+    /// changed can still be identified. `None` if the input is too short.
+    pub fn peek_version_raw(bytes: &[u8]) -> Option<u32> {
+        let slice = bytes.get(16..20)?;
+        Some(u32::from_le_bytes(slice.try_into().ok()?))
+    }
 }
 
 // Copy needed for deku magic
@@ -233,4 +279,69 @@ pub enum CourseSaveDataVersion {
     Pro2020 = 3,
     Power2022 = 4,
     LightStones2023 = 5,
+    PreSkyTraxDuringDevelopment = 6,
+    SkyTrax = 7,
+}
+
+impl CourseSaveDataVersion {
+    /// Whether the parser can decode a course *body* of this version. The older
+    /// pre-2019 versions are recognised in the header but have no `Course`
+    /// implementation, so a course of one of those versions parses its header
+    /// but not its body.
+    pub fn is_supported(self) -> bool {
+        matches!(
+            self,
+            Self::ZiplineAdded2019
+                | Self::Pro2020
+                | Self::Power2022
+                | Self::LightStones2023
+                | Self::SkyTrax
+        )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// The version sits right after the 16-byte guid. Reading it raw lets us
+    /// identify a course's version even when the body layout changed and the
+    /// full parse fails.
+    #[test]
+    fn peek_version_reads_version_without_full_parse() {
+        let mut bytes = vec![0u8; 16]; // guid
+        bytes.extend_from_slice(&4u32.to_le_bytes()); // version = Power2022
+        bytes.extend_from_slice(&[0xAB; 32]); // unparseable body
+        assert_eq!(SaveDataHeader::peek_version_raw(&bytes), Some(4));
+    }
+
+    #[test]
+    fn peek_version_is_none_for_truncated_input() {
+        assert_eq!(SaveDataHeader::peek_version_raw(&[0u8; 10]), None);
+    }
+
+    /// `is_supported` marks the versions whose body the parser can decode.
+    #[test]
+    fn supported_versions_are_the_decodable_ones() {
+        assert!(CourseSaveDataVersion::ZiplineAdded2019.is_supported());
+        assert!(CourseSaveDataVersion::Power2022.is_supported());
+        assert!(CourseSaveDataVersion::LightStones2023.is_supported());
+        assert!(!CourseSaveDataVersion::InitialLaunch.is_supported());
+        assert!(!CourseSaveDataVersion::PersistenceRefactor2019.is_supported());
+    }
+
+    /// SkyTrax (version 7) is decodable. The development-only version 6 that
+    /// precedes it is recognised in the header but has no parser.
+    #[test]
+    fn skytrax_is_supported_but_its_predecessor_is_not() {
+        let bytes = 7u32.to_le_bytes();
+        let (_, sky) = CourseSaveDataVersion::from_bytes((&bytes, 0)).unwrap();
+        assert_eq!(sky, CourseSaveDataVersion::SkyTrax);
+        assert!(sky.is_supported());
+
+        let bytes = 6u32.to_le_bytes();
+        let (_, pre) = CourseSaveDataVersion::from_bytes((&bytes, 0)).unwrap();
+        assert_eq!(pre, CourseSaveDataVersion::PreSkyTraxDuringDevelopment);
+        assert!(!pre.is_supported());
+    }
 }

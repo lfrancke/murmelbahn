@@ -145,7 +145,7 @@ pub enum Element {
 
     // Autumn 2024
     VerticalCannon,
-    SpaceTube
+    SpaceTube,
 }
 
 impl Element {
@@ -275,6 +275,45 @@ impl Element {
             TileKind::VerticalCannon300 => vec![Element::VerticalCannon],
             TileKind::SpaceTubeAligned => vec![Element::SpaceTube],
             TileKind::SpaceTubeUnaligned => vec![Element::SpaceTube],
+            // A tile kind with no known physical element, so it adds nothing
+            // to the bill of materials.
+            // SkyTrax and ElectricCannon tile kinds. Their physical inventory
+            // is not modelled, so they contribute nothing to the bill of
+            // materials.
+            TileKind::ElectricCannon
+            | TileKind::K2In1Slope
+            | TileKind::K3In1Slope
+            | TileKind::K120DoubleCurveSlope
+            | TileKind::KBoomerangSlope
+            | TileKind::KCrossingSlope
+            | TileKind::KCurveSlope1
+            | TileKind::KCurveSlope2
+            | TileKind::KJumpCrossingSlope
+            | TileKind::Kst2In1L
+            | TileKind::Kst2In1R
+            | TileKind::Kst120CatchDrop60L
+            | TileKind::Kst120CatchDrop60R
+            | TileKind::Kst180Catch6060
+            | TileKind::KstCrossingCatchDrop
+            | TileKind::KstCurveCatch
+            | TileKind::KstCurveDrop
+            | TileKind::KstFinish
+            | TileKind::KstGtDrop
+            | TileKind::KstHs5
+            | TileKind::KstHs20
+            | TileKind::KstMultiCatchDrop
+            | TileKind::KstMultiCatcher
+            | TileKind::KstSpiral120CatchDropCatchL
+            | TileKind::KstSpiral120CatchDropCatchR
+            | TileKind::KstSpiral180CatchDropL
+            | TileKind::KstSpiral180CatchDropR
+            | TileKind::KstSpiral240CatchL
+            | TileKind::KstSpiral240CatchR
+            | TileKind::KstSpiral300L
+            | TileKind::KstSpiral300R
+            | TileKind::KstStarter
+            | TileKind::Kst3In1 => Vec::new(),
+            TileKind::Unknown(_) => Vec::new(),
         }
     }
 }
@@ -323,6 +362,12 @@ impl TryFrom<&RailKind> for Element {
             RailKind::FlexTube180 => Element::FlexTube,
             RailKind::FlexTube240 => Element::FlexTube,
             RailKind::FlexTube300 => Element::FlexTube,
+            RailKind::KstBernoulliL
+            | RailKind::KstBernoulliR
+            | RailKind::KstSlide60L
+            | RailKind::KstSlide60R
+            | RailKind::KstSlide120L
+            | RailKind::KstSlide120R => return Err(Error::UnknownElement),
         })
     }
 }

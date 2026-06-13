@@ -11,9 +11,18 @@ use crate::app::rail::RailConstructionData;
 #[derive(Debug, DekuRead, Serialize)]
 #[deku(id_type = "u32")]
 pub enum RopeKind {
-    None = 0,
-    Straight = 1,
-    TODO = 3,
+    #[deku(id = "0")]
+    None,
+    #[deku(id = "1")]
+    Straight,
+    #[deku(id = "3")]
+    TODO,
+
+    /// A discriminant this parser version does not define, for example one
+    /// introduced by a newer app release. Keeping the raw value consumes the
+    /// fixed four-byte tag so the rest of the course still parses.
+    #[deku(id_pat = "_")]
+    Unknown(u32),
 }
 
 #[deku_derive(DekuRead)]
