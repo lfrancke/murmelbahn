@@ -9,6 +9,10 @@
 - Courses using the 2023 Light Stones pieces (light stackers, light bases, releasers) no longer risk a crash, and the warning that they might not work has been removed
 - The parser now tolerates unknown tile and enum values from future app updates instead of failing to read the whole course
 - Updated to Rust edition 2024 and refreshed dependencies
+- Still open (carried over from the entries below): the height-dependent
+  calculations (rail lengths, stacker counts) for releasers, Space Tube and
+  Vertical Cannon are still not verified, so piece counts for courses that use
+  them may be off even though they no longer fail to load
 
 ## 2025-01-01
 
