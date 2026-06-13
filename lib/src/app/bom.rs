@@ -9,7 +9,7 @@ use crate::app::wall::{WallConstructionData, WallKind, WallSide};
 use crate::app::ziplineadded2019::LayerConstructionData as ZiplineLayerConstructionData;
 use serde::Serialize;
 use std::collections::HashMap;
-use tracing::{error, trace};
+use tracing::{trace, warn};
 
 // 0.36 is a magic number and it represents the height of a small stacker (in the App at least)
 const TILE_HEIGHT: f32 = 0.36;
@@ -520,12 +520,16 @@ fn process_rail_construction_data(rails: &[RailConstructionData], context: &mut 
             let distance = exit_1_world_pos.distance(&exit_2_world_pos) - 1;
 
             match distance {
+                // Exits are adjacent: the tiles connect directly, no rail piece.
+                0 => {}
                 1 => context.rail_small += 1,
                 2 => context.rail_medium += 1,
                 3 => context.rail_large += 1,
-                _ => {
-                    error!("Unrecognized length for small rail: {}", distance); // TODO: Abort?
-                    panic!("No no no");
+                other => {
+                    // GraviTrax has no straight rail longer than large. An
+                    // unexpected span is not worth crashing the whole bill of
+                    // materials over: skip it and leave a trace for diagnosis.
+                    warn!("ignoring straight rail with unexpected span {other}");
                 }
             }
         } else {
