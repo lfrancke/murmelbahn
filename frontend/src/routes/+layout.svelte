@@ -1,11 +1,14 @@
 <script lang="ts">
-  import favicon from '$lib/assets/favicon.svg';
-
+  import '../app.css';
+  import SeoHead from '$lib/components/SeoHead.svelte';
+  import Nav from '$lib/components/Nav.svelte';
+  import Footer from '$lib/components/Footer.svelte';
   let { children } = $props();
 </script>
 
-<svelte:head>
-  <link rel="icon" href={favicon} />
-</svelte:head>
-
-{@render children()}
+<SeoHead />
+<Nav />
+<main class="mx-auto max-w-5xl px-4 py-8">
+  {@render children()}
+</main>
+<Footer />
