@@ -35,14 +35,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Format
         run: cargo fmt --all --check
-      # murmelbahn-lib is the durable core and is clippy-clean, so warnings are
-      # denied there. murmelbahn-web is the old axum 0.6 API that the SvelteKit
-      # migration replaces with an axum 0.8 rewrite; until that lands, run its
-      # clippy informationally (do not deny) so CI is green, then switch it to
-      # "-- -D warnings" once the rewrite is clippy-clean.
-      - name: Clippy (lib)
-        run: cargo clippy -p murmelbahn-lib --all-targets -- -D warnings
-      - name: Clippy (web)
-        run: cargo clippy -p murmelbahn-web --all-targets
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
       - name: Test
         run: cargo test --workspace
