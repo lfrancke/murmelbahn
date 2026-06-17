@@ -1,0 +1,17 @@
+# Package Managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb
+
+# Generated files
+.svelte-kit/
+dist/
+build/
+.output/
+
+# Cache directories
+.cache/
+.parcel-cache/
+node_modules/
