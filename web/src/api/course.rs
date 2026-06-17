@@ -1,5 +1,5 @@
 use crate::AppState;
-use crate::course::Error::CourseNotFound;
+use crate::api::course::Error::CourseNotFound;
 use axum::Json;
 use axum::extract::{Path, Query, State};
 use axum::http::StatusCode;
@@ -16,40 +16,43 @@ use std::string::FromUtf8Error;
 use std::sync::Arc;
 use tracing::debug;
 
+// csv::IntoInnerError<Writer<Vec<u8>>> is large (384 bytes). Boxing it would require
+// manual From impls that defeat snafu's context(false), so we allow the lint here.
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, Snafu)]
 pub enum Error {
     #[snafu(display("Failed to deserialize course [{course_code}]: {source}"))]
-    DeserializationFailedError {
+    DeserializationFailed {
         course_code: CourseCode,
         source: murmelbahn_lib::app::course::Error,
     },
 
     #[snafu(display("Error in CourseRepo"))]
     #[snafu(context(false))]
-    CourseRepoError { source: crate::course_repo::Error },
+    CourseRepo { source: crate::course_repo::Error },
 
-    #[snafu(display("Course [{course_code} not found"))]
+    #[snafu(display("Course [{course_code}] not found"))]
     CourseNotFound { course_code: CourseCode },
 
     #[snafu(display("Error serializing response to CSV"))]
     #[snafu(context(false))]
-    CsvSerializationError { source: csv::Error },
+    CsvSerialization { source: csv::Error },
 
-    #[snafu(display("Error serializing response to CSV"))]
+    #[snafu(display("Error serializing response to CSV (into inner)"))]
     #[snafu(context(false))]
-    CsvSerializationError2 {
+    CsvSerializationIntoInner {
         source: csv::IntoInnerError<Writer<Vec<u8>>>,
     },
 
     #[snafu(display("Could not convert serialized CSV to UTF-8"))]
     #[snafu(context(false))]
-    Utf8Error { source: FromUtf8Error },
+    Utf8 { source: FromUtf8Error },
 }
 
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
-        println!("{:?}", self);
-        todo!()
+        tracing::error!("{:?}", self);
+        (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error").into_response()
     }
 }
 
