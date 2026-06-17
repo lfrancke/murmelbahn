@@ -148,7 +148,8 @@ pub struct GraviSheetOutput {
     pub empty_sound: Option<i32>,
     pub tile_trigger: Option<i32>,
 
-    // SkyTrax tiles (DT..EQ), then the connector (ER), in app nomenclature order.
+    // SkyTrax tiles, then the 6 SkyTrax slide rails, then the connector, in the
+    // sheet's column order. The slides sit between the 3-in-1 and the connector.
     pub skytrax_2in1_left: Option<i32>,
     pub skytrax_2in1_right: Option<i32>,
     pub skytrax_120_catch_drop_60_left: Option<i32>,
@@ -173,6 +174,16 @@ pub struct GraviSheetOutput {
     pub skytrax_spiral_300_right: Option<i32>,
     pub skytrax_starter: Option<i32>,
     pub skytrax_3in1: Option<i32>,
+
+    // SkyTrax slide rails (ET..EY in the sheet). The app stores them as rails
+    // hung onto placed tiles, so they come from the rail counts, not the tiles.
+    pub skytrax_bernoulli_left: Option<i32>,
+    pub skytrax_bernoulli_right: Option<i32>,
+    pub skytrax_slide_60_left: Option<i32>,
+    pub skytrax_slide_60_right: Option<i32>,
+    pub skytrax_slide_120_left: Option<i32>,
+    pub skytrax_slide_120_right: Option<i32>,
+
     pub skytrax_connector: Option<i32>,
 }
 
@@ -399,6 +410,12 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             skytrax_spiral_300_right: bom.tile_kind(TileKind::KstSpiral300R),
             skytrax_starter: bom.tile_kind(TileKind::KstStarter),
             skytrax_3in1: bom.tile_kind(TileKind::Kst3In1),
+            skytrax_bernoulli_left: bom.rail_kind(RailKind::KstBernoulliL),
+            skytrax_bernoulli_right: bom.rail_kind(RailKind::KstBernoulliR),
+            skytrax_slide_60_left: bom.rail_kind(RailKind::KstSlide60L),
+            skytrax_slide_60_right: bom.rail_kind(RailKind::KstSlide60R),
+            skytrax_slide_120_left: bom.rail_kind(RailKind::KstSlide120L),
+            skytrax_slide_120_right: bom.rail_kind(RailKind::KstSlide120R),
             skytrax_connector: i32_to_option(bom.connectors),
         }
     }
@@ -415,4 +432,32 @@ fn option_adder_helper(vec: Vec<Option<i32>>) -> Option<i32> {
     }
 
     i32_to_option(sum)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::app::rail::RailKind;
+
+    /// The SkyTrax slide rails come from the rail counts and land in their own
+    /// columns between the 3-in-1 and the connector. Mirrors the bill of
+    /// materials reported for course 3SHTTIDZQ5.
+    #[test]
+    fn skytrax_slide_rails_populate_their_columns() {
+        let mut bom = BillOfMaterials::default();
+        bom.rails.insert(RailKind::KstBernoulliL, 1);
+        bom.rails.insert(RailKind::KstSlide60L, 1);
+        bom.rails.insert(RailKind::KstSlide120L, 3);
+        bom.connectors = 2;
+
+        let out = GraviSheetOutput::from(bom);
+
+        assert_eq!(out.skytrax_bernoulli_left, Some(1));
+        assert_eq!(out.skytrax_bernoulli_right, None);
+        assert_eq!(out.skytrax_slide_60_left, Some(1));
+        assert_eq!(out.skytrax_slide_60_right, None);
+        assert_eq!(out.skytrax_slide_120_left, Some(3));
+        assert_eq!(out.skytrax_slide_120_right, None);
+        assert_eq!(out.skytrax_connector, Some(2));
+    }
 }
