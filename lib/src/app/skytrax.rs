@@ -8,7 +8,9 @@
 use deku::prelude::*;
 use serde::Serialize;
 
-use crate::app::course::{CourseElementGeneration, CourseMetaData, CourseSaveDataVersion, HexVector};
+use crate::app::course::{
+    CourseElementGeneration, CourseMetaData, CourseSaveDataVersion, HexVector,
+};
 use crate::app::layer::{CellConstructionData, LayerKind};
 use crate::app::pillar::PillarConstructionData;
 use crate::app::rail::RailConstructionData;

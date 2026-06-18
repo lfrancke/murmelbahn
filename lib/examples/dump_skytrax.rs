@@ -8,7 +8,9 @@ use std::collections::HashMap;
 use std::env;
 
 fn main() {
-    let path = env::args().nth(1).expect("usage: dump_skytrax <course-file>");
+    let path = env::args()
+        .nth(1)
+        .expect("usage: dump_skytrax <course-file>");
     let course = SavedCourse::from_path(&path).expect("parse course");
 
     // Full BOM our code currently produces, for direct comparison with the app.
@@ -32,7 +34,10 @@ fn main() {
     for (k, v) in rk {
         println!("  {k:?} = {v}");
     }
-    println!("== BOM connectors={} balconies={} ==\n", bom.connectors, bom.balconies);
+    println!(
+        "== BOM connectors={} balconies={} ==\n",
+        bom.connectors, bom.balconies
+    );
 
     let Course::SkyTrax(c) = course.course else {
         eprintln!("not a SkyTrax course");
@@ -81,9 +86,14 @@ fn main() {
         let same_plate = r1 == r2;
         println!(
             "wall {i:>2}: r1={r1} local=({},{}) -> {:?} | r2={r2} local=({},{}) -> {:?} | same_plate={same_plate} span={:?} balconies={}",
-            l1.x, l1.y, w1.as_ref().map(|v| (v.x, v.y)),
-            l2.x, l2.y, w2.as_ref().map(|v| (v.x, v.y)),
-            span, w.balcony_construction_datas.len()
+            l1.x,
+            l1.y,
+            w1.as_ref().map(|v| (v.x, v.y)),
+            l2.x,
+            l2.y,
+            w2.as_ref().map(|v| (v.x, v.y)),
+            span,
+            w.balcony_construction_datas.len()
         );
     }
 
@@ -102,14 +112,21 @@ fn main() {
         println!(
             "rail {i:>2}: kind={:?} r1={r1} ({},{}) -> {:?} | r2={r2} ({},{}) -> {:?} | span={:?}",
             r.rail_kind,
-            l1.x, l1.y, w1.as_ref().map(|v| (v.x, v.y)),
-            l2.x, l2.y, w2.as_ref().map(|v| (v.x, v.y)),
+            l1.x,
+            l1.y,
+            w1.as_ref().map(|v| (v.x, v.y)),
+            l2.x,
+            l2.y,
+            w2.as_ref().map(|v| (v.x, v.y)),
             span
         );
     }
 
     println!("\n== CONNECTORS ({}) ==", c.connectors.len());
     for (i, con) in c.connectors.iter().enumerate() {
-        println!("conn {i:>2}: pos=({},{}) height={}", con.pos_x, con.pos_y, con.height);
+        println!(
+            "conn {i:>2}: pos=({},{}) height={}",
+            con.pos_x, con.pos_y, con.height
+        );
     }
 }
