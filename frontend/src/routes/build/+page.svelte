@@ -76,8 +76,12 @@
       <ul class="mt-2 columns-1 sm:columns-2">
         {#each form.courses as course (course.course_code)}
           <li class="py-1">
-            <a class="link" href={`/course/${course.course_code}`}>{course.title}</a>
-            <span class="text-base-content/50 font-mono text-xs">{course.course_code}</span>
+            <a class="link" href={`/course/${course.course_code}`}>
+              {course.title.trim() || course.course_code}
+            </a>
+            {#if course.title.trim()}
+              <span class="text-base-content/50 font-mono text-xs">{course.course_code}</span>
+            {/if}
           </li>
         {/each}
       </ul>
