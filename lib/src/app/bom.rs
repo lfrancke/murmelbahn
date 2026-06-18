@@ -8,11 +8,16 @@ use crate::app::skytrax;
 use crate::app::wall::{WallConstructionData, WallKind, WallSide};
 use crate::app::ziplineadded2019::LayerConstructionData as ZiplineLayerConstructionData;
 use serde::Serialize;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use tracing::{trace, warn};
 
 // 0.36 is a magic number and it represents the height of a small stacker (in the App at least)
 const TILE_HEIGHT: f32 = 0.36;
+
+/// The glow from a light base reaches this many stacker pieces up the column
+/// built on it. Stackers within reach are light stackers; any above are
+/// ordinary stackers.
+const LIGHT_DISTANCE_IN_STACKERS: i32 = 8;
 
 /// This is the Bill of Materials as it appears in the app.
 /// That is not very useful if you want to check whether you can build a course with your parts
@@ -156,6 +161,10 @@ struct CountContext {
     /// We record the lower and the upper height here
     retainer_heights: HashMap<i32, RetainerHeight>,
 
+    /// Retainer ids of light bases. A stacker column rising from one of these is
+    /// lit, so its stackers count as light stackers rather than ordinary ones.
+    light_base_retainers: HashSet<i32>,
+
     layers: HashMap<LayerKind, i32>,
     tiles: HashMap<TileKind, i32>,
     walls: HashMap<WallKind, i32>,
@@ -222,6 +231,29 @@ impl CountContext {
             small_stacker -= 1;
         }
         self.add_tile(TileKind::Stacker, small_stacker / 2);
+    }
+
+    /// Add the stackers of a column that rises from a light base. The pieces
+    /// within the light's reach ([`LIGHT_DISTANCE_IN_STACKERS`] pieces, counted
+    /// from the base) are light stackers; any above are ordinary stackers. As
+    /// with [`add_stackers`], an odd height needs one small stacker.
+    fn add_light_stackers(&mut self, small_stacker: i32) {
+        let small = small_stacker % 2;
+        let large = small_stacker / 2;
+        let light_pieces = (small + large).min(LIGHT_DISTANCE_IN_STACKERS);
+        // The small stacker sits at the base, so it is lit first.
+        let light_small = small.min(light_pieces);
+        let light_large = light_pieces - light_small;
+        for (kind, count) in [
+            (TileKind::LightStackerSmall, light_small),
+            (TileKind::LightStacker, light_large),
+            (TileKind::StackerSmall, small - light_small),
+            (TileKind::Stacker, large - light_large),
+        ] {
+            if count > 0 {
+                self.add_tile(kind, count);
+            }
+        }
     }
 
     fn add_wall(&mut self, wall: WallKind) {
@@ -327,6 +359,7 @@ fn process_tree_node_data(
                 current_height += data.construction_data.height_in_small_stacker + 14;
             }
             TileKind::LightBase => {
+                context.light_base_retainers.insert(retainer_id);
                 context.retainer_heights.insert(
                     retainer_id,
                     RetainerHeight::new(
@@ -425,7 +458,16 @@ fn process_pillar_construction_data(
             }
         );
 
-        context.add_stackers(small_stacker);
+        // A pillar rising from a light base is a lit column, so its stackers are
+        // light stackers.
+        if context
+            .light_base_retainers
+            .contains(&pillar.lower_layer_id)
+        {
+            context.add_light_stackers(small_stacker);
+        } else {
+            context.add_stackers(small_stacker);
+        }
     }
 }
 

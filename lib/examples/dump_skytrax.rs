@@ -4,8 +4,21 @@
 
 use murmelbahn_lib::app::BillOfMaterials;
 use murmelbahn_lib::app::course::{Course, HexVector, SavedCourse};
+use murmelbahn_lib::app::layer::TileTowerTreeNodeData;
 use std::collections::HashMap;
 use std::env;
+
+/// Collect (tile kind, height_in_small_stacker, has_light_mode) for every node.
+fn walk(node: &TileTowerTreeNodeData, acc: &mut Vec<(String, i32, bool)>) {
+    acc.push((
+        format!("{:?}", node.construction_data.kind),
+        node.construction_data.height_in_small_stacker,
+        node.construction_data.light_stone_color_mode.is_some(),
+    ));
+    for c in &node.children {
+        walk(c, acc);
+    }
+}
 
 fn main() {
     let path = env::args()
@@ -119,6 +132,90 @@ fn main() {
             l2.y,
             w2.as_ref().map(|v| (v.x, v.y)),
             span
+        );
+    }
+
+    // Stacker contributions from the tile tree: our add_stackers is called once
+    // per node with its height_in_small_stacker. Tally by kind and total.
+    let mut nodes: Vec<(String, i32, bool)> = Vec::new();
+    for l in &c.layers {
+        for cell in &l.cells {
+            walk(&cell.tree_node_data, &mut nodes);
+        }
+    }
+    let mut by_kind: HashMap<String, (i32, i32)> = HashMap::new(); // kind -> (count_with_height>0, sum_height)
+    let mut total_tree_height = 0;
+    let mut light_nodes = 0;
+    for (k, h, light) in &nodes {
+        if *light {
+            light_nodes += 1;
+        }
+        if *h > 0 {
+            let e = by_kind.entry(k.clone()).or_insert((0, 0));
+            e.0 += 1;
+            e.1 += h;
+            total_tree_height += h;
+        }
+    }
+    println!("\n== LIGHT: nodes with light_stone_color_mode set = {light_nodes} ==");
+    for (k, h, light) in &nodes {
+        if *light {
+            println!("  light tile: {k} height={h}");
+        }
+    }
+
+    // Print the full tile tree for any cell whose tree contains a LightBase, so
+    // we can see what stacks above each base and at what heights.
+    fn contains_light(n: &TileTowerTreeNodeData) -> bool {
+        format!("{:?}", n.construction_data.kind) == "LightBase"
+            || n.children.iter().any(contains_light)
+    }
+    fn print_tree(n: &TileTowerTreeNodeData, depth: usize) {
+        println!(
+            "{}{:?} height={} retainer={:?} light={}",
+            "  ".repeat(depth + 1),
+            n.construction_data.kind,
+            n.construction_data.height_in_small_stacker,
+            n.construction_data.retainer_id,
+            n.construction_data.light_stone_color_mode.is_some(),
+        );
+        for c in &n.children {
+            print_tree(c, depth + 1);
+        }
+    }
+    println!("\n== TREES CONTAINING A LIGHTBASE ==");
+    for l in &c.layers {
+        for cell in &l.cells {
+            if contains_light(&cell.tree_node_data) {
+                println!(
+                    "layer {} cell local ({},{}):",
+                    l.layer_id, cell.local_hex_position.x, cell.local_hex_position.y
+                );
+                print_tree(&cell.tree_node_data, 0);
+            }
+        }
+    }
+    println!(
+        "\n== TILE-TREE STACKER CONTRIB (total nodes={}, nodes w/ height>0, total small-stacker height={}) ==",
+        nodes.len(),
+        total_tree_height
+    );
+    let mut bk: Vec<_> = by_kind.iter().collect();
+    bk.sort_by_key(|(k, _)| (*k).clone());
+    for (k, (n, h)) in bk {
+        println!("  {k}: {n} nodes, sum height={h}");
+    }
+    println!("  pillars: {}", c.pillars.len());
+    println!("== PILLARS (lower -> upper layer ids; light-base retainers are 1024/1025/1026) ==");
+    for (i, p) in c.pillars.iter().enumerate() {
+        println!(
+            "  pillar {i:>2}: {} ({},{}) -> {} ({},{})",
+            p.lower_layer_id,
+            p.lower_cell_local_position.x,
+            p.lower_cell_local_position.y,
+            p.upper_layer_id,
+            p.upper_cell_local_position.x,
+            p.upper_cell_local_position.y,
         );
     }
 
