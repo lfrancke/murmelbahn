@@ -12,13 +12,36 @@ pub enum WallKind {
 }
 
 impl WallKind {
-    pub fn straight_of_length(length: i32) -> WallKind {
+    /// The straight wall piece spanning a given number of fields. Walls come in
+    /// lengths 1, 2, and 3; any other length is not a real piece, so this
+    /// returns `None` and the caller skips it rather than crashing.
+    pub fn straight_of_length(length: i32) -> Option<WallKind> {
         match length {
-            1 => WallKind::StraightSmall,
-            2 => WallKind::StraightMedium,
-            3 => WallKind::StraightLarge,
-            _ => panic!("Unsupported wall length"),
+            1 => Some(WallKind::StraightSmall),
+            2 => Some(WallKind::StraightMedium),
+            3 => Some(WallKind::StraightLarge),
+            _ => None,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::WallKind;
+
+    #[test]
+    fn straight_of_length_handles_out_of_range_without_panicking() {
+        assert_eq!(
+            WallKind::straight_of_length(1),
+            Some(WallKind::StraightSmall)
+        );
+        assert_eq!(
+            WallKind::straight_of_length(3),
+            Some(WallKind::StraightLarge)
+        );
+        assert_eq!(WallKind::straight_of_length(0), None);
+        assert_eq!(WallKind::straight_of_length(4), None);
+        assert_eq!(WallKind::straight_of_length(-1), None);
     }
 }
 

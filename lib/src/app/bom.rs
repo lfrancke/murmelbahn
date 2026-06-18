@@ -447,7 +447,10 @@ fn process_wall_construction_data(walls: &[WallConstructionData], context: &mut 
         // Distance in fields -1 because we usually want to know how long a thing needs to be between
         // both cells (e.g. rails and walls)
         let distance = tower_1_world_pos.distance(tower_2_world_pos) - 1;
-        context.add_wall(WallKind::straight_of_length(distance));
+        match WallKind::straight_of_length(distance) {
+            Some(wall_kind) => context.add_wall(wall_kind),
+            None => warn!("ignoring wall with unexpected length {distance}"),
+        }
 
         let wall_direction = hex_direction(tower_1_world_pos, tower_2_world_pos);
 
