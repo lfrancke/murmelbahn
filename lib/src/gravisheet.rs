@@ -10,16 +10,13 @@ use serde::Serialize;
 
 #[derive(Debug, Serialize)]
 pub struct GraviSheetOutput {
-    // Leading columns. Paste starts at the Title column (D); the spacers line up
-    // with Video, Launch, Notes, PRO, POWER and the "buildable" column.
+    // Leading columns for the backend paste sheet: the course title, one spacer,
+    // the app code, then two spacers before the platforms.
     pub title: String,
     pub empty_video: Option<i32>,
     pub course_code: String,
-    pub empty_launch: Option<i32>,
-    pub empty_notes: Option<i32>,
-    pub empty_pro: Option<i32>,
-    pub empty_power: Option<i32>,
-    pub empty_buildable: Option<i32>,
+    pub empty_spacer_1: Option<i32>,
+    pub empty_spacer_2: Option<i32>,
 
     // Platforms
     pub layer_base: Option<i32>,
@@ -124,6 +121,8 @@ pub struct GraviSheetOutput {
     pub tile_tip_tube: Option<i32>,
     pub tile_trampoline: Option<i32>,
     pub tile_transfer: Option<i32>,
+    /// Spacer for the Turbo Lift, which the app cannot count yet.
+    pub empty_turbo_lift: Option<i32>,
     pub tile_volcano: Option<i32>,
     pub tile_zipline: Option<i32>,
 
@@ -138,6 +137,8 @@ pub struct GraviSheetOutput {
     pub tile_controller: Option<i32>,
     pub tile_dome_starter: Option<i32>,
     pub tile_dropdown_switch: Option<i32>,
+    /// Spacer for the Dynamo, which the app cannot count yet.
+    pub empty_dynamo: Option<i32>,
     pub tile_electric_cannon: Option<i32>,
     pub tile_elevator: Option<i32>,
     pub tile_finish_arena: Option<i32>,
@@ -207,11 +208,8 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             title: "PLACEHOLDER".to_string(),
             course_code: "PLACEHOLDER".to_string(),
             empty_video: None,
-            empty_launch: None,
-            empty_notes: None,
-            empty_pro: None,
-            empty_power: None,
-            empty_buildable: None,
+            empty_spacer_1: None,
+            empty_spacer_2: None,
 
             layer_base: bom.layer_kind(LayerKind::BaseLayerPiece),
             layer_base_mini: None,
@@ -350,6 +348,7 @@ impl From<BillOfMaterials> for GraviSheetOutput {
             tile_tip_tube: bom.tile_kind(TileKind::TipTube),
             tile_trampoline: total_trampolin,
             tile_transfer: bom.tile_kind(TileKind::Transfer),
+            empty_turbo_lift: None,
             tile_volcano: bom.tile_kind(TileKind::Volcano),
             tile_zipline: bom.tile_kind(TileKind::ZiplineStart),
             tile_carousel: option_adder_helper(vec![
@@ -376,6 +375,7 @@ impl From<BillOfMaterials> for GraviSheetOutput {
                 bom.tile_kind(TileKind::DropdownSwitchRight),
                 bom.tile_kind(TileKind::DropdownSwitchLeft),
             ]),
+            empty_dynamo: None,
             tile_electric_cannon: bom.tile_kind(TileKind::ElectricCannon),
             tile_elevator: bom.tile_kind(TileKind::Elevator),
             tile_finish_arena: bom.tile_kind(TileKind::FinishArena),
