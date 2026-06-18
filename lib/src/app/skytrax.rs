@@ -8,7 +8,7 @@
 use deku::prelude::*;
 use serde::Serialize;
 
-use crate::app::course::{CourseElementGeneration, CourseMetaData, CourseSaveDataVersion};
+use crate::app::course::{CourseElementGeneration, CourseMetaData, CourseSaveDataVersion, HexVector};
 use crate::app::layer::{CellConstructionData, LayerKind};
 use crate::app::pillar::PillarConstructionData;
 use crate::app::rail::RailConstructionData;
@@ -58,8 +58,13 @@ pub struct Course {
 pub struct Layer {
     pub layer_id: i32,
     pub layer_kind: LayerKind,
-    pub pos_x: i32,
-    pub pos_y: i32,
+    // The position is two i32s on disk. Read it as a `HexVector` so it uses the
+    // same axis order as every other position in the format (cell and tower
+    // local positions, old-format layer positions). Reading these as bare
+    // `pos_x`/`pos_y` ints flips x and y relative to `HexVector`, which left
+    // layer and cell coordinates in opposite conventions and inflated every
+    // cross-plate wall and rail length.
+    pub position: HexVector,
     pub small_stacker_height: i32,
 
     #[deku(temp)]

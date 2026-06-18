@@ -367,7 +367,7 @@ fn process_skytrax_layers(layers: &[skytrax::Layer], context: &mut CountContext)
         // as a small-stacker count rather than a float.
         context
             .retainer_positions
-            .insert(layer.layer_id, HexVector::new(layer.pos_x, layer.pos_y));
+            .insert(layer.layer_id, layer.position.clone());
         let lower = layer.small_stacker_height;
         context
             .retainer_heights
