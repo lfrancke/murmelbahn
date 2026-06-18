@@ -1,0 +1,5 @@
+#!/command/with-contenv sh
+# The SvelteKit server (adapter-node). Listens on HOST:PORT (0.0.0.0:3000), the
+# container's public port, and proxies /api and /metrics to the Rust API.
+cd /app/frontend
+exec node build

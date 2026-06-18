@@ -1,3 +1,14 @@
+.git/
 target/
- frontend/node_modules/
-frontend/dist/
+.build-tmp/
+backups/
+reference/
+frontend/node_modules/
+frontend/build/
+frontend/.svelte-kit/
+*.xapk
+*.zip
+*.bundle
+*.xcf
+*.png
+*.patch

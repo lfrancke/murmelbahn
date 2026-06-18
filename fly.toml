@@ -5,7 +5,7 @@
 
 app = "murmelbahn"
 primary_region = "fra"
-kill_signal = "SIGINT"
+kill_signal = "SIGTERM"
 kill_timeout = "5s"
 
 [experimental]
