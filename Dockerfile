@@ -14,17 +14,13 @@ COPY . .
 RUN cargo install --path web
 
 # Final image: Node (for the SvelteKit server) plus the Rust binary, both run by
-# the s6-overlay supervisor. SvelteKit is the public face on :3000 and proxies
-# /api and /metrics to the Rust API on localhost:8080.
+# supervisord. SvelteKit is the public face on :3000 and proxies /api and
+# /metrics to the Rust API on localhost:8080. supervisord (unlike s6-overlay)
+# does not require PID 1, so it works under Fly Machines' init.
 FROM node:22-slim
-ARG S6_OVERLAY_VERSION=3.2.0.2
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates libssl3 xz-utils \
+    && apt-get install -y --no-install-recommends ca-certificates libssl3 supervisor \
     && rm -rf /var/lib/apt/lists/*
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp/
-RUN tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz && rm /tmp/s6-overlay-noarch.tar.xz
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp/
-RUN tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz && rm /tmp/s6-overlay-x86_64.tar.xz
 
 WORKDIR /app
 # Rust API binary and the set definitions it reads (SETS_DIRECTORY=data/sets).
@@ -33,9 +29,7 @@ COPY data ./data
 # SvelteKit server. package.json provides "type": "module" for node to run build/.
 COPY --from=node_builder /app/frontend/build ./frontend/build
 COPY --from=node_builder /app/frontend/package.json ./frontend/package.json
-# s6 service definitions (run the Rust API and the SvelteKit server side by side).
-COPY docker/s6-rc.d /etc/s6-overlay/s6-rc.d
-RUN chmod +x /etc/s6-overlay/s6-rc.d/api/run /etc/s6-overlay/s6-rc.d/web/run
+COPY docker/supervisord.conf /etc/supervisord.conf
 
 ENV BIND_ADDRESS=127.0.0.1:8080 \
     INTERNAL_API=http://127.0.0.1:8080 \
@@ -45,4 +39,4 @@ ENV BIND_ADDRESS=127.0.0.1:8080 \
     NODE_ENV=production
 
 EXPOSE 3000
-ENTRYPOINT ["/init"]
+ENTRYPOINT ["supervisord", "-c", "/etc/supervisord.conf"]

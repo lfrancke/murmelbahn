@@ -1,5 +1,0 @@
-#!/command/with-contenv sh
-# The Rust API: reads SETS_DIRECTORY (data/sets) relative to /app and binds the
-# loopback port the SvelteKit server proxies to (BIND_ADDRESS).
-cd /app
-exec murmelbahn-web
