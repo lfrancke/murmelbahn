@@ -401,10 +401,25 @@ fn process_skytrax_layers(layers: &[skytrax::Layer], context: &mut CountContext)
         context
             .retainer_positions
             .insert(layer.layer_id, layer.position.clone());
-        let lower = layer.small_stacker_height;
-        context
-            .retainer_heights
-            .insert(layer.layer_id, RetainerHeight::new(lower, lower + 1));
+        // `small_stacker_height` is the height at which you build on the layer.
+        // A base plate stores that build surface directly (its top), sitting one
+        // small stacker below it like the older formats do. Other layers store
+        // the height their supporting pillars reach (their lower edge), and you
+        // build one small stacker above that.
+        // Resolve the layer to the same heights the float-based older formats
+        // produce. There, `round(layer_height / TILE_HEIGHT)` gives a base
+        // plate a lower edge of -1 and a top of 0 (its height is roughly
+        // -0.36), while an elevated layer stores its lower edge and is built on
+        // one small stacker above. SkyTrax stores integer small-stacker counts:
+        // a base plate stores its top (0), every other layer its lower edge.
+        let stored = layer.small_stacker_height;
+        let height = if layer.layer_kind == LayerKind::BaseLayerPiece {
+            RetainerHeight::new(stored - 1, stored)
+        } else {
+            RetainerHeight::new(stored, stored + 1)
+        };
+        let build_surface = height.upper;
+        context.retainer_heights.insert(layer.layer_id, height);
 
         for cell in layer.cells.iter() {
             let world_cell_position =
@@ -412,7 +427,7 @@ fn process_skytrax_layers(layers: &[skytrax::Layer], context: &mut CountContext)
             process_tree_node_data(
                 &cell.tree_node_data,
                 &world_cell_position,
-                lower + 1,
+                build_surface,
                 context,
             );
         }
