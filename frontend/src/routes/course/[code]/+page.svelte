@@ -17,7 +17,9 @@
 <article>
   <p class="text-base-content/60 font-mono text-sm">Course {data.code}</p>
   <h1 class="text-2xl font-bold">{data.title}</h1>
-  <p class="text-base-content/70 mt-1 text-sm">Format: {data.version} · Created: {data.created}</p>
+  <p class="text-base-content/70 mt-1 text-sm">
+    Format: {data.version}{#if data.created} · Created: {data.created}{/if}
+  </p>
   <p class="mt-3 flex flex-wrap gap-4 text-sm">
     <a
       class="link"
