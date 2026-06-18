@@ -13,6 +13,10 @@ use std::{fs, path::PathBuf};
 fn physical_bom_conversion_never_panics() {
     let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     dir.push("tests/test-data");
+    if !dir.exists() {
+        eprintln!("tests/test-data not present, skipping (local-only fixtures)");
+        return;
+    }
     let prev = std::panic::take_hook();
     std::panic::set_hook(Box::new(|_| {}));
 

@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, NaiveDateTime};
 use futures::TryStreamExt;
 use metrics::counter;
 use serde::Serialize;
@@ -14,12 +14,12 @@ use tracing::{debug, info};
 #[derive(Debug, Snafu)]
 pub enum Error {
     #[snafu(display("Database error: {}", source))]
-    DatabaseError { source: sqlx::Error },
-    DownloadError {
+    Database { source: sqlx::Error },
+    Download {
         source: murmelbahn_lib::app::download::Error,
     },
     #[snafu(display("Deserialization failed for course with code '{}': {}", code, source))]
-    DeserializationError {
+    Deserialization {
         code: String,
         source: murmelbahn_lib::app::course::Error,
     },
@@ -108,7 +108,7 @@ impl CourseRepo {
                 counter!("murmelbahn.course.downloads.success").increment(1);
 
                 sqlx::query("INSERT INTO courses (code, serialized_bytes) VALUES ($1, $2)")
-                    .bind(&course_code.to_string())
+                    .bind(course_code.to_string())
                     .bind(&course)
                     .execute(&self.db)
                     .await
@@ -176,11 +176,7 @@ impl CourseRepo {
                 .and_then(|saved_course| {
                     let course = saved_course.course;
                     let metadata = course.meta_data().clone();
-                    let app_bom = AppBillOfMaterials::try_from(course).map_err(|_| {
-                        Error::InvalidMetadata {
-                            message: "Invalid AppBillOfMaterials".to_string(),
-                        }
-                    })?;
+                    let app_bom = AppBillOfMaterials::from(course);
                     let physical_bom =
                         PhysicalBillOfMaterials::try_from(app_bom).map_err(|_| {
                             Error::InvalidMetadata {
@@ -194,13 +190,14 @@ impl CourseRepo {
                     if !diff_bom.any_missing() {
                         courses.push(StoredCourseMetadata {
                             date_added_to_db: created_at,
-                            creation_timestamp: NaiveDateTime::from_timestamp_millis(
+                            creation_timestamp: DateTime::from_timestamp_millis(
                                 metadata.creation_timestamp as i64,
                             )
                             .unwrap_or_else(|| {
                                 info!("Invalid timestamp for course code {}", code);
-                                NaiveDateTime::from_timestamp_opt(0, 0).unwrap()
-                            }),
+                                DateTime::from_timestamp(0, 0).unwrap()
+                            })
+                            .naive_utc(),
                             title: metadata.title,
                             course_code: code,
                         });

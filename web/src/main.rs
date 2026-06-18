@@ -1,26 +1,18 @@
-mod buildable;
-mod course;
+mod api;
 mod course_repo;
-mod set;
 
-use crate::buildable::buildable;
-use crate::course::{course_bom, course_dump, course_raw_download};
 use crate::course_repo::CourseRepo;
-use crate::set::set_list;
-use axum::http::{Method, StatusCode, header};
-use axum::response::IntoResponse;
-use axum::routing::{get, get_service, post};
-use axum::{Extension, Router};
+use axum::Extension;
+use axum::Router;
+use axum::http::{Method, header};
+use axum::routing::get;
 use clap::Parser;
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 use murmelbahn_lib::physical::SetRepo;
 use sqlx::postgres::PgPoolOptions;
-use std::io;
-use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tower_http::cors::{Any, CorsLayer};
-use tower_http::services::{ServeDir, ServeFile};
 use tracing::{debug, info};
 
 #[derive(Debug, Parser)]
@@ -32,10 +24,6 @@ pub struct Config {
 pub struct AppState {
     course_repo: CourseRepo,
     sets_repo: SetRepo,
-}
-
-async fn handle_error(_err: io::Error) -> impl IntoResponse {
-    (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
 }
 
 #[tokio::main]
@@ -70,43 +58,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .allow_headers([header::CONTENT_TYPE])
         .allow_origin(Any);
 
-    let serve_assets = ServeDir::new("frontend/dist/assets");
-    let serve_assets = get_service(serve_assets).handle_error(handle_error);
-
-    let serve_index = ServeFile::new("frontend/dist/index.html");
-    let serve_index = get_service(serve_index).handle_error(handle_error);
-
-    let course_routes = Router::new()
-        .route("/:id/dump", get(course_dump))
-        .route("/:id/bom", get(course_bom))
-        .route("/:id/raw", get(course_raw_download))
-        .with_state(shared_state.clone());
-    let course_routes = Router::new().nest("/course", course_routes);
-
-    let set_routes = Router::new()
-        .route("/list", get(set_list))
-        .with_state(shared_state.clone());
-    let set_routes = Router::new().nest("/set", set_routes);
-
-    let api_routes = Router::new()
-        .route("/buildable", post(buildable))
-        .merge(course_routes)
-        .merge(set_routes);
+    let api_routes = api::router(shared_state.clone());
 
     let router = Router::new()
-        .nest_service("/assets", serve_assets)
         .nest("/api", api_routes)
-        .with_state(shared_state.clone())
         .route("/metrics", get(metrics).layer(build_prometheus_extension()))
-        .layer(cors.clone())
-        .fallback_service(serve_index);
+        .layer(cors.clone());
 
-    let addr = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 0], 3000));
-    debug!("listening on {}", addr);
-    axum::Server::bind(&addr)
-        .serve(router.into_make_service())
-        .await
-        .unwrap();
+    let bind = std::env::var("BIND_ADDRESS").unwrap_or_else(|_| "127.0.0.1:8080".to_string());
+    debug!("listening on {}", bind);
+    let listener = tokio::net::TcpListener::bind(&bind).await?;
+    axum::serve(listener, router.into_make_service()).await?;
 
     Ok(())
 }
