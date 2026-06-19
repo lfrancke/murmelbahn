@@ -71,6 +71,24 @@ impl TryFrom<AppBillOfMaterials> for BillOfMaterials {
             *entry += rail_count;
         }
 
+        // Straight rails are counted by length in the app bill of materials
+        // (small/medium/large fields), not as a rail kind, so add them here.
+        for (count, element) in [
+            (bom.rails_small, Element::StraightSmall),
+            (bom.rails_medium, Element::StraightMedium),
+            (bom.rails_large, Element::StraightLarge),
+        ] {
+            if count > 0 {
+                *elements.entry(element).or_insert(0) += count;
+            }
+        }
+
+        // Single balconies attached to walls (double balconies come in via the
+        // DoubleBalcony tile kind).
+        if bom.balconies > 0 {
+            *elements.entry(Element::Balcony).or_insert(0) += bom.balconies;
+        }
+
         for (tile_kind, tile_count) in bom.tiles.iter() {
             let converted_element = Element::elements_for_tilekind(tile_kind);
             for element in converted_element {
@@ -132,5 +150,39 @@ impl BillOfMaterials {
             }
         }
         false
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Straight rails (counted by length in the app BOM) and wall balconies must
+    /// appear in the physical bill of materials; previously both were dropped.
+    #[test]
+    fn straight_rails_and_balconies_are_counted() {
+        let app = AppBillOfMaterials {
+            rails_small: 2,
+            rails_medium: 3,
+            rails_large: 1,
+            balconies: 4,
+            rails: HashMap::from([(RailKind::Bernoulli, 5)]),
+            ..Default::default()
+        };
+
+        let phys = BillOfMaterials::try_from(app).expect("converts");
+        assert_eq!(phys.elements.get(&Element::StraightSmall), Some(&2));
+        assert_eq!(phys.elements.get(&Element::StraightMedium), Some(&3));
+        assert_eq!(phys.elements.get(&Element::StraightLarge), Some(&1));
+        assert_eq!(phys.elements.get(&Element::Balcony), Some(&4));
+        assert_eq!(phys.elements.get(&Element::Bernoulli), Some(&5));
+    }
+
+    /// Zero straight rails / balconies must not create spurious zero entries.
+    #[test]
+    fn no_spurious_zero_entries() {
+        let phys = BillOfMaterials::try_from(AppBillOfMaterials::default()).expect("converts");
+        assert!(!phys.elements.contains_key(&Element::StraightSmall));
+        assert!(!phys.elements.contains_key(&Element::Balcony));
     }
 }

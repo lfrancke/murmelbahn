@@ -348,7 +348,10 @@ impl TryFrom<&RailKind> for Element {
 
     fn try_from(value: &RailKind) -> Result<Self, Self::Error> {
         Ok(match value {
-            RailKind::Straight => panic!("trnt"), // TODO
+            // Straight rails are counted by length (small/medium/large) in the
+            // bill of materials, not as a rail kind, so a `Straight` here means
+            // the caller used the wrong path. Return an error rather than panic.
+            RailKind::Straight => return Err(Error::UnknownElement),
             RailKind::Bernoulli => Element::Bernoulli,
             RailKind::DropHill => Element::DropHill,
             RailKind::DropValley => Element::DropValley,
