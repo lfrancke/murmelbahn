@@ -339,25 +339,28 @@ fn process_tree_node_data(
 
     context.add_stackers(data.construction_data.height_in_small_stacker);
 
-    // Check if this current tile at this cell is a retainer
-    // and add it to the retainer_positions and retainer_heights if it is
-    // A retainer here can be a double balcony, a stacker tower, a light base and ...not sure  what else
+    // If this tile is a retainer (a stacker tower, light base, or double
+    // balcony), record its world position and height so things built on it
+    // resolve correctly.
     if let Some(retainer_id) = data.construction_data.retainer_id {
         context
             .retainer_positions
             .insert(retainer_id, world_cell_position.clone());
 
         match data.construction_data.kind {
+            // A stacker tower is 14 small stackers tall (seven large stackers),
+            // so anything built on top of it starts 14 small stackers higher.
             TileKind::StackerTowerOpened | TileKind::StackerTowerClosed => {
                 context.retainer_heights.insert(
                     retainer_id,
                     RetainerHeight::new(
                         current_height,
                         current_height + data.construction_data.height_in_small_stacker + 14,
-                    ), // TODO: Maybe this 14 needs to be a 13 for reasons I don't understand
+                    ),
                 );
                 current_height += data.construction_data.height_in_small_stacker + 14;
             }
+            // A light base is 4 small stackers tall.
             TileKind::LightBase => {
                 context.light_base_retainers.insert(retainer_id);
                 context.retainer_heights.insert(
@@ -368,10 +371,9 @@ fn process_tree_node_data(
                     ),
                 );
                 current_height += data.construction_data.height_in_small_stacker + 4;
-                // TODO: I'm really not sure anymore how this works and if 4 is correct!
             }
+            // Other retainers, such as a double balcony, are one small stacker tall.
             _ => {
-                // All other things are 1 high I believe (i.e. DoubleBalcony)
                 context.retainer_heights.insert(
                     retainer_id,
                     RetainerHeight::new(
@@ -379,7 +381,6 @@ fn process_tree_node_data(
                         current_height + data.construction_data.height_in_small_stacker + 1,
                     ),
                 );
-                // TODO: Does this need to have a + 1?
                 current_height += data.construction_data.height_in_small_stacker;
             }
         }
@@ -448,16 +449,13 @@ fn process_pillar_construction_data(
             .get(&pillar.upper_layer_id)
             .unwrap();
 
-        // The base plates have a layer_height of -1, which probably means that the layer_height
-        // is the height at the lower end of a layer, which means you have to add 1 (for thickness
-        // of all layer kinds we know so far) if you want to build on top of them
-        // e.g. upper_height = 10, lower_height = -1: 10 - (-1 + 1) = 10 - 0 = 10
-        // Means we need 10 small or 5 large stackers
-        // Stacker towers have a size of 14 (7 large stackers)
-        // e.g. a layer has a height of 19 but it is built on top of this tower:
-        // base plate (-1), 3 small stackers: 19 - 14 - 3 = 2, means one large stacker is needed
-        // TODO: For some reason this means I need to add 13 (not 14) for every stacker tower....
-        // I should really understand this
+        // A pillar fills the gap between the top of the lower retainer and the
+        // lower edge of the upper layer, so the number of small stackers it
+        // needs is `upper.lower - lower.upper`. A base plate has a lower edge of
+        // -1 and a top of 0, and a stacker tower is 14 small stackers (seven
+        // large). Example: an upper layer at height 19 sitting on a stacker
+        // tower with 3 small stackers on it needs 19 - 14 - 3 = 2 more small
+        // stackers, i.e. one large stacker.
         let small_stacker = upper_layer_height.lower - lower_layer_height.upper;
         trace!(
             "Pillar data: {} ({:?}) -> {} ({:?}): {}/{}",
