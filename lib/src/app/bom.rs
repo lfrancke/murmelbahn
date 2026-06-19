@@ -319,6 +319,7 @@ fn process_layer_construction_data(layers: &[LayerConstructionData], context: &m
                 &world_cell_position,
                 height.upper,
                 context,
+                false,
             );
         }
     }
@@ -330,14 +331,20 @@ fn process_tree_node_data(
     data: &TileTowerTreeNodeData,
     // Each [`TileTowerTreeNodeData`] object belongs to one and only one cell on the board
     world_cell_position: &HexVector,
-    // TODO:
     mut current_height: i32,
     context: &mut CountContext,
+    // True when this tile sits directly on a light base, so the stackers
+    // supporting it are lit (formats that stack the light column in the tile
+    // tree rather than as a pillar).
+    on_light_base: bool,
 ) {
-    // TODO: Maybe use our own TileKind object here as well
     context.add_tiletowerconstructiondata(&data.construction_data);
 
-    context.add_stackers(data.construction_data.height_in_small_stacker);
+    if on_light_base {
+        context.add_light_stackers(data.construction_data.height_in_small_stacker);
+    } else {
+        context.add_stackers(data.construction_data.height_in_small_stacker);
+    }
 
     // If this tile is a retainer (a stacker tower, light base, or double
     // balcony), record its world position and height so things built on it
@@ -386,8 +393,15 @@ fn process_tree_node_data(
         }
     }
 
+    let children_on_light_base = matches!(data.construction_data.kind, TileKind::LightBase);
     for child in data.children.iter() {
-        process_tree_node_data(child, world_cell_position, current_height, context);
+        process_tree_node_data(
+            child,
+            world_cell_position,
+            current_height,
+            context,
+            children_on_light_base,
+        );
     }
 }
 
@@ -430,6 +444,7 @@ fn process_skytrax_layers(layers: &[skytrax::Layer], context: &mut CountContext)
                 &world_cell_position,
                 build_surface,
                 context,
+                false,
             );
         }
     }
@@ -544,6 +559,7 @@ fn process_wall_construction_data(walls: &[WallConstructionData], context: &mut 
                     &balcony_hex_vector,
                     0,
                     context,
+                    false,
                 );
             }
         }
