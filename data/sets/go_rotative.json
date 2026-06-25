@@ -1,0 +1,26 @@
+{
+  "id": "go_rotative",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Go Rotative"
+    }
+  ],
+  "content": {
+    "MicroBaseLayer": 14,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "StackerSmall": 2,
+    "Stacker": 5,
+    "StraightSmall": 4,
+    "StraightMedium": 1,
+    "Curve": 4,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "TwoWay": 1,
+    "Spinner": 1,
+    "SpiralBase": 2,
+    "SpiralCurve": 12
+  }
+}

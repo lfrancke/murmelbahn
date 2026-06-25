@@ -1,0 +1,49 @@
+{
+  "id": "action_kinetic_blast",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Kinetic Blast Set"
+    }
+  ],
+  "content": {
+    "BaseLayer": 4,
+    "LargeClearLayer": 1,
+    "SmallClearLayer": 1,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "MarbleSilver": 6,
+    "StackerSmall": 12,
+    "Stacker": 40,
+    "LightStackerSmall": 6,
+    "LightStacker": 12,
+    "StraightSmall": 9,
+    "StraightMedium": 6,
+    "StraightLarge": 3,
+    "GoalRail": 1,
+    "Curve": 21,
+    "RibbonCurve": 1,
+    "FlexibleTwoInOneB": 1,
+    "TwoInOneSmallCurveA": 1,
+    "TwoInOneSmallCurveB": 1,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "Cross": 3,
+    "ThreeWay": 1,
+    "TwoWay": 2,
+    "SwitchInsert": 2,
+    "TwoEntranceFunnel": 1,
+    "BasicOpen": 3,
+    "Drop": 1,
+    "Catch": 2,
+    "Splash": 1,
+    "FlexTube": 4,
+    "VerticalCannon": 1,
+    "Cascade": 1,
+    "Spinner": 1,
+    "Transfer": 3,
+    "LightBase": 3,
+    "Queue": 1
+  }
+}

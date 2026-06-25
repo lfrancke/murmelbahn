@@ -1,0 +1,15 @@
+{
+  "id": "action_vertical_cannon",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Vertical Cannon"
+    }
+  ],
+  "content": {
+    "MarbleRed": 1,
+    "MarbleSilver": 3,
+    "VerticalCannon": 1,
+    "Queue": 1
+  }
+}

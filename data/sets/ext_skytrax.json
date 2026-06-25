@@ -1,0 +1,40 @@
+{
+  "id": "ext_skytrax",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Skytrax Extension"
+    }
+  ],
+  "content": {
+    "Kst2In1L": 1,
+    "Kst2In1R": 1,
+    "Kst120CatchDrop60L": 2,
+    "Kst120CatchDrop60R": 2,
+    "Kst180Catch6060": 2,
+    "KstCrossingCatchDrop": 2,
+    "KstCurveCatch": 3,
+    "KstCurveDrop": 3,
+    "KstGtDrop": 1,
+    "KstHs5": 12,
+    "KstHs20": 12,
+    "KstMultiCatchDrop": 2,
+    "KstMultiCatcher": 1,
+    "KstSpiral120CatchDropCatchL": 1,
+    "KstSpiral120CatchDropCatchR": 1,
+    "KstSpiral180CatchDropL": 1,
+    "KstSpiral180CatchDropR": 1,
+    "KstSpiral240CatchL": 1,
+    "KstSpiral240CatchR": 1,
+    "KstSpiral300L": 1,
+    "KstSpiral300R": 1,
+    "Kst3In1": 2,
+    "KstBernoulliL": 1,
+    "KstBernoulliR": 1,
+    "KstSlide60L": 1,
+    "KstSlide60R": 1,
+    "KstSlide120L": 1,
+    "KstSlide120R": 1,
+    "Connector": 24
+  }
+}

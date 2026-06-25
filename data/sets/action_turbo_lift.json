@@ -1,0 +1,13 @@
+{
+  "id": "action_turbo_lift",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Turbo Lift"
+    }
+  ],
+  "content": {
+    "Stacker": 7,
+    "TurboLift": 1
+  }
+}

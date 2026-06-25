@@ -1,0 +1,17 @@
+{
+  "id": "ext_impulse",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Impulse Extension"
+    }
+  ],
+  "content": {
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "Cannon": 1,
+    "TipTube": 1,
+    "Volcano": 1
+  }
+}

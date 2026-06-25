@@ -1,0 +1,12 @@
+{
+  "id": "action_connect",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Connect"
+    }
+  ],
+  "content": {
+    "Connect": 1
+  }
+}

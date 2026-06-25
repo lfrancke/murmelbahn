@@ -1,0 +1,22 @@
+{
+  "id": "ext_tunnels",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Tunnels Expansion"
+    }
+  ],
+  "content": {
+    "BaseLayer": 2,
+    "Bernoulli": 2,
+    "DropHill": 1,
+    "DropValley": 1,
+    "Catcher": 2,
+    "BasicOpen": 6,
+    "BasicStraight": 2,
+    "StraightTunnel": 2,
+    "CurveTunnel": 4,
+    "SwitchTunnel": 2,
+    "UTurn": 2
+  }
+}

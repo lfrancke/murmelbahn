@@ -1,0 +1,49 @@
+{
+  "id": "action_fusion",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Fusion Action Set"
+    }
+  ],
+  "content": {
+    "BaseLayer": 4,
+    "SmallClearLayer": 3,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "MarbleSilver": 3,
+    "StackerSmall": 24,
+    "Stacker": 48,
+    "StraightSmall": 15,
+    "StraightMedium": 6,
+    "StraightLarge": 3,
+    "GoalRail": 1,
+    "Curve": 21,
+    "K2In1Slope": 1,
+    "K3In1Slope": 1,
+    "KCurveSlope1": 1,
+    "KCurveSlope2": 1,
+    "K120DoubleCurveSlope": 1,
+    "KBoomerangSlope": 1,
+    "KCrossingSlope": 1,
+    "KJumpCrossingSlope": 1,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "Cross": 3,
+    "ThreeWay": 1,
+    "TwoWay": 2,
+    "SwitchInsert": 2,
+    "TwoEntranceFunnel": 1,
+    "ThreeEntranceFunnel": 1,
+    "SpaceTube": 2,
+    "BasicOpen": 3,
+    "Drop": 1,
+    "Catch": 2,
+    "Splash": 1,
+    "Spinner": 1,
+    "Helix": 1,
+    "Mixer": 1,
+    "Dynamo": 1
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "go_explosive",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "GO Explosive"
+    }
+  ],
+  "content": {
+    "MicroBaseLayer": 14,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "Stacker": 5,
+    "StraightSmall": 6,
+    "StraightMedium": 1,
+    "Curve": 4,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "TwoWay": 1,
+    "Spinner": 1,
+    "Volcano": 1
+  }
+}

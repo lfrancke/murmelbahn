@@ -1,0 +1,25 @@
+{
+  "id": "go_impulsion",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "GO Impulsion"
+    }
+  ],
+  "content": {
+    "MicroBaseLayer": 14,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "StackerSmall": 2,
+    "Stacker": 6,
+    "StraightSmall": 5,
+    "StraightMedium": 1,
+    "Curve": 6,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "ThreeWay": 1,
+    "Hammer": 1,
+    "Spinner": 1
+  }
+}

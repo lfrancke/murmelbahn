@@ -1,0 +1,41 @@
+{
+  "id": "action_twist",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Twist Action Set (formerly Bounce)"
+    }
+  ],
+  "content": {
+    "MiniBaseLayer": 6,
+    "HalfMiniBaseLayer": 4,
+    "SmallClearLayer": 1,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "StackerSmall": 12,
+    "Stacker": 20,
+    "StackerAngled": 2,
+    "StraightSmall": 9,
+    "StraightMedium": 6,
+    "StraightLarge": 3,
+    "GoalRail": 1,
+    "Curve": 14,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "Cross": 2,
+    "ThreeWay": 1,
+    "TwoWay": 2,
+    "SwitchInsert": 2,
+    "TwoEntranceFunnel": 1,
+    "BasicOpen": 3,
+    "Drop": 1,
+    "Catch": 2,
+    "Splash": 1,
+    "Spinner": 1,
+    "SpiralBase": 1,
+    "SpiralEntrance": 1,
+    "SpiralCurve": 6,
+    "Trampoline": 2
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "go_flexible",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "GO Flexible"
+    }
+  ],
+  "content": {
+    "MicroBaseLayer": 14,
+    "MarbleRed": 1,
+    "StackerSmall": 1,
+    "Stacker": 7,
+    "StackerAngled": 1,
+    "StraightSmall": 3,
+    "StraightMedium": 1,
+    "Curve": 3,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "Cross": 1,
+    "Spinner": 1,
+    "Trampoline": 1
+  }
+}

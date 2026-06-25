@@ -21,6 +21,7 @@ pub enum Element {
     LargeClearLayer,
     MiniBaseLayer,
     HalfMiniBaseLayer,
+    MicroBaseLayer,
 
     // Marbles
     MarbleRed,
@@ -191,6 +192,13 @@ pub enum Element {
     KstSlide60R,
     KstSlide120L,
     KstSlide120R,
+    Connector,
+
+    // Accessory pieces that appear only in set inventories (no course tile yet)
+    TurboLift,
+    Dynamo,
+    Connect,
+    Sound,
 }
 
 impl Element {

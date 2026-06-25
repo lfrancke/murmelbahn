@@ -1,0 +1,14 @@
+{
+  "id": "action_light",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Light"
+    }
+  ],
+  "content": {
+    "LightStackerSmall": 6,
+    "LightStacker": 12,
+    "LightBase": 3
+  }
+}

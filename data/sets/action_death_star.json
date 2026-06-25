@@ -1,0 +1,48 @@
+{
+  "id": "action_death_star",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Death Star Action Set"
+    }
+  ],
+  "content": {
+    "BaseLayer": 4,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "MarbleSilver": 3,
+    "StackerSmall": 16,
+    "Stacker": 48,
+    "StackerTowerClosed": 4,
+    "StackerTowerOpened": 2,
+    "StraightSmall": 9,
+    "StraightMedium": 6,
+    "StraightLarge": 3,
+    "Narrow": 1,
+    "Slow": 1,
+    "GoalRail": 1,
+    "Curve": 28,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "Cross": 4,
+    "ThreeWay": 1,
+    "TwoWay": 2,
+    "SwitchInsert": 2,
+    "TwoEntranceFunnel": 1,
+    "SpaceTube": 2,
+    "BasicOpen": 5,
+    "Drop": 1,
+    "Catch": 2,
+    "Splash": 1,
+    "BasicStraight": 2,
+    "FlexTube": 2,
+    "Cannon": 1,
+    "Cascade": 1,
+    "Spinner": 1,
+    "SpiralBase": 2,
+    "SpiralEntrance": 2,
+    "SpiralCurve": 12,
+    "Transfer": 3
+  }
+}

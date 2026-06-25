@@ -1,0 +1,37 @@
+{
+  "id": "action_focus",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Focus Action Set"
+    }
+  ],
+  "content": {
+    "MiniBaseLayer": 3,
+    "HalfMiniBaseLayer": 2,
+    "SmallClearLayer": 1,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "StackerSmall": 6,
+    "Stacker": 12,
+    "StraightSmall": 6,
+    "StraightMedium": 4,
+    "StraightLarge": 2,
+    "GoalRail": 1,
+    "Curve": 7,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "Cross": 1,
+    "ThreeWay": 1,
+    "TwoWay": 2,
+    "SwitchInsert": 2,
+    "TwoEntranceFunnel": 1,
+    "BasicOpen": 3,
+    "Drop": 1,
+    "Catch": 2,
+    "Splash": 1,
+    "Cannon": 1,
+    "Spinner": 1
+  }
+}
