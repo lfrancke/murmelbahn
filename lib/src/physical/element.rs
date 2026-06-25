@@ -146,6 +146,51 @@ pub enum Element {
     // Autumn 2024
     VerticalCannon,
     SpaceTube,
+
+    // Advent-calendar slopes
+    K2In1Slope,
+    K3In1Slope,
+    K120DoubleCurveSlope,
+    KBoomerangSlope,
+    KCrossingSlope,
+    KCurveSlope1,
+    KCurveSlope2,
+    KJumpCrossingSlope,
+
+    // Electric cannon
+    ElectricCannon,
+
+    // SkyTrax (save format 7). Left/right variants are distinct physical pieces.
+    Kst2In1L,
+    Kst2In1R,
+    Kst120CatchDrop60L,
+    Kst120CatchDrop60R,
+    Kst180Catch6060,
+    KstCrossingCatchDrop,
+    KstCurveCatch,
+    KstCurveDrop,
+    KstFinish,
+    KstGtDrop,
+    KstHs5,
+    KstHs20,
+    KstMultiCatchDrop,
+    KstMultiCatcher,
+    KstSpiral120CatchDropCatchL,
+    KstSpiral120CatchDropCatchR,
+    KstSpiral180CatchDropL,
+    KstSpiral180CatchDropR,
+    KstSpiral240CatchL,
+    KstSpiral240CatchR,
+    KstSpiral300L,
+    KstSpiral300R,
+    KstStarter,
+    Kst3In1,
+    KstBernoulliL,
+    KstBernoulliR,
+    KstSlide60L,
+    KstSlide60R,
+    KstSlide120L,
+    KstSlide120R,
 }
 
 impl Element {
@@ -275,42 +320,41 @@ impl Element {
             TileKind::VerticalCannon300 => vec![Element::VerticalCannon],
             TileKind::SpaceTubeAligned => vec![Element::SpaceTube],
             TileKind::SpaceTubeUnaligned => vec![Element::SpaceTube],
-            // SkyTrax and ElectricCannon tile kinds. Their physical inventory
-            // is not modelled, so they contribute nothing to the bill of
-            // materials.
-            TileKind::ElectricCannon
-            | TileKind::K2In1Slope
-            | TileKind::K3In1Slope
-            | TileKind::K120DoubleCurveSlope
-            | TileKind::KBoomerangSlope
-            | TileKind::KCrossingSlope
-            | TileKind::KCurveSlope1
-            | TileKind::KCurveSlope2
-            | TileKind::KJumpCrossingSlope
-            | TileKind::Kst2In1L
-            | TileKind::Kst2In1R
-            | TileKind::Kst120CatchDrop60L
-            | TileKind::Kst120CatchDrop60R
-            | TileKind::Kst180Catch6060
-            | TileKind::KstCrossingCatchDrop
-            | TileKind::KstCurveCatch
-            | TileKind::KstCurveDrop
-            | TileKind::KstFinish
-            | TileKind::KstGtDrop
-            | TileKind::KstHs5
-            | TileKind::KstHs20
-            | TileKind::KstMultiCatchDrop
-            | TileKind::KstMultiCatcher
-            | TileKind::KstSpiral120CatchDropCatchL
-            | TileKind::KstSpiral120CatchDropCatchR
-            | TileKind::KstSpiral180CatchDropL
-            | TileKind::KstSpiral180CatchDropR
-            | TileKind::KstSpiral240CatchL
-            | TileKind::KstSpiral240CatchR
-            | TileKind::KstSpiral300L
-            | TileKind::KstSpiral300R
-            | TileKind::KstStarter
-            | TileKind::Kst3In1 => Vec::new(),
+            // Advent-calendar slopes, the electric cannon, and the SkyTrax
+            // tiles each map to one physical element of the same name.
+            TileKind::K2In1Slope => vec![Element::K2In1Slope],
+            TileKind::K3In1Slope => vec![Element::K3In1Slope],
+            TileKind::K120DoubleCurveSlope => vec![Element::K120DoubleCurveSlope],
+            TileKind::KBoomerangSlope => vec![Element::KBoomerangSlope],
+            TileKind::KCrossingSlope => vec![Element::KCrossingSlope],
+            TileKind::KCurveSlope1 => vec![Element::KCurveSlope1],
+            TileKind::KCurveSlope2 => vec![Element::KCurveSlope2],
+            TileKind::KJumpCrossingSlope => vec![Element::KJumpCrossingSlope],
+            TileKind::ElectricCannon => vec![Element::ElectricCannon],
+            TileKind::Kst2In1L => vec![Element::Kst2In1L],
+            TileKind::Kst2In1R => vec![Element::Kst2In1R],
+            TileKind::Kst120CatchDrop60L => vec![Element::Kst120CatchDrop60L],
+            TileKind::Kst120CatchDrop60R => vec![Element::Kst120CatchDrop60R],
+            TileKind::Kst180Catch6060 => vec![Element::Kst180Catch6060],
+            TileKind::KstCrossingCatchDrop => vec![Element::KstCrossingCatchDrop],
+            TileKind::KstCurveCatch => vec![Element::KstCurveCatch],
+            TileKind::KstCurveDrop => vec![Element::KstCurveDrop],
+            TileKind::KstFinish => vec![Element::KstFinish],
+            TileKind::KstGtDrop => vec![Element::KstGtDrop],
+            TileKind::KstHs5 => vec![Element::KstHs5],
+            TileKind::KstHs20 => vec![Element::KstHs20],
+            TileKind::KstMultiCatchDrop => vec![Element::KstMultiCatchDrop],
+            TileKind::KstMultiCatcher => vec![Element::KstMultiCatcher],
+            TileKind::KstSpiral120CatchDropCatchL => vec![Element::KstSpiral120CatchDropCatchL],
+            TileKind::KstSpiral120CatchDropCatchR => vec![Element::KstSpiral120CatchDropCatchR],
+            TileKind::KstSpiral180CatchDropL => vec![Element::KstSpiral180CatchDropL],
+            TileKind::KstSpiral180CatchDropR => vec![Element::KstSpiral180CatchDropR],
+            TileKind::KstSpiral240CatchL => vec![Element::KstSpiral240CatchL],
+            TileKind::KstSpiral240CatchR => vec![Element::KstSpiral240CatchR],
+            TileKind::KstSpiral300L => vec![Element::KstSpiral300L],
+            TileKind::KstSpiral300R => vec![Element::KstSpiral300R],
+            TileKind::KstStarter => vec![Element::KstStarter],
+            TileKind::Kst3In1 => vec![Element::Kst3In1],
             // A tile kind with no known physical element, so it adds nothing
             // to the bill of materials.
             TileKind::Unknown(_) => Vec::new(),
@@ -367,12 +411,13 @@ impl TryFrom<&RailKind> for Element {
             RailKind::FlexTube180 => Element::FlexTube,
             RailKind::FlexTube240 => Element::FlexTube,
             RailKind::FlexTube300 => Element::FlexTube,
-            RailKind::KstBernoulliL
-            | RailKind::KstBernoulliR
-            | RailKind::KstSlide60L
-            | RailKind::KstSlide60R
-            | RailKind::KstSlide120L
-            | RailKind::KstSlide120R => return Err(Error::UnknownElement),
+            // SkyTrax rails each map to one physical element of the same name.
+            RailKind::KstBernoulliL => Element::KstBernoulliL,
+            RailKind::KstBernoulliR => Element::KstBernoulliR,
+            RailKind::KstSlide60L => Element::KstSlide60L,
+            RailKind::KstSlide60R => Element::KstSlide60R,
+            RailKind::KstSlide120L => Element::KstSlide120L,
+            RailKind::KstSlide120R => Element::KstSlide120R,
         })
     }
 }
