@@ -1,0 +1,17 @@
+{
+  "id": "ext_triplex",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Triplex Extension"
+    }
+  ],
+  "content": {
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "ColorSwap": 3,
+    "Dipper": 1,
+    "Volcano": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "id": "action_electric_cannon",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Electric Cannon"
+    }
+  ],
+  "content": {
+    "ElectricCannon": 1,
+    "Queue": 2
+  }
+}

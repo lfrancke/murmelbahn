@@ -112,3 +112,24 @@ impl SetRepo {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::SetRepo;
+    use std::path::PathBuf;
+
+    /// Every committed set definition parses, including its element names.
+    #[test]
+    fn all_committed_sets_load() {
+        let mut dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        dir.push("../data/sets");
+        let mut repo = SetRepo::new();
+        repo.read_directory(&dir)
+            .expect("all sets in data/sets parse");
+        assert!(
+            repo.sets.len() >= 80,
+            "expected the full set catalogue, got {}",
+            repo.sets.len()
+        );
+    }
+}

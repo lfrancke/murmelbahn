@@ -1,0 +1,13 @@
+{
+  "id": "action_dynamo",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Dynamo"
+    }
+  ],
+  "content": {
+    "Dynamo": 1,
+    "Queue": 2
+  }
+}

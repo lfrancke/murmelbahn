@@ -1,0 +1,37 @@
+{
+  "id": "advent_2025_slopes",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Advent Calendar Slopes (2025)"
+    }
+  ],
+  "content": {
+    "BaseLayer": 1,
+    "SmallClearLayer": 1,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleGold": 1,
+    "StackerSmall": 10,
+    "Stacker": 14,
+    "StraightSmall": 5,
+    "StraightMedium": 2,
+    "Curve": 5,
+    "K2In1Slope": 1,
+    "K3In1Slope": 1,
+    "KCurveSlope1": 1,
+    "KCurveSlope2": 1,
+    "K120DoubleCurveSlope": 1,
+    "KBoomerangSlope": 1,
+    "KCrossingSlope": 1,
+    "KJumpCrossingSlope": 1,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "TwoWay": 1,
+    "SwitchInsert": 1,
+    "SpaceTube": 1,
+    "Hammer": 1,
+    "Cannon": 1,
+    "Spinner": 1
+  }
+}

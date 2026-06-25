@@ -1,0 +1,40 @@
+{
+  "id": "action_elevation",
+  "names": [
+    {
+      "language_code": "en",
+      "name": "Elevation Action Set"
+    }
+  ],
+  "content": {
+    "MiniBaseLayer": 6,
+    "HalfMiniBaseLayer": 4,
+    "SmallClearLayer": 1,
+    "MarbleRed": 1,
+    "MarbleGreen": 1,
+    "MarbleBlue": 1,
+    "StackerSmall": 12,
+    "Stacker": 28,
+    "StraightSmall": 8,
+    "StraightMedium": 5,
+    "StraightLarge": 2,
+    "Curve": 10,
+    "RibbonCurve": 1,
+    "FlexibleTwoInOneB": 1,
+    "TwoInOneSmallCurveA": 1,
+    "TwoInOneSmallCurveB": 1,
+    "BasicClosed": 1,
+    "GoalBasin": 1,
+    "Cross": 2,
+    "ThreeWay": 1,
+    "TwoWay": 1,
+    "SwitchInsert": 1,
+    "TwoEntranceFunnel": 1,
+    "BasicOpen": 3,
+    "Drop": 1,
+    "Catch": 2,
+    "Spinner": 1,
+    "Transfer": 1,
+    "TurboLift": 1
+  }
+}
